@@ -1,10 +1,4 @@
-# Overview of the Massage 
-
-## Organisation
-
-- We have a `main` and `dev` branches. We merge our work on `dev` and push only the final product to `main`
-- We create a branch for each feature to work on separately (instead of one branch per person)
-- We push and pull from the repo in the morning, before and after lunch break and at the end of the day
+# Overview of the Massage App
 
 ## User Model
 
@@ -65,10 +59,25 @@ together with a verification badge on the right of their name.
 Unlike for customers, for therapists, it is mandatory to have a profile picture. The profile picture will be shown on the left side of their name on the map.  
 Therapists will be able to see the details of customers who have booked with them such as name, profile picture, and type of service.  
 Therapists will also have access to their own Services' page and will be able to delete, add new services and change pricing.  
+They will also have the ability to accapt or decline the booking of a user. When the notification shows up at the top of the screen
+two buttons have to be visible allowing the Therapist to accept or decline the booking.
 (I assume we will have more updates for this model later on)
 
 This model will have access to the Login, Register, Home, Therapist Services, and User Details pages.
 
 ---
+
+## Booking service Model
+
+This model will be used by users, it will work together with the Booking service template that will be a page
+The only way therapists will be connected to these model and template will be when accapting and rejecting the bookings.
+
+When the user makes wants to book a service they will be redirected to the payment page/template.
+That page will containg input fields such as name, adress, payment method and so on, Regular things connected to online payments.
+Users can choose to pay with these several methods: Paypal, Strife - if we can figure it out and make it work 
+
+
+---
+
 
 Feel free to edit the description if you work on a specific part of the project and have a better idea about how that specific part should work. Notify us.
