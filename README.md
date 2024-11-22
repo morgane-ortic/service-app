@@ -1,5 +1,13 @@
 # Overview of the Massage App
 
+
+## Organisation
+- We have a `main` and `dev` branches. We merge our work on `dev` and push only the final product to `main`
+- We create a branch for each feature to work on separately (instead of one branch per person)
+- We push and pull from the repo in the morning, before and after lunch break and at the end of the day
+
+
+
 ## User Model
 
 A user will be able to view the main/home page of the app which will have bar at the top of the page consisting of different menu options:  
