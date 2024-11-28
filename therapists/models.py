@@ -8,11 +8,21 @@ class Therapist(models.Model):
         ('O', 'Other'),
     ]
 
+    CUSTOMER_NUMBER = [
+        ('one', 'One'),
+        ('couple', 'Couple'),
+        ('group', 'Group'),
+    ]
+
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICE)
     description = models.TextField(max_length=1000, blank=True, null=True)
     picture = models.ImageField(upload_to='therapist_pictures/', blank=True, null=True)
+    specialties = models.CharField(max_length=1000)
+    years_xp = models.IntegerField()
+    number_of_customers = models.CharField(max_length=30, choices=CUSTOMER_NUMBER)
+    equipment_pref = models.TextField(max_length=1000, blank=True, null=True)
 
     def __str__(self):
         return self.user.username
