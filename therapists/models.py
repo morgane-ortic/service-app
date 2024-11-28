@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 class Therapist(models.Model):
     GENDER_CHOICE = [
@@ -8,7 +8,7 @@ class Therapist(models.Model):
         ('O', 'Other'),
     ]
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICE)
     description = models.TextField(max_length=1000, blank=True, null=True)
@@ -19,7 +19,8 @@ class Therapist(models.Model):
 
 class TherapistService(models.Model):
     therapist = models.ForeignKey(Therapist, on_delete=models.CASCADE, related_name='services')
-    service = models.ForeignKey('Service', on_delete=models.CASCADE, related_name='therapist_services')
+    service = models.ForeignKey('core.Service', on_delete=models.CASCADE, related_name='therapist_services')
+    # Using a string reference for core.Service instead of direct import to avoid circular imports
     price = models.DecimalField(max_digits=6, decimal_places=2)
 
     def __str__(self):

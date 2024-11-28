@@ -1,7 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
-# The user model doesn't need to be defined because it's built in Django
-# We import it here to use some of the fields in the Customer model
+from django.contrib.auth import get_user_model
 
 class Customer(models.Model):
 
@@ -13,11 +11,11 @@ class Customer(models.Model):
 
     # Import User fields to use them as Customer fields
     # customers will be deleted automatically when the associated user is
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICE), null=True
-    description = models.CharField(1000), null=True
-    picture = models.ImageField(upload_to='customer_pictures/'), null=True
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICE, null=True)
+    description = models.CharField(max_length=1000, null=True)
+    picture = models.ImageField(upload_to='customer_pictures/', null=True, blank=True)
     # We'll use the Pillow library to upload + store images and use the image fields
 
     def __str__(self):
