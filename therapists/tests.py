@@ -29,7 +29,11 @@ class ModelIntegrationTest(TestCase):
             name=self.fake.name(),
             gender='W',
             description=self.fake.text(),
-            picture=None
+            picture='picture.jpg',
+            specialties=self.fake.text(max_nb_chars=1000),
+            years_xp=self.fake.random_int(min=1, max=40),
+            number_of_customers='one',
+            equipment_pref=self.fake.text(max_nb_chars=1000)
         )
 
         # Create fake service
@@ -66,3 +70,10 @@ class ModelIntegrationTest(TestCase):
         self.assertEqual(self.booking.customer.user.username, self.customer.user.username)
         self.assertEqual(self.booking.therapist.user.username, self.therapist.user.username)
         self.assertEqual(self.booking.service.service.name, self.service.name)
+
+    def test_therapist_fields(self):
+        therapist = Therapist.objects.get(id=self.therapist.id)
+        self.assertEqual(therapist.specialties, self.therapist.specialties)
+        self.assertEqual(therapist.years_xp, self.therapist.years_xp)
+        self.assertEqual(therapist.number_of_customers, self.therapist.number_of_customers)
+        self.assertEqual(therapist.equipment_pref, self.therapist.equipment_pref)
