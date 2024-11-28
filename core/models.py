@@ -10,9 +10,9 @@ class Booking(models.Model):
 
     # 'on_delete=models.NULL' makes sure the booking stays in the DB even if the therapist gets deleted
     # 'null=True' ensures this is possible, by allowing the FK to be set to NULL when the related PK gets deleted
-    customer_id = models.ForeignKey('customers.Customer', on_delete=models.SET_NULL, null=True, related_name='booking')
-    therapist_id = models.ForeignKey('therapists.Therapist', on_delete=models.SET_NULL, null=True, related_name='booking')
-    service_id = models.ForeignKey('therapists.TherapistService', on_delete=models.SET_NULL, null=True, related_name='booking')
+    customer = models.ForeignKey('customers.Customer', on_delete=models.SET_NULL, null=True, related_name='booking')
+    therapist = models.ForeignKey('therapists.Therapist', on_delete=models.SET_NULL, null=True, related_name='booking')
+    service = models.ForeignKey('therapists.TherapistService', on_delete=models.SET_NULL, null=True, related_name='booking')
     number_of_customers = models.CharField(max_length=50, choices=CUSTOMER_NUMBER)
     booking_date_time = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
