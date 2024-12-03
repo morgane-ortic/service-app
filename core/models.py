@@ -32,7 +32,7 @@ class Service(models.Model):
     base_price = models.DecimalField(max_digits=6, decimal_places=2)
     # the max price here is 9999.99
     picture = models.ImageField(upload_to='service_pictures/')
-    # We'll use the Pillow library to upload + store images and use the image fields
+    # Use Pillow library in views for images? For resizing/cropping
 
     def __str__(self):
         return self.name

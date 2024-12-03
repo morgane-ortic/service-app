@@ -16,7 +16,7 @@ class Customer(models.Model):
     gender = models.CharField(max_length=1, choices=GENDER_CHOICE, null=True)
     description = models.TextField(max_length=1000, null=True)
     picture = models.ImageField(upload_to='customer_pictures/', null=True, blank=True)
-    # We'll use the Pillow library to upload + store images and use the image fields
+    # Use Pillow library in views for images? For resizing/cropping
 
     def __str__(self):
         return self.user.username
