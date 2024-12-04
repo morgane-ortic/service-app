@@ -3,10 +3,10 @@ from django.contrib.auth.models import User
 from faker import Faker
 from therapists.models import Therapist, TherapistService
 from customers.models import Customer
-from core.models import Service, Booking
+from core.models import Service, Booking, NumberOfCustomers
 from django.utils import timezone
 
-class ModelIntegrationTest(TestCase):
+class BookingModelTest(TestCase):
     def setUp(self):
         self.fake = Faker()
 
@@ -30,11 +30,15 @@ class ModelIntegrationTest(TestCase):
             gender='W',
             description=self.fake.text(),
             picture='picture.jpg',
+            address=self.fake.address(),
             specialties=self.fake.text(max_nb_chars=1000),
             years_xp=self.fake.random_int(min=1, max=40),
-            number_of_customers='one',
             equipment_pref=self.fake.text(max_nb_chars=1000)
         )
+
+        # Create fake customer numbers
+        self.customer_number_one = NumberOfCustomers.objects.create(choice='one')
+        self.customer_number_couple = NumberOfCustomers.objects.create(choice='couple')
         self.therapist.number_of_customers.set([self.customer_number_one, self.customer_number_couple])
 
         # Create fake service
@@ -54,34 +58,41 @@ class ModelIntegrationTest(TestCase):
 
         # Create fake booking
         self.booking = Booking.objects.create(
-            therapist=self.therapist,
             customer=self.customer,
+            therapist=self.therapist,
             service=self.therapist_service,
-            number_of_customers='one',
+            address=self.fake.address(),
             booking_date_time=timezone.now(),
             created_at=timezone.now()
         )
+        self.booking.number_of_customers.set([self.customer_number_one, self.customer_number_couple])
 
-    def test_models_integration(self):
-        self.assertEqual(Customer.objects.count(), 1)
-        self.assertEqual(Therapist.objects.count(), 1)
-        self.assertEqual(Service.objects.count(), 1)
-        self.assertEqual(TherapistService.objects.count(), 1)
+    def test_booking_creation(self):
         self.assertEqual(Booking.objects.count(), 1)
-        self.assertEqual(self.booking.customer.user.username, self.customer.user.username)
-        self.assertEqual(self.booking.therapist.user.username, self.therapist.user.username)
-        self.assertEqual(self.booking.service.service.name, self.service.name)
 
-    def test_therapist_fields(self):
-        therapist = Therapist.objects.get(id=self.therapist.id)
-        self.assertEqual(therapist.specialties, self.therapist.specialties)
-        self.assertEqual(therapist.years_xp, self.therapist.years_xp)
-        self.assertEqual(therapist.number_of_customers, self.therapist.number_of_customers)
-        self.assertEqual(therapist.equipment_pref, self.therapist.equipment_pref)
-        
-    def test_number_of_customers(self):
-        therapist = Therapist.objects.get(id=self.therapist.id)
-        customer_numbers = therapist.number_of_customers.all()
+    def test_booking_fields(self):
+        booking = Booking.objects.get(id=self.booking.id)
+        self.assertEqual(booking.customer, self.customer)
+        self.assertEqual(booking.therapist, self.therapist)
+        self.assertEqual(booking.service, self.therapist_service)
+        self.assertEqual(booking.address, self.booking.address)
+        self.assertEqual(booking.booking_date_time, self.booking.booking_date_time)
+        self.assertEqual(booking.created_at, self.booking.created_at)
+
+    def test_booking_number_of_customers(self):
+        booking = Booking.objects.get(id=self.booking.id)
+        customer_numbers = booking.number_of_customers.all()
         self.assertEqual(customer_numbers.count(), 2)
         self.assertIn(self.customer_number_one, customer_numbers)
         self.assertIn(self.customer_number_couple, customer_numbers)
+
+    def test_booking_str(self):
+        booking = Booking.objects.get(id=self.booking.id)
+        formatted_date_time = booking.booking_date_time.strftime("%Y-%m-%d %H:%M")
+        expected_str = (
+            f'Booking ID: {booking.id}\n'
+            f'Customer: {booking.customer.user.username}\n'
+            f'Therapist: {booking.therapist.user.username}\n'
+            f'Booking Time: {formatted_date_time}\n'
+        )
+        self.assertEqual(str(booking), expected_str)

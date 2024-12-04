@@ -28,6 +28,7 @@ class Booking(models.Model):
     therapist = models.ForeignKey('therapists.Therapist', on_delete=models.SET_NULL, null=True, related_name='booking')
     service = models.ForeignKey('therapists.TherapistService', on_delete=models.SET_NULL, null=True, related_name='booking')
     number_of_customers = models.ManyToManyField(NumberOfCustomers) # relationship to NumberOfCustomers model
+    address = models.CharField(max_length=255)
     booking_date_time = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
         
