@@ -49,7 +49,7 @@ class Certification(models.Model):
     issuing_org = models.CharField(max_length=100, blank=True, null=True)
     issuing_date = models.DateField(blank=True, null=True)
     description = models.CharField(max_length=1000, blank=True, null=True)
-    certif_file = models.FileField(upload_to="certifications/")
+    certif_file = models.FileField(upload_to="uploads/")
 
     def __str__(self):
-        return f"{self.therapist.name} - {self.service.name} (${self.price})"
+        return f"{self.therapist.name} - {self.certification.name}"
