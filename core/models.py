@@ -1,6 +1,20 @@
 from django.db import models
 
 
+class NumberOfCustomers(models.Model):
+    '''Enables multiple choices to be selected at once'''
+    # CREATED A FORM TO HANDLE THIS CHOICE
+    CHOICES = [
+        ('single', 'Single'),
+        ('couple', 'Couple'),
+        ('group', 'Group'),
+    ]
+    choice = models.CharField(max_length=30, choices=CHOICES)
+
+    def __str__(self):
+        return self.choice
+    
+
 class Booking(models.Model):
     CUSTOMER_NUMBER = [
         ('one', 'One'),
@@ -13,7 +27,7 @@ class Booking(models.Model):
     customer = models.ForeignKey('customers.Customer', on_delete=models.SET_NULL, null=True, related_name='booking')
     therapist = models.ForeignKey('therapists.Therapist', on_delete=models.SET_NULL, null=True, related_name='booking')
     service = models.ForeignKey('therapists.TherapistService', on_delete=models.SET_NULL, null=True, related_name='booking')
-    number_of_customers = models.CharField(max_length=30, choices=CUSTOMER_NUMBER)
+    number_of_customers = models.ManyToManyField(NumberOfCustomers) # relationship to NumberOfCustomers model
     booking_date_time = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
         

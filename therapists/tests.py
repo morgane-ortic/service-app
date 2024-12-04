@@ -35,6 +35,7 @@ class ModelIntegrationTest(TestCase):
             number_of_customers='one',
             equipment_pref=self.fake.text(max_nb_chars=1000)
         )
+        self.therapist.number_of_customers.set([self.customer_number_one, self.customer_number_couple])
 
         # Create fake service
         self.service = Service.objects.create(
@@ -77,3 +78,10 @@ class ModelIntegrationTest(TestCase):
         self.assertEqual(therapist.years_xp, self.therapist.years_xp)
         self.assertEqual(therapist.number_of_customers, self.therapist.number_of_customers)
         self.assertEqual(therapist.equipment_pref, self.therapist.equipment_pref)
+        
+    def test_number_of_customers(self):
+        therapist = Therapist.objects.get(id=self.therapist.id)
+        customer_numbers = therapist.number_of_customers.all()
+        self.assertEqual(customer_numbers.count(), 2)
+        self.assertIn(self.customer_number_one, customer_numbers)
+        self.assertIn(self.customer_number_couple, customer_numbers)
