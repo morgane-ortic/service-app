@@ -103,8 +103,6 @@ Feel free to edit the description if you work on a specific part of the project 
 
 ### Core
 
-- base
-- index
 - about
 - contact
 - login: email, google, facebook, phone number
