@@ -95,3 +95,24 @@ Users can choose to pay with these several methods: Paypal, Strife - if we can f
 
 
 Feel free to edit the description if you work on a specific part of the project and have a better idea about how that specific part should work. Notify us.
+
+
+# Details
+
+## Templates
+
+### Core
+
+- index
+
+### Customer
+
+- base
+- index: intro, button "find your closest therapist" + country-city
+- services: list of bookable services + date-time
+- login: email, google, facebook, phone number
+- signup
+- choose_therapist: location select + see previous therapists or no preference -> choose therapist -> confirm booking
+- bookings: list past and present bookings and select individual bookings. Acceptance status + approaching session will be displayed. + payment pop-up
+- profile: user info (can be modified)
+
