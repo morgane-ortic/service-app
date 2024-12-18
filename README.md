@@ -103,16 +103,29 @@ Feel free to edit the description if you work on a specific part of the project 
 
 ### Core
 
+- base
 - index
+- about
+- contact
+- login: email, google, facebook, phone number
 
 ### Customer
 
 - base
 - index: intro, button "find your closest therapist" + country-city
 - services: list of bookable services + date-time
-- login: email, google, facebook, phone number
-- signup
+- register: email, google, facebook, phone number
 - choose_therapist: location select + see previous therapists or no preference -> choose therapist -> confirm booking
 - bookings: list past and present bookings and select individual bookings. Acceptance status + approaching session will be displayed. + payment pop-up
 - profile: user info (can be modified)
 
+
+### Therapist
+
+- base
+- index
+- register: email, google, facebook, phone number. Contains service area up to 3 cities, service offerings, preferences, availability (to implement later)
+- notifications: see bookings for clients, accept or reject -> added to schedule if accepted
+- schedule: calendar with bookings, booking history
+- customer_profile: to see info from customers who requested/booked appointment
+- profile: therapist info (can be modified)
