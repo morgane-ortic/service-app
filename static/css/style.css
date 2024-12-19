@@ -1,0 +1,65 @@
+body {
+  margin-left: auto;
+  margin-right: auto;
+  min-width: 600px;
+}
+
+header {
+
+
+    /* define margins and paddings around the header: */
+    margin-top: 30px;
+    margin-right: auto;
+    margin-left: auto;
+    padding: 30px 30px 0 30px;
+  
+    /* add round corners */
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+  
+    /* define the header background color: */
+    background-color: white;
+  
+    /* declare flex: */
+    display: flex;
+  
+    /* position elements of the header */
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .menu ul {
+    list-style-type: none;
+    gap: 2em;
+    /* declare flex: */
+    display: flex;
+  
+    /* define that the content will be displayed horizontally: */
+    flex-direction: row;
+  
+    /* define spacing between navigation elements: */
+    justify-content: space-around;
+  }
+  
+  .menu a {
+    /* style the font of the navigation elements */
+    font-family: sans-serif;
+    color: black;
+    text-decoration: none;
+  }
+
+  main {
+
+    max-width: 1200px;
+    min-width: 600px;
+
+    /* define main margins and paddings */
+    padding: 30px;
+    margin-left: auto;
+    margin-right: auto;
+  
+    /* define main background color */
+    background-color: white;
+  }

@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Massage Service</title>
+</head>
+<body>
+    
+    <header>
+        <!-- website logo: -->
+        <div id="logo">
+            <a href="{% url 'home' %}"><img src="{% static 'img/logo.jpg' %}" alt="Massage Service"></a>
+        </div>
+        <!-- navigation bar: -->
+        <nav>
+            <div class="menu">
+            <ul>
+                <li><a href="{% url 'customers:services' %}">Services</a></li>
+                <li><a href="{% url 'customers:bookings' %}">Bookings</a></li>
+                <li><a href="{% url 'customers:profile' %}">Profile</a></li>
+                <li><a href="{% url 'customers:about' %}">About</a></li>
+                <li><a href="{% url 'customers:contact' %}">Contact</a></li>
+                <li><a href="{% url 'customers:register' %}">Sign up</a></li>
+                <li><a href="{% url 'customers:login' %}">Log in</a></li>
+            </ul>
+            </div>
+        </nav>
+        </header>
+
+        <main>
+        {% block content %}
+        {% endblock %}
+        </main>
+</body>
+</html>
