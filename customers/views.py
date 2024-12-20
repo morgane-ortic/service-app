@@ -1,5 +1,7 @@
 from django.shortcuts import render
 
+from django.conf import settings
+
 # Placeholder views
 def home(request):
     return render(request, 'customers/home.html')
@@ -14,13 +16,20 @@ def profile(request):
     return render(request, 'customers/profile.html')
 
 def about(request):
-    return render(request, 'customers/about.html')
+    print(settings.TEMPLATES[0]['DIRS'])
+    return render(request, 'core/about.html', {
+        'base_template': 'customers/base.html'
+    })
 
 def contact(request):
-    return render(request, 'customers/contact.html')
+    return render(request, 'core/contact.html', {
+        'base_template': 'customers/base.html'
+    })
 
 def register(request):
     return render(request, 'customers/register.html')
 
 def login(request):
-    return render(request, 'customers/login.html')
+    return render(request, 'core/login.html', {
+        'base_template': 'customers/base.html'
+    })
