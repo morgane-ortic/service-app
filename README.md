@@ -110,7 +110,7 @@ Feel free to edit the description if you work on a specific part of the project 
 ### Customer
 
 - base
-- index: intro, button "find your closest therapist" + country-city
+- home: intro, button "find your closest therapist" + country-city
 - services: list of bookable services + date-time
 - register: email, google, facebook, phone number
 - choose_therapist: location select + see previous therapists or no preference -> choose therapist -> confirm booking
@@ -121,9 +121,47 @@ Feel free to edit the description if you work on a specific part of the project 
 ### Therapist
 
 - base
-- index
+- home: if logged in: welcome message and button links to other pages | If logged out: redirect to login template
 - register: email, google, facebook, phone number. Contains service area up to 3 cities, service offerings, preferences, availability (to implement later)
 - notifications: see bookings requests from customers, accept or reject -> added to schedule if accepted
 - schedule: calendar with bookings, booking history
 - customer_profile: to see info from customers who requested/booked appointment
 - profile: therapist info (can be modified)
+
+
+
+## Views
+
+### Core
+
+- about: just rendering about template
+- contact: message form linked to email -> contact template
+- login: use django authentication with email or phone number + (to implement later) Oauth for google/facebook -> login template
+
+
+### Customer
+
+- select_city: select country from premade list. Select city from premade list. redirect user to login -> home template
+- list_services: dynamically lists the services avilable in the city + minimum price -> services template
+- book_service: calendar widget to choose date and time. Pass booking info for therapist select -> services template
+- select_location: choose location on map (Osm API?) -> choose_therapist template
+- select_therapist: display therapists that fit the location + service + date-time. Choose therapist and create a new booking in DB. -> services template
+- display_therapist: display individual profiles from therapists from the list. -> choose_therapist template? New template?
+- list_bookings: list past bookings -> bookings template
+- display_booking: select and display individual bookings from the list -> bookings template
+- active_booking: display active booking on top with acceptance status + payment link as long as customer hasn't paid -> bookings template
+- display_profile: display user profile -> profile template
+- modify_profile: modify profile info -> profile_template
+
+
+### Therapist
+
+- home: if logged in render therapist home template, if logged out redirect to login page -> home template
+- register: enter and save profile information: name, gender, description, address, phone_number, picture, qualifications, specialties, years_xp, number_of_customers, equipment_pref. Force user to fill required fields. -> register template
+- oauth_register: for google/facebook registration: include in register view? -> register template
+- notification: push notification with message on top of screen when a request is made by customer, accept or reject. If accept: add to schedule and mark booking as accepted. Notification can be displayed again in drop down menu by clicking on the "notifications" link in menu. 2 views? -> template=??? check how it works. Should be displayed on any template
+- schedule: calendar with past and planned bookings -> schedule template
+- display_booking: select and display individual bookings from the calendar. Link to customer_profile -> bookings template
+- customer_profile: display profile info of customers who booked/requested a booking
+- display_profile: display user profile -> profile template
+- modify_profile: modify profile info -> profile_template

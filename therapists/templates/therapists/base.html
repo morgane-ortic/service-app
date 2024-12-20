@@ -24,7 +24,11 @@
                 <li><a href="{% url 'therapists:contact' %}">Contact</a></li>
                 <li><a href="{% url 'therapists:profile' %}">Profile</a></li>
                 <li><a href="{% url 'therapists:register' %}">Sign up</a></li>
-                <li><a href="{% url 'therapists:login' %}">Log in</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'therapists:logout' %}">Log Out</a></li>
+                {% else %}
+                    <li><a href="{% url 'therapists:login' %}">Log In</a></li>
+                {% endif %}
             </ul>
             </div>
         </nav>

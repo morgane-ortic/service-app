@@ -24,7 +24,11 @@
                 <li><a href="{% url 'customers:contact' %}">Contact</a></li>
                 <li><a href="{% url 'customers:profile' %}">Profile</a></li>
                 <li><a href="{% url 'customers:register' %}">Sign up</a></li>
-                <li><a href="{% url 'customers:login' %}">Log in</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'customers:logout' %}">Log Out</a></li>
+                {% else %}
+                    <li><a href="{% url 'customers:login' %}">Log In</a></li>
+                {% endif %}
             </ul>
             </div>
         </nav>
