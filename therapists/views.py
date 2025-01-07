@@ -34,3 +34,5 @@ def login(request):
 def customer_profile(request):
     return render(request, 'customer_profile/profile.html')
 
+def settings_privacy(request):
+    return render(request, 'therapists/settings_privacy.html')
