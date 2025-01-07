@@ -12,7 +12,7 @@
     <header>
         <!-- website logo: -->
         <div id="logo">
-            <a href="{% url 'home' %}"><img src="{% static 'img/logo.jpg' %}" alt="Massage Service"></a>
+            <a href="{% url 'therapists:home' %}"><img src="{% static 'img/logo.jpg' %}" alt="Massage Service"></a>
         </div>
         <!-- navigation bar: -->
         <nav>
@@ -20,7 +20,7 @@
             <ul>
                 <li><a href="{% url 'therapists:notifications' %}">Notifications</a></li>
                 <li><a href="{% url 'therapists:schedule' %}">Your Schedule</a></li>
-                <li><a href="{% url 'therapists:about' %}">About</a></li>
+                <li><a href="{% url 'therapists:about' %}">About us</a></li>
                 <li><a href="{% url 'therapists:contact' %}">Contact</a></li>
                 <li><a href="{% url 'therapists:profile' %}">Profile</a></li>
                 <li><a href="{% url 'therapists:register' %}">Sign up</a></li>
