@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+from core.models import Service
 from django.conf import settings
 
 # Placeholder views
@@ -10,7 +10,8 @@ def services(request):
     return render(request, 'customers/services.html')
 
 def bookings(request):
-    return render(request, 'customers/bookings.html')
+    services = Service.objects.all()  # Fetch all services from the database
+    return render(request, 'customers/bookings.html', {'services': services})
 
 def profile(request):
     return render(request, 'customers/profile.html')
