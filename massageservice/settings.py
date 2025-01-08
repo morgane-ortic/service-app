@@ -72,7 +72,7 @@ DATABASES = {
         'NAME': 'massageapp',     # Replace with your database name
         'USER': 'postgres',       # Replace with your PostgreSQL username
         'PASSWORD': 'password',   # Replace with your PostgreSQL password
-        'HOST': 'localhost',           # Use 'localhost' if PostgreSQL is on the same machine
+        'HOST': '127.0.0.1',           # Use 'localhost' if PostgreSQL is on the same machine
         'PORT': '5432',                # Default PostgreSQL port
     }
 }

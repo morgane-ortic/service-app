@@ -1,11 +1,39 @@
 {% extends './base.html' %}
+{% load static %}
 
 {% block content %}
-    <div class="page_content">
-        <h1>Your bookings</h1>
-        <p>{% lorem 300 w random %}</p>
+<div class="page_content">
+    <h1>Bookings</h1>
+    <p>Our team of professional practitioners offers top-tier relaxation and rejuvenation. From full-body massages to facials, manicures, and pedicures, we have a range of services to choose from. Explore our options and book your appointment for the ultimate relaxation.</p>
+    
+    <div class="bookings_section">
+        <aside class="categories">
+            <h3>Browse by</h3>
+            <ul>
+                <li><a href="#">All products</a></li>
+                <li><a href="#">Beauty</a></li>
+                <li><a href="#">Massage</a></li>
+                <li><a href="#">Therapeutic Massage</a></li>
+                <li><a href="#">Yoga</a></li>
+            </ul>
+        </aside>
+        
+        <div class="product_list">
+            <h2>All Services</h2>
+            <div class="product_grid">
+                {% for service in services %}
+                <div class="product_card">
+                    <img src="{{ service.picture.url }}" alt="{{ service.name }}">
+                    <h3>{{ service.name }}</h3>
+                    <p>{{ service.description }}</p>
+                    <p>From {{ service.base_price }}€</p>
+                    <button>Book</button>
+                </div>
+                {% empty %}
+                <p>No services available at the moment. Please check back later.</p>
+                {% endfor %}
+            </div>
+        </div>
     </div>
-
-    <!-- Active booking + Booking history --> 
-
+</div>
 {% endblock %}
