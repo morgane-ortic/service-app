@@ -1,6 +1,7 @@
-from django.shortcuts import render
-
+from django.shortcuts import render, redirect
 from django.conf import settings
+
+from .forms import RegisterDetailsForm
 
 # Placeholder views
 def home(request):
@@ -28,6 +29,21 @@ def contact(request):
 
 def register(request):
     return render(request, 'customers/register.html')
+
+def register_details(request):
+    
+    if request.method == 'POST':
+        form = RegisterDetailsForm(request.POST, request.FILES)  # Pass request.FILES to handle image upload
+        if form.is_valid():
+            form.save()  # Save the user profile, including the image
+            return redirect('registration_confirm')  # Redirect after saving
+    else:
+        form = RegisterDetailsForm()
+
+    return render(request, 'customers/register_details.html', {'form': form})
+
+def register_confirm(request):
+    return render(request, 'customers/register_confirm.html')
 
 def login(request):
     return render(request, 'core/login.html', {

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/api-buttons.css' %}">
     <title>Massage Service</title>
 </head>
 <body>
@@ -35,8 +36,10 @@
         </header>
 
         <main>
-        {% block content %}
-        {% endblock %}
+            <div class="main_content">
+            {% block content %}
+            {% endblock %}
+            </div>
         </main>
 </body>
 </html>

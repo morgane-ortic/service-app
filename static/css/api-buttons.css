@@ -1,0 +1,46 @@
+.button-container {
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+
+}
+
+.button {
+    width: 358px;
+    border: none;
+    margin: 10px 0 10px;
+}
+
+.google-sign-in {
+    height: 80px;
+    background-image: url('../img/google-sign-in.png');
+}
+
+.google-sign-in:hover {
+    background-image: url('../img/google-sign-in-hover.png');
+}
+
+.google-sign-up {
+    height: 80px;
+    background-image: url('../img/google-sign-up.png');
+}
+
+.google-sign-up:hover {
+    background-image: url('../img/google-sign-up-hover.png');
+}
+
+.facebook-continue {
+    height: 53px;
+    background-image: url('../img/facebook-continue.png');
+}
+
+.facebook-continue:hover {
+    background-image: url('../img/facebook-continue-hover.png');
+}
+
+.button-container p {
+    text-align: center;
+    margin: 8px;
+}
