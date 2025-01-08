@@ -68,10 +68,15 @@ WSGI_APPLICATION = 'massageservice.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',  # Replace with your database name
+        'USER': 'postgres',       # Replace with your PostgreSQL username
+        'PASSWORD': 'password',   # Replace with your PostgreSQL password
+        'HOST': '127.0.0.1',           # Use 'localhost' if PostgreSQL is on the same machine
+        'PORT': '5432',                # Default PostgreSQL port
     }
 }
+
 
 
 # Password validation
