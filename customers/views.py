@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-from django.conf import settings
 
 from .forms import RegisterDetailsForm
 
@@ -17,7 +16,6 @@ def profile(request):
     return render(request, 'customers/profile.html')
 
 def about(request):
-    print(settings.TEMPLATES[0]['DIRS'])
     return render(request, 'core/about.html', {
         'base_template': 'customers/base.html'
     })
