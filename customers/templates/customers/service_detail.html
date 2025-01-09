@@ -2,22 +2,44 @@
 {% load static %}
 
 {% block content %}
-<div class="service_detail">
-    <h1>{{ service.name }}</h1>
-    <div class="service_content">
-        <img src="{{ service.picture.url }}" alt="{{ service.name }}" style="max-width: 400px; border-radius: 10px;">
-        <div class="service_info">
-            <p>{{ service.description }}</p>
-            <form method="GET" action="#">
-                <label for="length">Select Length:</label>
-                <select id="length" name="length" onchange="updatePrice(this)">
+<div class="service_detail" style="display: flex; flex-direction: column; align-items: flex-start; margin: 60px 20px 20px;">
+    <!-- Header Section with Back Button and Centered Service Name -->
+    <div style="display: flex; align-items: center; justify-content: flex-start; width: 100%; margin-bottom: 20px;">
+        <button 
+            onclick="window.location.href = document.referrer;" 
+            style="background-color: rgb(216, 107, 222); color: white; border: none; border-radius: 5px; padding: 10px 20px; font-size: 14px; cursor: pointer; margin-right: 20px;">
+            Back
+        </button>
+        <h1 style="flex-grow: 1; text-align: center; margin: 0;">
+            {{ service.name }}
+        </h1>
+    </div>
+
+    <div class="service_content" style="display: flex; gap: 20px; align-items: flex-start; margin-top: 20px;">
+        <!-- Left Column: Image with Booking Elements -->
+        <div style="flex: 1; max-width: 400px;">
+            <img src="{{ service.picture.url }}" alt="{{ service.name }}" style="max-width: 100%; border-radius: 10px;">
+            <form method="GET" action="#" style="margin-top: 20px;">
+                <label for="length" style="display: block; font-weight: bold; margin-bottom: 10px;">
+                    Select Length:
+                </label>
+                <select id="length" name="length" onchange="updatePrice(this)" style="padding: 5px; display: block; width: 100%; max-width: 200px;">
                     {% for length, price in service.service_lengths %}
-                    <option value="{{ price }}">{{ length }} minutes - {{ price }}€</option>
+                    <option value="{{ price }}">{{ length }} minutes</option>
                     {% endfor %}
                 </select>
-                <p id="price">Price: {{ service.base_price }}€</p>
-                <button type="submit">Book Now</button>
+                <p id="price" style="margin-top: 10px; font-weight: bold;">
+                    Price: {{ service.base_price }}€
+                </p>
+                <button type="submit" style="background-color: rgb(216, 107, 222); color: white; border: none; border-radius: 5px; padding: 10px 20px; font-size: 14px; cursor: pointer; margin-top: 10px;">
+                    Book Now
+                </button>
             </form>
+        </div>
+        
+        <!-- Right Column: Description -->
+        <div class="service_info" style="flex: 1; text-align: left; max-width: 400px;">
+            <p>{{ service.description }}</p>
         </div>
     </div>
 </div>
