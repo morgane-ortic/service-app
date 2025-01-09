@@ -14,7 +14,7 @@ class RegisterDetailsForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={'placeholder': 'Enter your full name', 'class': 'input-field'}),
             'gender': forms.Select(attrs={'class': 'select-field'}),
-            'description': forms.Textarea(attrs={'placeholder': 'A short description of yourself', 'class': 'input-field', 'rows': 8, 'cols': 60}),
+            'description': forms.Textarea(attrs={'placeholder': 'A short description of yourself', 'class': 'input-field', 'rows': 8, 'cols': 40}),
         }
         labels = {
             'name': 'Your name',

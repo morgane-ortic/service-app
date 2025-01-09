@@ -17,6 +17,26 @@
     
     <div class="page_content">
         <h1>Your Profile</h1>
+
+        {% if section == 'personal_details' %}
+            <h2>Personal Details</h2>
+            <!-- Personal details content -->
+        {% elif section == 'professional_details' %}
+            <h2>Professional Details</h2>
+            <!-- Professional details content -->
+        {% elif section == 'service_settings' %}
+            <h2>Service Settings</h2>
+            <!-- Service settings content -->
+        {% elif section == 'equipment' %}
+            <h2>Equipment</h2>
+            <!-- Equipment content -->
+        {% elif section == 'payment_settings' %}
+            <h2>Payment Settings</h2>
+            <!-- Payment settings content -->
+        {% elif section == 'privacy_security' %}
+            <h2>Privacy and Security</h2>
+            <!-- Privacy and security content -->
+        {% endif %}
     </div>
 
     <!-- Show therapist profile with options to modify personal info -->

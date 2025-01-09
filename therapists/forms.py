@@ -1,12 +1,22 @@
 from django import forms
+from django.contrib.auth.models import User
 from .models import Therapist
 from core.models import NumberOfCustomers
 
-# Registration form
+
+# initial registration form
+class UserRegistrationForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
+
+    class Meta:
+        model = User
+        fields = ['email', 'password']
+
+# Registration detailed form
 class RegisterDetailsForm(forms.ModelForm):
     number_of_customers = forms.ModelMultipleChoiceField(
         queryset=NumberOfCustomers.objects.all(),
-        widget=forms.CheckboxSelectMultiple(attrs={'class': 'checkbox-field'}),
+        widget=forms.CheckboxSelectMultiple,
         required=True  # Ensure that this field is required
     )
     
@@ -18,7 +28,7 @@ class RegisterDetailsForm(forms.ModelForm):
             'gender': forms.Select(attrs={'class': 'select-field'}),
             'description': forms.Textarea(attrs={'placeholder': 'A short description of yourself', 'class': 'input-field', 'rows': 8, 'cols': 40}),
             'address': forms.Textarea(attrs={'placeholder': 'Enter your address', 'class': 'input-field', 'rows': 5, 'cols': 40}),
-            'phone-number': forms.TextInput(attrs={'placeholder': 'Enter your phone number', 'class': 'input-field'}),
+            'phone_number': forms.TextInput(attrs={'placeholder': 'Enter your phone number', 'class': 'input-field'}),
             'number_of_customers': forms.SelectMultiple(attrs={'class': 'select-field'}),
 
         }

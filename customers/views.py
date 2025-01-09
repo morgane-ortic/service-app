@@ -67,7 +67,7 @@ def register_details(request):
 def register_confirm(request):
     return render(request, 'customers/register_confirm.html')
 
-def login(request):
-    return render(request, 'core/login.html', {
+def user_login(request):
+    return render(request, 'core/user_login.html', {
         'base_template': 'customers/base.html'
     })
