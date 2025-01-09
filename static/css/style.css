@@ -134,6 +134,15 @@ main {
   background-color:  rgba(255, 255, 255, 0.8);
 }
 
+.default_form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, auto));
+  gap: 0 24px; /* Add space between grid items */
+  width: auto; /* Ensure the form takes the full width of the parent */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  justify-content: center;
+}
+
 p, label {
   text-align: justify;
   font-family: sans-serif;
