@@ -6,31 +6,45 @@
     <h1>Bookings</h1>
     <p>Our team of professional practitioners offers top-tier relaxation and rejuvenation. From full-body massages to facials, manicures, and pedicures, we have a range of services to choose from. Explore our options and book your appointment for the ultimate relaxation.</p>
     
-    <div class="bookings_section">
-        <aside class="categories">
+    <div class="bookings_section" style="display: flex; gap: 20px; align-items: flex-start;">
+        <!-- Left Column: Browse by -->
+        <aside class="categories" style="flex: 1; max-width: 200px;">
             <h3>Browse by</h3>
-            <ul>
-                <li><a href="#">All products</a></li>
-                <li><a href="#">Beauty</a></li>
-                <li><a href="#">Massage</a></li>
-                <li><a href="#">Therapeutic Massage</a></li>
-                <li><a href="#">Yoga</a></li>
+            <ul style="list-style-type: none; padding: 0; margin: 0;">
+                {% for type in service_types %}
+                <li>
+                    <a href="?service_type={{ type.name }}" 
+                       {% if selected_type == type.name %}class="active"{% endif %}>
+                        {{ type.name }}
+                    </a>
+                </li>
+                {% endfor %}
             </ul>
         </aside>
-        
-        <div class="product_list">
-            <h2>All Services</h2>
-            <div class="product_grid">
+
+        <!-- Right Column: All Products -->
+        <div class="product_list" style="flex: 3;">
+            <h2>
+                {% if selected_type and selected_type != 'all' %}
+                    {{ selected_type|capfirst }} Services
+                {% else %}
+                    All Services
+                {% endif %}
+            </h2>
+            <div class="product_grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
                 {% for service in services %}
-                <div class="product_card">
-                    <img src="{{ service.picture.url }}" alt="{{ service.name }}">
-                    <h3>{{ service.name }}</h3>
-                    <p>{{ service.description }}</p>
-                    <p>From {{ service.base_price }}€</p>
-                    <button>Book</button>
+                <div class="product_card" style="background-color: white; border-radius: 10px; padding: 10px; text-align: Left; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                    <a href="{% url 'customers:service_detail' service.id %}">
+                        <img src="{{ service.picture.url }}" alt="{{ service.name }}" style="max-width: 100%; border-radius: 10px;">
+                        <h3 style="margin: 10px 0; font-family: sans-serif; font-size: 18px; color: black;">{{ service.name }}</h3>
+                    </a>
+                    <p style="font-family: sans-serif; font-size: 14px; color: black;">From {{ service.base_price }}€</p>
+                    <button style="background-color: rgb(216, 107, 222); color: white; border: none; border-radius: 5px; padding: 10px 20px; font-size: 14px; cursor: pointer;">
+                        Book
+                    </button>
                 </div>
                 {% empty %}
-                <p>No services available at the moment. Please check back later.</p>
+                <p>No services available for this category. Please check back later.</p>
                 {% endfor %}
             </div>
         </div>

@@ -41,6 +41,14 @@ class Booking(models.Model):
             f'Booking Time: {formatted_date_time}\n'
         )
 
+
+
+class ServiceType(models.Model):
+    name = models.CharField(max_length=50, unique=True)  # Each type must be unique
+
+    def __str__(self):
+        return self.name
+
 class Service(models.Model):
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=1000, null=True)
@@ -48,6 +56,9 @@ class Service(models.Model):
     # the max price here is 9999.99
     picture = models.ImageField(upload_to='service_pictures/')
     # Use Pillow library in views for images? For resizing/cropping
+    service_types = models.ManyToManyField(ServiceType)
+    service_lengths = models.JSONField(default=list)  # Store lengths and prices as JSON
 
     def __str__(self):
         return self.name
+    
