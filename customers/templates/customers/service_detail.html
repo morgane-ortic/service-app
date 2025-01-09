@@ -1,0 +1,31 @@
+{% extends './base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="service_detail">
+    <h1>{{ service.name }}</h1>
+    <div class="service_content">
+        <img src="{{ service.picture.url }}" alt="{{ service.name }}" style="max-width: 400px; border-radius: 10px;">
+        <div class="service_info">
+            <p>{{ service.description }}</p>
+            <form method="GET" action="#">
+                <label for="length">Select Length:</label>
+                <select id="length" name="length" onchange="updatePrice(this)">
+                    {% for length, price in service.service_lengths %}
+                    <option value="{{ price }}">{{ length }} minutes - {{ price }}€</option>
+                    {% endfor %}
+                </select>
+                <p id="price">Price: {{ service.base_price }}€</p>
+                <button type="submit">Book Now</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function updatePrice(selectElement) {
+    const priceDisplay = document.getElementById('price');
+    priceDisplay.textContent = 'Price: ' + selectElement.value + '€';
+}
+</script>
+{% endblock %}
