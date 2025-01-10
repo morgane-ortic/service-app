@@ -49,16 +49,27 @@ class ServiceType(models.Model):
     def __str__(self):
         return self.name
 
+
 class Service(models.Model):
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=1000, null=True)
-    base_price = models.DecimalField(max_digits=6, decimal_places=2)
-    # the max price here is 9999.99
-    picture = models.ImageField(upload_to='service_pictures/')
-    # Use Pillow library in views for images? For resizing/cropping
+    base_price = models.DecimalField(max_digits=6, decimal_places=2)  # Max price is 9999.99
+    picture = models.ImageField(upload_to='service_pictures/')  # For uploading pictures
     service_types = models.ManyToManyField(ServiceType)
     service_lengths = models.JSONField(default=list)  # Store lengths and prices as JSON
 
     def __str__(self):
         return self.name
-    
+
+    def get_price(self, duration, customer_type):
+        """
+        Retrieve the price for a given duration and customer type.
+
+        :param duration: str, e.g., "60", "90", "120"
+        :param customer_type: str, e.g., "single", "couple", "group"
+        :return: decimal.Decimal or None if not found
+        """
+        for entry in self.service_lengths:
+            if str(entry[0]) == duration:  # Match the duration
+                return entry[1].get(customer_type)  # Return the price for the specified customer type
+        return None  # Return None if no matching duration or customer type is found

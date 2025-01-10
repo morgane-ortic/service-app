@@ -1,13 +1,14 @@
 import os
-
-from pathlib import Path
 from dotenv import load_dotenv
+from pathlib import Path
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 # loading environment variables from db.env file (leave the space in the brackets empty or add the path to the env file)
-load_dotenv(BASE_DIR / 'db.env')
+load_dotenv(dotenv_path=str(BASE_DIR / 'db.env'))
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -131,3 +132,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # For uploaded media files
 MEDIA_URL = '/media/'  # URL prefix for media files
 MEDIA_ROOT = BASE_DIR / 'media'  # Absolute path to the media directory
+
+# Stripe API Keys
+STRIPE_SECRET_KEY = 'sk_test_51QfanDL2WsViswULWunynKa6GXAjIDIfviF3uhD10lBgvMQ1roPHjZPEQhuF7l2VRHoGEK9Thrn4dbes8PhvzL1c00BfymS6PG'  # Replace with your secret key
+STRIPE_PUBLISHABLE_KEY = 'pk_test_51QfanDL2WsViswULccd4To2itF8MFURItNqzarLl6E1x5G7oS6aAMq9ItT0HmQMtyP3bDkh3xXtlKhCr49Ux1Z0E00mp1KFLCj'  # Replace with your publishable key
