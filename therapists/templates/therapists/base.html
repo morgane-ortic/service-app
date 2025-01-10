@@ -19,16 +19,16 @@
         <nav>
             <div class="menu">
             <ul>
-                <li><a href="{% url 'therapists:notifications' %}">Notifications</a></li>
-                <li><a href="{% url 'therapists:schedule' %}">Your Schedule</a></li>
-                <li><a href="{% url 'therapists:about' %}">About us</a></li>
-                <li><a href="{% url 'therapists:contact' %}">Contact</a></li>
-                <li><a href="{% url 'therapists:profile' %}">Profile</a></li>
-                <li><a href="{% url 'therapists:register' %}">Sign up</a></li>
                 {% if user.is_authenticated %}
+                    <li><a href="{% url 'therapists:notifications' %}">Notifications</a></li>
+                    <li><a href="{% url 'therapists:schedule' %}">Your Schedule</a></li>
+                    <li><a href="{% url 'therapists:about' %}">About us</a></li>
+                    <li><a href="{% url 'therapists:contact' %}">Contact</a></li>
+                    <li><a href="{% url 'therapists:profile' %}">Profile</a></li>
                     <li><a href="{% url 'therapists:logout' %}">Log Out</a></li>
                 {% else %}
                     <li><a href="{% url 'therapists:login' %}">Log In</a></li>
+                    <li><a href="{% url 'therapists:register' %}">Sign up</a></li>
                 {% endif %}
             </ul>
             </div>
