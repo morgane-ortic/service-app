@@ -97,7 +97,7 @@ main {
 }
 
 .sidebar {
-  width: 240px;
+  min-width: 230px;
   flex-shrink: 0;
   border-radius: 15px 0 0 15px;
   background-color: white;
