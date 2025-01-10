@@ -57,10 +57,9 @@ main {
   background-repeat: no-repeat;
   background-position: center;
   background-attachment: fixed;
-  
+
   min-width: 600px;
-  min-height: 100vh;
-  height: 100vh; 
+  min-height: 87vh; 
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -73,15 +72,20 @@ main {
   max-width: 1140px;
   min-width: 900px;
   width: 1140px;
+
   margin:30px;
-  display: flex;
+  margin-bottom: auto; /* Push main_content up, leaving space at the bottom */
+  
+  display: inline-flex;
   flex-direction: row;
   justify-content: center;
+  align-items: flex-start;
+
   border-radius: 10px;
   background-color:  rgba(255, 255, 255, 0.8);
 }
 
-.main_content a {
+.main_content a, footer a {
   color: rgb(216 107 222);
  }
 
@@ -95,12 +99,13 @@ main {
 .sidebar {
   width: 240px;
   flex-shrink: 0;
+  border-radius: 15px 0 0 15px;
   background-color: white;
 }
 
 .sidebar ul {
-  padding-top: 30px;
-  padding-bottom: 30px;
+  padding-top: 15px;
+  padding-bottom: 15px;
   list-style-type: none;
   gap: 1.5em;
   /* declare flex: */
@@ -130,7 +135,6 @@ main {
 
   max-width: 1140px;
   min-width: 600px;
-  min-height: 318px;
   height: auto;
   align-self: flex-start;
 
