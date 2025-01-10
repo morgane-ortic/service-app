@@ -16,4 +16,5 @@ urlpatterns = [
     path('register_confirm/', views.register_confirm, name='register_confirm'),
     path('login/', views.login, name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
+    path('create-checkout-session/', views.create_checkout_session, name='create_checkout_session'),
 ]
