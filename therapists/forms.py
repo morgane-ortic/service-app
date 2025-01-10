@@ -5,7 +5,7 @@ from core.models import NumberOfCustomers
 
 
 # initial registration form
-class UserRegistrationForm(forms.ModelForm):
+class RegisterForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
 
     class Meta:

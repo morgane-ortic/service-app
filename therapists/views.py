@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-# renaming to auth_login to avoid conflict with the login view defined below
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from .forms import UserRegistrationForm, RegisterDetailsForm
+from .forms import RegisterForm, RegisterDetailsForm
 from .models import Therapist
 
 # Placeholder views
@@ -40,7 +39,7 @@ def profile(request):
 
 def register(request):
     if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
+        form = RegisterForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
@@ -54,7 +53,7 @@ def register(request):
             login(request, user)
             return redirect('therapists:register_details')  # Ensure this matches the name in urls.py
     else:
-        form = UserRegistrationForm()
+        form = RegisterForm()
     return render(request, 'therapists/register.html', {'form': form})
 
 @login_required

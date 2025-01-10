@@ -1,6 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.models import User
+from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
+from .models import Customer
 from core.models import Service, ServiceType
-from .forms import RegisterDetailsForm
+from .forms import RegisterForm, RegisterDetailsForm
 from django.conf import settings
 from django.http import JsonResponse
 import stripe
@@ -101,23 +105,45 @@ def contact(request):
         'base_template': 'customers/base.html'
     })
 
-def register(request):
-    return render(request, 'customers/register.html')
 
+def register(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            # Create and save the User instance
+            user = User.objects.create_user(
+                username=email,  # Use email as username
+                email=email,
+                password=password
+            )
+            # Log in the user
+            login(request, user)
+            return redirect('customers:register_details')  # Ensure this matches the name in urls.py
+    else:
+        form = RegisterForm()
+    return render(request, 'customers/register.html', {'form': form})
+
+
+@login_required
 def register_details(request):
-    
     if request.method == 'POST':
         form = RegisterDetailsForm(request.POST, request.FILES)  # Pass request.FILES to handle image upload
         if form.is_valid():
-            form.save()  # Save the user profile, including the image
-            return redirect('registration_confirm')  # Redirect after saving
+            therapist = form.save(commit=False)  # Save the form but don't commit to the database yet
+            therapist.user = request.user  # Assuming you want to link the therapist to the logged-in user
+            therapist.save()  # Now save the therapist instance
+            form.save_m2m()  # Save the many-to-many relationships
+            return redirect('therapists:register_confirm')  # Redirect after saving
     else:
         form = RegisterDetailsForm()
+    return render(request, 'therapists/register_details.html', {'form': form})
 
-    return render(request, 'customers/register_details.html', {'form': form})
 
 def register_confirm(request):
     return render(request, 'customers/register_confirm.html')
+
 
 def user_login(request):
     return render(request, 'core/user_login.html', {
