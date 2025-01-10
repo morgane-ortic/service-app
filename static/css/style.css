@@ -54,6 +54,10 @@ header {
 main {
   background-image: url("../img/main_background.jpg");
   background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+  
   min-width: 600px;
   min-height: 100vh;
   height: 100vh; 
@@ -66,27 +70,35 @@ main {
 }
 
 .main_content {
-  max-width: 1500px;
+  max-width: 1140px;
   min-width: 900px;
+  width: 1140px;
+  margin:30px;
   display: flex;
   flex-direction: row;
   justify-content: center;
+  border-radius: 10px;
+  background-color:  rgba(255, 255, 255, 0.8);
 }
 
 .main_content a {
   color: rgb(216 107 222);
  }
 
+ .sidebar_page {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 .sidebar {
-  margin-top: 30px;
-  width: 300px;
+  width: 240px;
   flex-shrink: 0;
-  border-radius: 10px;
-  background-color:  rgba(255, 255, 255, 0.8);
+  background-color: white;
 }
 
 .sidebar ul {
-  margin-top: 0px;
   padding-top: 30px;
   padding-bottom: 30px;
   list-style-type: none;
@@ -104,7 +116,7 @@ main {
 .sidebar a {
   /* style the font of the navigation elements */
   font-family: sans-serif;
-  font-size: 20px;
+  font-size: medium;
   color: black;
   text-decoration: none;
 }
@@ -119,7 +131,6 @@ main {
   max-width: 1140px;
   min-width: 600px;
   min-height: 318px;
-  width: 1140px;
   height: auto;
   align-self: flex-start;
 
@@ -128,10 +139,7 @@ main {
   flex-grow: 1;
 
   padding: 0 30px 30px;
-  margin: 30px 0 30px 30px;
   border-radius: 15px;
-
-  background-color:  rgba(255, 255, 255, 0.8);
 }
 
 .default_form {

@@ -35,8 +35,11 @@ def contact(request):
         'base_template': 'therapists/base.html'
     })
 
-def profile(request):
-    return render(request, 'therapists/profile.html')
+def profile(request, section='personal_details'):
+    return render(request, 'therapists/profile.html', {
+        'base_template': 'therapists/base.html',
+        'section': section
+        })
 
 def register(request):
     if request.method == 'POST':

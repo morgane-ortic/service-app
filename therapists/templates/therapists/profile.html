@@ -2,43 +2,42 @@
 
 {% block content %}
 
-    <nav>
-        <div class="sidebar">
+    <div class="sidebar_page">
+        <nav class="sidebar">
             <ul>
-                <li><a href="">Personal Details</a></li>
-                <li><a href="">Professional Details</a></li>
-                <li><a href="">Service Settings</a></li>
-                <li><a href="">Equipment</a></li>
-                <li><a href="">Payment settings</a></li>
-                <li><a href="">Privacy and Security</a></li>
+                <li><a href="{% url 'therapists:profile' 'personal_details' %}">Personal Details</a></li>
+                <li><a href="{% url 'therapists:profile' 'professional_details' %}">Professional Details</a></li>
+                <li><a href="{% url 'therapists:profile' 'service_settings' %}">Service Settings</a></li>
+                <li><a href="{% url 'therapists:profile' 'equipment' %}">Equipment</a></li>
+                <li><a href="{% url 'therapists:profile' 'payment_settings' %}">Payment settings</a></li>
+                <li><a href="{% url 'therapists:profile' 'privacy_security' %}">Privacy and Security</a></li>
             </ul>
+        </nav>
+        
+        <div class="page_content">
+
+            {% if section == 'personal_details' %}
+                <h2>Personal Details</h2>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae fuga eveniet ipsum, totam quidem vero hic impedit recusandae repellendus ea esse nesciunt excepturi accusamus, iste et nemo, accusantium molestias possimus!</p>
+                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Architecto explicabo, quo sint, officiis error autem maxime quisquam voluptate corporis dolore, unde animi facilis rerum et harum expedita quibusdam eveniet illum!</p>
+                <!-- Personal details content -->
+            {% elif section == 'professional_details' %}
+                <h2>Professional Details</h2>
+                <!-- Professional details content -->
+            {% elif section == 'service_settings' %}
+                <h2>Service Settings</h2>
+                <!-- Service settings content -->
+            {% elif section == 'equipment' %}
+                <h2>Equipment</h2>
+                <!-- Equipment content -->
+            {% elif section == 'payment_settings' %}
+                <h2>Payment Settings</h2>
+                <!-- Payment settings content -->
+            {% elif section == 'privacy_security' %}
+                <h2>Privacy and Security</h2>
+                <!-- Privacy and security content -->
+            {% endif %}
         </div>
-    </nav>
-    
-    <div class="page_content">
-        <h1>Your Profile</h1>
-
-        {% if section == 'personal_details' %}
-            <h2>Personal Details</h2>
-            <!-- Personal details content -->
-        {% elif section == 'professional_details' %}
-            <h2>Professional Details</h2>
-            <!-- Professional details content -->
-        {% elif section == 'service_settings' %}
-            <h2>Service Settings</h2>
-            <!-- Service settings content -->
-        {% elif section == 'equipment' %}
-            <h2>Equipment</h2>
-            <!-- Equipment content -->
-        {% elif section == 'payment_settings' %}
-            <h2>Payment Settings</h2>
-            <!-- Payment settings content -->
-        {% elif section == 'privacy_security' %}
-            <h2>Privacy and Security</h2>
-            <!-- Privacy and security content -->
-        {% endif %}
     </div>
-
-    <!-- Show therapist profile with options to modify personal info -->
 
 {% endblock %}
