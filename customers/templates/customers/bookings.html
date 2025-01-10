@@ -1,6 +1,7 @@
 {% extends './base.html' %}
 {% load static %}
 
+
 {% block content %}
 <div class="page_content" style="margin-top: 60px;">
     <h1>Bookings</h1>
@@ -165,6 +166,7 @@
     </div>
 </div>
 
+<!-- PAYMENT WINDOW -->
 <div id="payment_modal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); display: none; z-index: 20; width: 80%; max-width: 700px;">
     <button id="close_payment_modal" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer;">&times;</button>
     <h2 style="margin-bottom: 20px; text-align: center;">Please choose a payment method below</h2>
@@ -177,7 +179,9 @@
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Mastercard_2019_logo.svg/256px-Mastercard_2019_logo.svg.png" alt="Mastercard" style="height: 30px;">
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/American_Express_logo_%282018%29.svg/256px-American_Express_logo_%282018%29.svg.png" alt="Amex" style="height: 30px;">
         </div>
-        <button id="stripe_pay_button" style="background-color: #6772e5; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px;">Pay with Stripe</button>
+        <button id="stripe_pay_button" style="background-color: #6772e5; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px;">
+            Pay with Stripe
+        </button>
     </div>
 
     <!-- PayPal Section -->
@@ -193,6 +197,7 @@
         <span style="color: green; font-size: 12px;">256-bit SSL encrypted</span>
         <span style="color: #ccc; font-size: 12px;">Securely processed by Global Payments</span>
     </div>
+    
 </div>
 
 
@@ -299,7 +304,7 @@
     });
 </script>
 
-
+<!-- JAVASCRIPT FOR PAYMENTS WINDOW-->
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const paymentModal = document.getElementById("payment_modal");
@@ -320,5 +325,35 @@
     });    
 </script>
 
+<!-- JAVASCRIPT FOR STRIPE PAYMENTS-->
+<script>
+    const stripe = Stripe('your-publishable-key-here'); // Replace with your Stripe Publishable Key
+
+    document.getElementById('stripe_pay_button').addEventListener('click', () => {
+        fetch('/create-checkout-session/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error); // Show error message if something goes wrong
+                } else {
+                    return stripe.redirectToCheckout({ sessionId: data.id });
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    });
+</script>
+
+
 
 {% endblock %}
+
+
+<script src="{% static 'customers/stripe.js' %}"></script>
+<script src="https://js.stripe.com/v3/"></script> <!-- Include the Stripe.js library -->
