@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from .forms import RegisterForm, RegisterDetailsForm
+from core.forms import LoginForm
 from .models import Therapist
 
 # Placeholder views
@@ -75,8 +76,19 @@ def register_confirm(request):
     return render(request, 'therapists/register_confirm.html')
 
 def user_login(request):
+    if request.method == 'POST':
+        form = LoginForm(request, data=request.POST)  # Pass request and data to the form
+        if form.is_valid():
+            user = form.get_user()  # Get the authenticated user from the form
+            login(request, user)
+            return redirect('therapists:home')
+        else:
+            form.add_error(None, 'Invalid email or password')
+    else:
+        form = LoginForm()
     return render(request, 'core/login.html', {
-        'base_template': 'therapists/base.html'
+        'base_template': 'therapists/base.html',
+        'form': form
     })
 
 def user_logout(request):

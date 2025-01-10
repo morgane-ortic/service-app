@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from .models import Customer
 from core.models import Service, ServiceType
 from .forms import RegisterForm, RegisterDetailsForm
+from core.forms import LoginForm
 from django.conf import settings
 from django.http import JsonResponse
 import stripe
@@ -155,9 +156,21 @@ def register_confirm(request):
 
 
 def user_login(request):
+    if request.method == 'POST':
+        form = LoginForm(request, data=request.POST)  # Pass request and data to the form
+        if form.is_valid():
+            user = form.get_user()  # Get the authenticated user from the form
+            login(request, user)
+            return redirect('home')
+        else:
+            form.add_error(None, 'Invalid email or password')
+    else:
+        form = LoginForm()
     return render(request, 'core/login.html', {
-        'base_template': 'customers/base.html'
+        'base_template': 'customers/base.html',
+        'form': form
     })
+
 
 def user_logout(request):
     logout(request)
