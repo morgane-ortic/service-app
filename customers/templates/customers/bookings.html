@@ -33,13 +33,18 @@
             </h2>
             <div class="product_grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
                 {% for service in services %}
-                <div class="product_card" style="background-color: white; border-radius: 10px; padding: 10px; text-align: Left; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                <div class="product_card" style="background-color: white; border-radius: 10px; padding: 10px; text-align: left; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
                     <a href="{% url 'customers:service_detail' service.id %}">
                         <img src="{{ service.picture.url }}" alt="{{ service.name }}" style="max-width: 100%; border-radius: 10px;">
                         <h3 style="margin: 10px 0; font-family: sans-serif; font-size: 18px; color: black;">{{ service.name }}</h3>
                     </a>
                     <p style="font-family: sans-serif; font-size: 14px; color: black;">From {{ service.base_price }}€</p>
-                    <button style="background-color: rgb(216, 107, 222); color: white; border: none; border-radius: 5px; padding: 10px 20px; font-size: 14px; cursor: pointer;">
+                    <button class="book_button" 
+                            data-service-id="{{ service.id }}" 
+                            data-service-title="{{ service.name }}" 
+                            data-service-price="{{ service.base_price|default:0 }}"
+                            data-service-picture="{{ service.picture.url }}" 
+                            style="background-color: rgb(216, 107, 222); color: white; border: none; border-radius: 5px; padding: 10px 20px; font-size: 14px; cursor: pointer;">
                         Book
                     </button>
                 </div>
@@ -50,4 +55,270 @@
         </div>
     </div>
 </div>
+
+
+<!-- Modal Background -->
+<div id="modal_background" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: none; z-index: 10;"></div>
+
+<!-- BOOKING OPTIONS WINDOW -->
+<div id="booking_modal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); display: none; z-index: 20; width: 80%; max-width: 700px;">
+    <button id="close_modal" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer;">&times;</button>
+    
+    <!-- Modal Layout -->
+    <div style="display: flex; gap: 20px;">
+        <!-- Left Side: Image -->
+        <img id="modal_picture" src="" alt="Service Picture" style="max-width: 300px; border-radius: 10px;">
+
+        <!-- Right Side: Centered Content -->
+        <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px;">
+            <!-- Title -->
+            <h2 id="modal_title" style="text-align: center;"></h2>
+
+            <!-- Second Row: Duration and Preferred Therapist -->
+            <div style="display: flex; justify-content: space-between; width: 100%; max-width: 350px; gap: 10px;">
+                <div>
+                    <label for="modal_duration">Duration:</label>
+                    <select id="modal_duration" style="padding: 5px; width: 150px;">
+                        <option value="60">60 min</option>
+                        <option value="90">90 min</option>
+                        <option value="120">120 min</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="modal_therapist">Preferred Therapist:</label>
+                    <select id="modal_therapist" style="padding: 5px; width: 150px;">
+                        <option value="no_preference">No Preference</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Third Row: Number of People and Participants -->
+            <div style="display: flex; justify-content: space-between; width: 100%; max-width: 350px; gap: 10px;">
+                <div>
+                    <label for="modal_people_count">Number of People:</label>
+                    <input type="number" id="modal_people_count" min="1" max="10" value="1" style="padding: 5px; width: 150px;">
+                </div>
+                <div>
+                    <label for="modal_participants">Participants:</label>
+                    <select id="modal_participants" style="padding: 5px; width: 150px;">
+                        <option value="single">Single (1 person)</option>
+                        <option value="couple">Couple (2 people)</option>
+                        <option value="group">Group (3+ people)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Empty Row -->
+            <div style="height: 20px;"></div>
+
+            <!-- Price and Next Button Row -->
+            <div style="display: flex; justify-content: space-between; width: 100%; max-width: 350px;">
+                <!-- Base Price -->
+                <p id="modal_price" style="margin: 0; font-weight: bold; color: black; text-align: left;">From 50.00€</p>
+
+                <!-- Next Button -->
+                <button style="background-color: gold; color: black; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Next</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CALENDAR WINDOW -->
+<div id="calendar_modal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); display: none; z-index: 20; width: 80%; max-width: 700px;">
+    <button id="close_calendar_modal" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer;">&times;</button>
+    
+    <!-- Calendar Section -->
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin: 0;">December</h2>
+            <div>
+                <button style="background: none; border: none; font-size: 20px; cursor: pointer;">&#8592;</button>
+                <button style="background: none; border: none; font-size: 20px; cursor: pointer;">&#8594;</button>
+            </div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center;">
+            <!-- Example of a Day -->
+            <div style="color: green;">1</div>
+            <div style="color: red;">2</div>
+            <!-- Add the rest of the days here dynamically -->
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 10px;">
+            <span style="color: green;">● Available</span>
+            <span style="color: red;">● Booked out</span>
+        </div>
+    </div>
+
+    <!-- Timeslot Section -->
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+        <button style="padding: 10px; border: 1px solid #ccc; border-radius: 5px; background: #f0f0f0; cursor: pointer;">8:00 am</button>
+        <button style="padding: 10px; border: 1px solid #ccc; border-radius: 5px; background: #f0f0f0; cursor: pointer;">10:00 am</button>
+        <button style="padding: 10px; border: 1px solid #ccc; border-radius: 5px; background: #f0f0f0; cursor: pointer;">12:00 am</button>
+        <!-- Add more timeslots dynamically -->
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+        <button id="back_to_booking" style="background: #ccc; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Back</button>
+        <button id="pay_button" style="background: gold; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Pay</button>
+    </div>
+</div>
+
+<div id="payment_modal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); display: none; z-index: 20; width: 80%; max-width: 700px;">
+    <button id="close_payment_modal" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer;">&times;</button>
+    <h2 style="margin-bottom: 20px; text-align: center;">Please choose a payment method below</h2>
+    
+    <!-- Cards Section -->
+    <div style="margin-bottom: 20px;">
+        <h3>Cards</h3>
+        <div id="stripe_card_section" style="display: flex; align-items: center; gap: 10px; border: 1px solid #ccc; padding: 10px; border-radius: 5px;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Visa_2021.svg/256px-Visa_2021.svg.png" alt="Visa" style="height: 30px;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Mastercard_2019_logo.svg/256px-Mastercard_2019_logo.svg.png" alt="Mastercard" style="height: 30px;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/American_Express_logo_%282018%29.svg/256px-American_Express_logo_%282018%29.svg.png" alt="Amex" style="height: 30px;">
+        </div>
+        <button id="stripe_pay_button" style="background-color: #6772e5; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px;">Pay with Stripe</button>
+    </div>
+
+    <!-- PayPal Section -->
+    <div style="margin-bottom: 20px;">
+        <h3>Pay with another payment method</h3>
+        <div id="paypal_button_container" style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; text-align: center;">
+            <!-- PayPal Smart Payment Buttons will be rendered here -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span style="color: green; font-size: 12px;">256-bit SSL encrypted</span>
+        <span style="color: #ccc; font-size: 12px;">Securely processed by Global Payments</span>
+    </div>
+</div>
+
+
+
+
+
+<!--===================================================================================================================================================================-->
+
+<!-- JAVASCRIPT FOR BOOKING MODAL-->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const bookButtons = document.querySelectorAll(".book_button");
+        const modalTitle = document.getElementById("modal_title");
+        const modalPicture = document.getElementById("modal_picture");
+        const modalBackground = document.getElementById("modal_background");
+        const bookingModal = document.getElementById("booking_modal");
+        const closeModal = document.getElementById("close_modal");
+        const modalPrice = document.getElementById("modal_price");
+        const modalDuration = document.getElementById("modal_duration");
+        const modalParticipants = document.getElementById("modal_participants");
+        const modalPeopleCount = document.getElementById("modal_people_count");
+
+        // Open Modal
+        bookButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                // Get the picture URL and title from the button's data attributes
+                const servicePicture = button.getAttribute("data-service-picture");
+                const serviceTitle = button.getAttribute("data-service-title");
+                const servicePrice = button.getAttribute("data-service-price");
+
+                // Set the picture and title in the modal
+                modalPicture.src = servicePicture;
+                modalTitle.textContent = serviceTitle;
+                modalPrice.textContent = `From ${servicePrice}€`;
+
+                // Show the modal
+                modalBackground.style.display = "block";
+                bookingModal.style.display = "block";
+            });
+        });
+
+        // Close Modal
+        closeModal.addEventListener("click", () => {
+            modalBackground.style.display = "none";
+            bookingModal.style.display = "none";
+        });
+
+        // Close Modal When Clicking Outside
+        modalBackground.addEventListener("click", () => {
+            modalBackground.style.display = "none";
+            bookingModal.style.display = "none";
+        });
+
+        // Sync Participants with People Count
+        modalParticipants.addEventListener("change", () => {
+            if (modalParticipants.value === "group") {
+                modalPeopleCount.value = Math.max(3, modalPeopleCount.value); // Minimum 3 for groups
+            } else if (modalParticipants.value === "couple") {
+                modalPeopleCount.value = 2;
+            } else {
+                modalPeopleCount.value = 1;
+            }
+        });
+
+        // Sync People Count with Participants
+        modalPeopleCount.addEventListener("change", () => {
+            const people = parseInt(modalPeopleCount.value);
+            if (people >= 3) {
+                modalParticipants.value = "group";
+            } else if (people === 2) {
+                modalParticipants.value = "couple";
+            } else {
+                modalParticipants.value = "single";
+            }
+        });
+    });    
+</script>
+
+<!-- JAVASCRIPT FOR CALENDAR MODAL-->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const bookingModal = document.getElementById("booking_modal");
+        const calendarModal = document.getElementById("calendar_modal");
+        const nextButton = bookingModal.querySelector("button[style*='gold']"); // Next button
+        const closeCalendarModal = document.getElementById("close_calendar_modal");
+        const backToBooking = document.getElementById("back_to_booking");
+
+        // Show the calendar modal and hide the booking modal
+        nextButton.addEventListener("click", () => {
+            bookingModal.style.display = "none"; // Hide the booking modal
+            calendarModal.style.display = "block"; // Show the calendar modal
+        });
+
+        // Close the calendar modal
+        closeCalendarModal.addEventListener("click", () => {
+            calendarModal.style.display = "none";
+        });
+
+        // Go back to the booking modal
+        backToBooking.addEventListener("click", () => {
+            calendarModal.style.display = "none"; // Hide the calendar modal
+            bookingModal.style.display = "block"; // Show the booking modal
+        });
+    });
+</script>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const paymentModal = document.getElementById("payment_modal");
+        const calendarModal = document.getElementById("calendar_modal");
+        const closePaymentModal = document.getElementById("close_payment_modal");
+        const payButton = document.getElementById("pay_button"); // From the calendar modal
+    
+        // Show Payment Modal
+        payButton.addEventListener("click", () => {
+            calendarModal.style.display = "none"; // Hide calendar modal
+            paymentModal.style.display = "block"; // Show payment modal
+        });
+    
+        // Close Payment Modal
+        closePaymentModal.addEventListener("click", () => {
+            paymentModal.style.display = "none";
+        });
+    });    
+</script>
+
+
 {% endblock %}
