@@ -12,7 +12,16 @@ import stripe
 
 # Placeholder views
 def home(request):
-    return render(request, 'customers/home.html')
+    # fetch current customer instance
+    if request.user.is_authenticated:
+        try:
+            customer = Customer.objects.get(user=request.user)
+        except Customer.DoesNotExist:
+            customer = None
+    else:
+        customer = None
+    # render 
+    return render(request, 'customers/home.html', {'customer': customer})
 
 def services(request):
     return render(request, 'customers/services.html')
@@ -146,10 +155,11 @@ def register_confirm(request):
 
 
 def user_login(request):
-    return render(request, 'core/user_login.html', {
+    return render(request, 'core/login.html', {
         'base_template': 'customers/base.html'
     })
 
 def user_logout(request):
     logout(request)
+    print('logged out')
     return redirect('home')

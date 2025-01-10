@@ -75,7 +75,7 @@ def register_confirm(request):
     return render(request, 'therapists/register_confirm.html')
 
 def user_login(request):
-    return render(request, 'core/user_login.html', {
+    return render(request, 'core/login.html', {
         'base_template': 'therapists/base.html'
     })
 

@@ -26,9 +26,9 @@
                 <li><a href="{% url 'therapists:profile' %}">Profile</a></li>
                 <li><a href="{% url 'therapists:register' %}">Sign up</a></li>
                 {% if user.is_authenticated %}
-                    <li><a href="{% url 'therapists:user_logout' %}">Log Out</a></li>
+                    <li><a href="{% url 'therapists:logout' %}">Log Out</a></li>
                 {% else %}
-                    <li><a href="{% url 'therapists:user_login' %}">Log In</a></li>
+                    <li><a href="{% url 'therapists:login' %}">Log In</a></li>
                 {% endif %}
             </ul>
             </div>

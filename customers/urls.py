@@ -14,7 +14,7 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('register_details/', views.register_details, name='register_details'),
     path('register_confirm/', views.register_confirm, name='register_confirm'),
-    path('user_login/', views.user_login, name='user_login'),
-    path('user_logout/', auth_views.LogoutView.as_view(next_page='/'), name='user_logout'),
+    path('login/', views.user_login, name='login'),
+    path('logout/', views.user_logout, name='logout'),
     path('create-checkout-session/', views.create_checkout_session, name='create_checkout_session'),
 ]
