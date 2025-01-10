@@ -131,14 +131,14 @@ def register_details(request):
     if request.method == 'POST':
         form = RegisterDetailsForm(request.POST, request.FILES)  # Pass request.FILES to handle image upload
         if form.is_valid():
-            therapist = form.save(commit=False)  # Save the form but don't commit to the database yet
-            therapist.user = request.user  # Assuming you want to link the therapist to the logged-in user
-            therapist.save()  # Now save the therapist instance
+            customer = form.save(commit=False)  # Save the form but don't commit to the database yet
+            customer.user = request.user  # Assuming you want to link the customer to the logged-in user
+            customer.save()  # Now save the customer instance
             form.save_m2m()  # Save the many-to-many relationships
-            return redirect('therapists:register_confirm')  # Redirect after saving
+            return redirect('customers:register_confirm')  # Redirect after saving
     else:
         form = RegisterDetailsForm()
-    return render(request, 'therapists/register_details.html', {'form': form})
+    return render(request, 'customers/register_details.html', {'form': form})
 
 
 def register_confirm(request):
@@ -149,3 +149,7 @@ def user_login(request):
     return render(request, 'core/user_login.html', {
         'base_template': 'customers/base.html'
     })
+
+def user_logout(request):
+    logout(request)
+    return redirect('home')
