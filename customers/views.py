@@ -37,10 +37,22 @@ def service_detail(request, service_id):
     service = get_object_or_404(Service, id=service_id)
     return render(request, 'customers/service_detail.html', {'service': service})
 
-# Set your secret key from Stripe Dashboard
-stripe.api_key = settings.STRIPE_SECRET_KEY  # Add this key to your settings.py
+
+
+stripe.api_key = settings.STRIPE_SECRET_KEY  # Set your Stripe secret key
 
 def create_checkout_session(request):
+    print("create_checkout_session view called")  # Debug print
+    ...
+
+
+def create_checkout_session(request):
+    print("create_checkout_session view called")  # Debug print statement
+
+    if request.method != 'POST':
+        print("Invalid request method")  # Debug print for invalid method
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+
     try:
         # Create a new Stripe Checkout session
         session = stripe.checkout.Session.create(
@@ -48,9 +60,9 @@ def create_checkout_session(request):
             line_items=[
                 {
                     'price_data': {
-                        'currency': 'usd20',  # Replace with your currency
+                        'currency': 'usd',  # Replace with your valid currency code
                         'product_data': {
-                            'name': 'Your Service Name',  # Replace with the dynamic service name
+                            'name': 'Your Service Name',  # Replace dynamically if needed
                         },
                         'unit_amount': 5000,  # Amount in cents (e.g., $50.00)
                     },
@@ -58,12 +70,16 @@ def create_checkout_session(request):
                 },
             ],
             mode='payment',
-            success_url='http://127.0.0.1:8000/success/',
-            cancel_url='http://127.0.0.1:8000/cancel/',
+            success_url='http://127.0.0.1:8000/success/',  # Adjust to match your success page
+            cancel_url='http://127.0.0.1:8000/cancel/',    # Adjust to match your cancel page
         )
+        print(f"Checkout session created: {session.id}")  # Debug print for successful session creation
         return JsonResponse({'id': session.id})
     except Exception as e:
-        return JsonResponse({'error': str(e)})
+        print(f"Error creating checkout session: {e}")  # Debug print for exceptions
+        return JsonResponse({'error': str(e)}, status=400)
+
+
 
 
 

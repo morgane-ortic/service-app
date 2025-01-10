@@ -4,6 +4,7 @@
 
 {% block content %}
 <div class="page_content" style="margin-top: 60px;">
+    {% csrf_token %}
     <h1>Bookings</h1>
     <p>Our team of professional practitioners offers top-tier relaxation and rejuvenation. From full-body massages to facials, manicures, and pedicures, we have a range of services to choose from. Explore our options and book your appointment for the ultimate relaxation.</p>
     
@@ -311,49 +312,61 @@
         const calendarModal = document.getElementById("calendar_modal");
         const closePaymentModal = document.getElementById("close_payment_modal");
         const payButton = document.getElementById("pay_button"); // From the calendar modal
-    
+        const stripePayButton = document.getElementById("stripe_pay_button"); // Stripe pay button inside payment modal
+
+        // Initialize Stripe
+        const stripe = Stripe('pk_test_51QfanDL2WsViswULccd4To2itF8MFURItNqzarLl6E1x5G7oS6aAMq9ItT0HmQMtyP3bDkh3xXtlKhCr49Ux1Z0E00mp1KFLCj');
+
         // Show Payment Modal
         payButton.addEventListener("click", () => {
             calendarModal.style.display = "none"; // Hide calendar modal
             paymentModal.style.display = "block"; // Show payment modal
         });
-    
+
         // Close Payment Modal
         closePaymentModal.addEventListener("click", () => {
             paymentModal.style.display = "none";
         });
-    });    
-</script>
 
-<!-- JAVASCRIPT FOR STRIPE PAYMENTS-->
-<script>
-    const stripe = Stripe('your-publishable-key-here'); // Replace with your Stripe Publishable Key
+        // Stripe Payment Handler
+        stripePayButton.addEventListener("click", () => {
+            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value; // Get CSRF token
 
-    document.getElementById('stripe_pay_button').addEventListener('click', () => {
-        fetch('/create-checkout-session/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    alert(data.error); // Show error message if something goes wrong
-                } else {
-                    return stripe.redirectToCheckout({ sessionId: data.id });
-                }
+            // Fetch the Stripe Checkout session
+            fetch('/customers/create-checkout-session/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken,
+                },
+                credentials: 'same-origin',
             })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
+            
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to create Stripe Checkout session.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error); // Display error message
+                    } else {
+                        return stripe.redirectToCheckout({ sessionId: data.id }); // Redirect to Stripe Checkout
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Something went wrong while processing your payment.');
+                });
+        });
     });
 </script>
 
 
 
+
 {% endblock %}
 
-
-<script src="{% static 'customers/stripe.js' %}"></script>
-<script src="https://js.stripe.com/v3/"></script> <!-- Include the Stripe.js library -->
+<script src="https://js.stripe.com/v3/"></script>
+<script src="{% static 'js/stripe.js' %}"></script>
