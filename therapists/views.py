@@ -81,7 +81,7 @@ def user_login(request):
         if form.is_valid():
             user = form.get_user()  # Get the authenticated user from the form
             login(request, user)
-            return redirect('therapists:home')
+            return redirect('home')
         else:
             form.add_error(None, 'Invalid email or password')
     else:
@@ -93,7 +93,7 @@ def user_login(request):
 
 def user_logout(request):
     logout(request)
-    return redirect('therapists:home')
+    return redirect('home')
 
 def customer_profile(request):
     return render(request, 'customer_profile/profile.html')
