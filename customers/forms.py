@@ -38,3 +38,10 @@ class RegisterDetailsForm(forms.ModelForm):
             'gender': 'Your gender',
             'description': 'Description'
         }
+
+    def __init__(self, *args, **kwargs):
+        '''Sets the following fields as optional'''
+        super(RegisterDetailsForm, self).__init__(*args, **kwargs)
+        self.fields['gender'].required = False
+        self.fields['description'].required = False
+        self.fields['picture'].required = False
