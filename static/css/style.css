@@ -116,10 +116,10 @@ main {
 
 .page_content{
 
-  max-width: 900px;
+  max-width: 1140px;
   min-width: 600px;
   min-height: 318px;
-  width: 900px;
+  width: 1140px;
   height: auto;
   align-self: flex-start;
 
@@ -169,6 +169,7 @@ button[type="submit"]:hover {
 
 .page_content h1 {
   font-family: sans-serif;
+  text-align: center;
   color: black;
   font-size: 28px;
 }
