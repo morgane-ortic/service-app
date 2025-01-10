@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<div class="service_detail" style="display: flex; flex-direction: column; align-items: flex-start; margin: 60px 20px 20px;">
+<div class="service_detail" style="display: flex; flex-direction: column; align-items: flex-start; justify-content: center; margin: 0 20px; position: absolute; top: 53%; transform: translateY(-50%);">
     <!-- Header Section with Back Button and Centered Service Name -->
     <div style="display: flex; align-items: center; justify-content: flex-start; width: 100%; margin-bottom: 20px;">
         <button 
@@ -15,39 +15,133 @@
         </h1>
     </div>
 
-    <div class="service_content" style="display: flex; gap: 20px; align-items: flex-start; margin-top: 20px;">
-        <!-- Left Column: Image with Booking Elements -->
-        <div style="flex: 1; max-width: 400px;">
+    <!-- Picture and Description on the Same Row -->
+    <div class="service_content" style="display: flex; justify-content: space-between; width: 100%; margin-bottom: 20px;">
+        <!-- Left Column: Image -->
+        <div style="flex: 1; max-width: 400px; display: flex; justify-content: center; align-items: center;">
             <img src="{{ service.picture.url }}" alt="{{ service.name }}" style="max-width: 100%; border-radius: 10px;">
-            <form method="GET" action="#" style="margin-top: 20px;">
-                <label for="length" style="display: block; font-weight: bold; margin-bottom: 10px;">
-                    Select Length:
-                </label>
-                <select id="length" name="length" onchange="updatePrice(this)" style="padding: 5px; display: block; width: 100%; max-width: 200px;">
-                    {% for length, price in service.service_lengths %}
-                    <option value="{{ price }}">{{ length }} minutes</option>
-                    {% endfor %}
-                </select>
-                <p id="price" style="margin-top: 10px; font-weight: bold;">
-                    Price: {{ service.base_price }}€
-                </p>
-                <button type="submit" style="background-color: rgb(216, 107, 222); color: white; border: none; border-radius: 5px; padding: 10px 20px; font-size: 14px; cursor: pointer; margin-top: 10px;">
-                    Book Now
-                </button>
-            </form>
         </div>
-        
+
         <!-- Right Column: Description -->
-        <div class="service_info" style="flex: 1; text-align: left; max-width: 400px;">
+        <div class="service_info" style="flex: 1; max-width: 400px; margin-left: 20px;">
             <p>{{ service.description }}</p>
         </div>
+    </div>
+
+    <!-- Other Components Below -->
+    <div style="flex: 1; width: 100%;">
+        <form method="GET" action="#" style="margin-top: 20px; width: 100%;">
+            <!-- Container for Labels -->
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; width: 100%;">
+                <div style="flex: 1; text-align: center;">
+                    <label for="length" style="font-weight: bold;">
+                        Duration:
+                    </label>
+                </div>
+                <div style="flex: 1; text-align: center;">
+                    <label for="customers" style="font-weight: bold;">
+                        Participants:
+                    </label>
+                </div>
+                <div style="flex: 1; text-align: center;">
+                    <label for="groupSize" style="font-weight: bold;">
+                        Number of People:
+                    </label>
+                </div>
+                <div style="flex: 1; text-align: center;">
+                    <span style="font-weight: bold;">
+                        
+                    </span>
+                </div>
+                <div style="flex: 1; text-align: center;">
+                    <span style="font-weight: bold;">
+                        
+                    </span>
+                </div>
+            </div>
+
+            <!-- Row for Inputs and Price/Booking -->
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; width: 100%;">
+                <select id="length" name="length" onchange="updatePrice()" style="padding: 5px; flex: 1; max-width: 180px;">
+                    {% for length, prices in service.service_lengths %}
+                    <option value="{{ length }}">{{ length }} minutes</option>
+                    {% endfor %}
+                </select>
+
+                <select id="customers" name="customers" onchange="syncGroupSizeWithDropdown()" style="padding: 5px; flex: 1; max-width: 180px;">
+                    <option value="single">Single (1 person)</option>
+                    <option value="couple">Couple (2 people)</option>
+                    <option value="group">Group (3+ people)</option>
+                </select>
+
+                <input type="number" id="groupSize" name="groupSize" min="1" max="10" value="1" style="padding: 5px; flex: 1; max-width: 180px;" onchange="updateParticipantsDropdown()">
+
+                <p id="price" style="font-weight: bold; margin: 0; flex: 1; text-align: center; max-width: 180px;">Price: {{ service.base_price }}€</p>
+
+                <button type="submit" style="background-color: rgb(216, 107, 222); color: white; border: none; border-radius: 5px; padding: 10px 20px; font-size: 14px; cursor: pointer; flex: 1; max-width: 180px;">
+                    Book Now
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
 <script>
-function updatePrice(selectElement) {
-    const priceDisplay = document.getElementById('price');
-    priceDisplay.textContent = 'Price: ' + selectElement.value + '€';
-}
+    const serviceLengths = {{ service.service_lengths|safe }};  // Pass service_lengths as JSON
+
+    function updatePrice() {
+        const length = document.getElementById('length').value;
+        const customers = document.getElementById('customers').value;
+        const groupSize = document.getElementById('groupSize').value;
+        const priceDisplay = document.getElementById('price');
+
+        let basePrice = 0;
+
+        // Find the selected duration's prices
+        const lengthEntry = serviceLengths.find(item => item[0] === length);
+
+        if (lengthEntry) {
+            const prices = lengthEntry[1];  // {single, couple, group}
+
+            if (customers === 'group') {
+                basePrice = prices.couple + (prices.single * 0.6) * (groupSize - 2);
+            } else if (customers === 'couple') {
+                basePrice = prices.couple;
+            } else {
+                basePrice = prices.single;
+            }
+        }
+
+        // Update the displayed price
+        priceDisplay.textContent = `Price: ${basePrice.toFixed(2)}€`;
+    }
+
+    function updateParticipantsDropdown() {
+        const groupSize = parseInt(document.getElementById('groupSize').value);
+
+        if (groupSize >= 3) {
+            document.getElementById('customers').value = 'group';
+        } else if (groupSize === 2) {
+            document.getElementById('customers').value = 'couple';
+        } else {
+            document.getElementById('customers').value = 'single';
+        }
+
+        updatePrice();
+    }
+
+    function syncGroupSizeWithDropdown() {
+        const customers = document.getElementById('customers').value;
+
+        if (customers === 'group') {
+            document.getElementById('groupSize').value = 3;
+        } else if (customers === 'couple') {
+            document.getElementById('groupSize').value = 2;
+        } else {
+            document.getElementById('groupSize').value = 1;
+        }
+
+        updatePrice();
+    }
 </script>
 {% endblock %}
