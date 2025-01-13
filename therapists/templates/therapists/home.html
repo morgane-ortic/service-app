@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="page_content">
-        <h1>Welcome, therapist!</h1>
+        <h1>Welcome {{ therapist.name }}!</h1>
         <div class="home_buttons">
             <a href="{% url 'therapists:schedule' %}"><button type="button">Go to your Schedule</button></a>
             <a href="{% url 'therapists:settings' %}"><button type="button">Change Availability</button></a>

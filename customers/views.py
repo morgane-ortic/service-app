@@ -1,6 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.models import User
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
+from .models import Customer
 from core.models import Service, ServiceType
-from .forms import RegisterDetailsForm
+from .forms import RegisterForm, RegisterDetailsForm
+from core.forms import LoginForm
 from django.conf import settings
 from django.http import JsonResponse
 import stripe
@@ -8,7 +13,16 @@ import stripe
 
 # Placeholder views
 def home(request):
-    return render(request, 'customers/home.html')
+    # fetch current customer instance
+    if request.user.is_authenticated:
+        try:
+            customer = Customer.objects.get(user=request.user)
+        except Customer.DoesNotExist:
+            customer = None
+    else:
+        customer = None
+    # render 
+    return render(request, 'customers/home.html', {'customer': customer})
 
 def services(request):
     service_type_name = request.GET.get('service_type', 'all')
@@ -98,30 +112,64 @@ def about(request):
         'base_template': 'customers/base.html'
     })
 
-def contact(request):
-    return render(request, 'core/contact.html', {
-        'base_template': 'customers/base.html'
-    })
 
 def register(request):
-    return render(request, 'customers/register.html')
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            # Create and save the User instance
+            user = User.objects.create_user(
+                username=email,  # Use email as username
+                email=email,
+                password=password
+            )
+            # Log in the user
+            login(request, user)
+            return redirect('customers:register_details')  # Ensure this matches the name in urls.py
+    else:
+        form = RegisterForm()
+    return render(request, 'customers/register.html', {'form': form})
 
+
+@login_required
 def register_details(request):
-    
     if request.method == 'POST':
         form = RegisterDetailsForm(request.POST, request.FILES)  # Pass request.FILES to handle image upload
         if form.is_valid():
-            form.save()  # Save the user profile, including the image
-            return redirect('registration_confirm')  # Redirect after saving
+            customer = form.save(commit=False)  # Save the form but don't commit to the database yet
+            customer.user = request.user  # Assuming you want to link the customer to the logged-in user
+            customer.save()  # Now save the customer instance
+            form.save_m2m()  # Save the many-to-many relationships
+            return redirect('customers:register_confirm')  # Redirect after saving
     else:
         form = RegisterDetailsForm()
-
     return render(request, 'customers/register_details.html', {'form': form})
+
 
 def register_confirm(request):
     return render(request, 'customers/register_confirm.html')
 
-def login(request):
+
+def user_login(request):
+    if request.method == 'POST':
+        form = LoginForm(request, data=request.POST)  # Pass request and data to the form
+        if form.is_valid():
+            user = form.get_user()  # Get the authenticated user from the form
+            login(request, user)
+            return redirect('home')
+        else:
+            form.add_error(None, 'Invalid email or password')
+    else:
+        form = LoginForm()
     return render(request, 'core/login.html', {
-        'base_template': 'customers/base.html'
+        'base_template': 'customers/base.html',
+        'form': form
     })
+
+
+def user_logout(request):
+    logout(request)
+    print('logged out')
+    return redirect('home')

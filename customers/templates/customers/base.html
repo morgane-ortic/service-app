@@ -20,16 +20,17 @@
         <nav>
             <div class="menu">
             <ul>
-                <li><a href="{% url 'customers:services' %}">Services</a></li>
-                <li><a href="{% url 'customers:bookings' %}">Bookings</a></li>
-                <li><a href="{% url 'customers:about' %}">About</a></li>
-                <li><a href="{% url 'customers:contact' %}">Contact</a></li>
-                <li><a href="{% url 'customers:profile' %}">Profile</a></li>
-                <li><a href="{% url 'customers:register' %}">Sign up</a></li>
                 {% if user.is_authenticated %}
+                    <li><a href="{% url 'customers:services' %}">Services</a></li>
+                    <li><a href="{% url 'customers:bookings' %}">Bookings</a></li>
+                    <li><a href="{% url 'customers:about' %}">About</a></li>
+                    <li><a href="{% url 'customers:profile' %}">Profile</a></li>
                     <li><a href="{% url 'customers:logout' %}">Log Out</a></li>
                 {% else %}
+                    <li><a href="{% url 'customers:services' %}">Services</a></li>
+                    <li><a href="{% url 'customers:about' %}">About</a></li>
                     <li><a href="{% url 'customers:login' %}">Log In</a></li>
+                    <li><a href="{% url 'customers:register' %}">Sign up</a></li>
                 {% endif %}
             </ul>
             </div>
@@ -42,5 +43,6 @@
             {% endblock %}
             </div>
         </main>
+        <footer> <p>Background image designed by <a href="https://www.freepik.com" target="_blank">Freepik</a></p> 
 </body>
 </html>
