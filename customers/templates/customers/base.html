@@ -24,10 +24,11 @@
                     <li><a href="{% url 'customers:services' %}">Services</a></li>
                     <li><a href="{% url 'customers:bookings' %}">Bookings</a></li>
                     <li><a href="{% url 'customers:about' %}">About</a></li>
-                    <li><a href="{% url 'customers:contact' %}">Contact</a></li>
                     <li><a href="{% url 'customers:profile' %}">Profile</a></li>
                     <li><a href="{% url 'customers:logout' %}">Log Out</a></li>
                 {% else %}
+                    <li><a href="{% url 'customers:services' %}">Services</a></li>
+                    <li><a href="{% url 'customers:about' %}">About</a></li>
                     <li><a href="{% url 'customers:login' %}">Log In</a></li>
                     <li><a href="{% url 'customers:register' %}">Sign up</a></li>
                 {% endif %}

@@ -110,11 +110,6 @@ def about(request):
         'base_template': 'customers/base.html'
     })
 
-def contact(request):
-    return render(request, 'core/contact.html', {
-        'base_template': 'customers/base.html'
-    })
-
 
 def register(request):
     if request.method == 'POST':

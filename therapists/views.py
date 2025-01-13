@@ -30,11 +30,6 @@ def about(request):
         'base_template': 'therapists/base.html'
     })
 
-def contact(request):
-    return render(request, 'core/contact.html', {
-        'base_template': 'therapists/base.html'
-    })
-
 def profile(request, section='personal_details'):
     return render(request, 'therapists/profile.html', {
         'base_template': 'therapists/base.html',
