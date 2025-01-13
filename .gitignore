@@ -92,5 +92,6 @@ db.env
 db.sqlite3
 
 /working_files.env
+working_files/
 customer_pictures/
 therapist_pictures/
