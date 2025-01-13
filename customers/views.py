@@ -24,11 +24,11 @@ def home(request):
     # render 
     return render(request, 'customers/home.html', {'customer': customer})
 
-def services(request):
-    return render(request, 'customers/services.html')
-
-
 def bookings(request):
+    return render(request, 'customers/bookings.html')
+
+
+def services(request):
     service_type_name = request.GET.get('service_type', 'all')
     if service_type_name == 'all':
         services = Service.objects.all()
@@ -41,7 +41,7 @@ def bookings(request):
 
     service_types = ServiceType.objects.all()
 
-    return render(request, 'customers/bookings.html', {
+    return render(request, 'customers/services.html', {
         'services': services,
         'service_types': service_types,
         'selected_type': service_type_name,
