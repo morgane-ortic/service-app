@@ -57,7 +57,6 @@ class ProDetailsForm(forms.ModelForm):
         model = Therapist
         fields = ['number_of_customers', 'years_xp', 'equipment_pref']
         widgets = {
-            'number_of_customers': forms.SelectMultiple(attrs={'class': 'select-field'}),
             'equipment_pref': forms.Textarea(attrs={'placeholder': 'Enter your equipment preferences', 'class': 'input-field', 'rows': 8, 'cols': 72}),
         }
 

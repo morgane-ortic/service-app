@@ -99,16 +99,25 @@ def register_details(request):
         pro_form = ProDetailsForm(request.POST)
         
         if personal_form.is_valid() and pro_form.is_valid():
-            # Save the personal details form
-            therapist = personal_form.save(commit=False)
-            therapist.user = request.user 
-            therapist.save()
-            personal_form.save_m2m()  # Save the many-to-many relationships
+            # Combine data from both forms
+            therapist_data = {
+                'user': request.user,
+                'name': personal_form.cleaned_data['name'],
+                'gender': personal_form.cleaned_data['gender'],
+                'description': personal_form.cleaned_data['description'],
+                'address': personal_form.cleaned_data['address'],
+                'phone_number': personal_form.cleaned_data['phone_number'],
+                'picture': personal_form.cleaned_data['picture'],
+                'years_xp': pro_form.cleaned_data['years_xp'],
+                'equipment_pref': pro_form.cleaned_data['equipment_pref'],
+            }
             
-            # Save the professional details form
-            pro_details = pro_form.save(commit=False)
-            pro_details.therapist = therapist  # Link the professional details to the therapist
-            pro_details.save()
+            # Create and save the Therapist instance
+            therapist = Therapist.objects.create(**therapist_data)
+            
+            # Save the many-to-many relationships
+            therapist.number_of_customers.set(pro_form.cleaned_data['number_of_customers'])
+            
             return redirect('therapists:register_confirm')  # Redirect after saving
     else:
         personal_form = PersonalDetailsForm()
@@ -116,7 +125,6 @@ def register_details(request):
     return render(request, 'therapists/register_details.html', {
         'personal_form': personal_form,
         'pro_form': pro_form,
-        'empty_form': EmptyForm
     })
 
 
