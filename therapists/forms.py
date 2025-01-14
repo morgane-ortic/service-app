@@ -25,23 +25,16 @@ class RegisterForm(forms.ModelForm):
         return cleaned_data
 
 # Registration detailed form
-class RegisterDetailsForm(forms.ModelForm):
-    number_of_customers = forms.ModelMultipleChoiceField(
-        queryset=NumberOfCustomers.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
-        required=True  # Ensure that this field is required
-    )
-    
+class PersonalDetailsForm(forms.ModelForm):
     class Meta:
         model = Therapist
-        fields = ['name', 'gender', 'description', 'address', 'phone_number', 'picture', 'years_xp', 'number_of_customers']
+        fields = ['name', 'gender', 'description', 'address', 'phone_number', 'picture']
         widgets = {
             'name': forms.TextInput(attrs={'placeholder': 'Enter your full name', 'class': 'input-field'}),
             'gender': forms.Select(attrs={'class': 'select-field'}),
-            'description': forms.Textarea(attrs={'placeholder': 'A short description of yourself', 'class': 'input-field', 'rows': 8, 'cols': 40}),
-            'address': forms.Textarea(attrs={'placeholder': 'Enter your address', 'class': 'input-field', 'rows': 5, 'cols': 40}),
+            'description': forms.Textarea(attrs={'placeholder': 'A short description of yourself', 'class': 'input-field', 'rows': 8, 'cols': 42}),
+            'address': forms.Textarea(attrs={'placeholder': 'Enter your address', 'class': 'input-field', 'rows': 4, 'cols': 36}),
             'phone_number': forms.TextInput(attrs={'placeholder': 'Enter your phone number', 'class': 'input-field'}),
-            'number_of_customers': forms.SelectMultiple(attrs={'class': 'select-field'}),
 
         }
         labels = {
@@ -50,13 +43,30 @@ class RegisterDetailsForm(forms.ModelForm):
             'description': 'Description',
             'address': 'Address',
             'phone_number': 'Phone Number',
-            'years_xp': 'Years of Experience',
-            'number_of_customers': 'Number of Customers' 
         }
 
-    def __init__(self, *args, **kwargs):
-        '''Sets the following fields as optional'''
-        super(RegisterDetailsForm, self).__init__(*args, **kwargs)
-        self.fields['gender'].required = False
-        self.fields['address'].required = False
-        self.fields['phone_number'].required = False
+
+class ProDetailsForm(forms.ModelForm):
+    number_of_customers = forms.ModelMultipleChoiceField(
+        queryset=NumberOfCustomers.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=True  # Ensure that this field is required
+    )
+    
+    class Meta:
+        model = Therapist
+        fields = ['number_of_customers', 'years_xp', 'equipment_pref']
+        widgets = {
+            'equipment_pref': forms.Textarea(attrs={'placeholder': 'Enter your equipment preferences', 'class': 'input-field', 'rows': 8, 'cols': 72}),
+        }
+
+        labels = {
+            'number_of_customers': 'Number of Customers' ,
+            'years_xp': 'Years of Experience',
+            'equipment_pref': 'Equipment Preferences'
+        }
+
+
+# Empty placeholder form
+class EmptyForm(forms.Form):
+    pass

@@ -1,206 +1,3 @@
-<<<<<<< HEAD
-body {
-  margin-left: auto;
-  margin-right: auto;
-  min-width: 600px;
-}
-
-header {
-
-
-    /* define margins and paddings around the header: */
-    margin-right: auto;
-    margin-left: auto;
-    padding: 0 30px 0 30px;
-  
-    /* define the header background color: */
-    background-color: white;
-  
-    /* declare flex: */
-    display: flex;
-  
-    /* position elements of the header */
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-end;
-    flex-wrap: wrap;
-  }
-
-  .menu ul {
-    list-style-type: none;
-    gap: 2em;
-    /* declare flex: */
-    display: flex;
-  
-    /* define that the content will be displayed horizontally: */
-    flex-direction: row;
-  
-    /* define spacing between navigation elements: */
-    justify-content: space-around;
-  }
-  
-  .menu a {
-    /* style the font of the navigation elements */
-    font-family: sans-serif;
-    font-size: 18px;
-    color: black;
-    text-decoration: none;
-  }
-
-  .menu a:hover{
-    color: rgb(216 107 222);
-    font-weight: bold;  
-  }
-
-main {
-  background-image: url("../img/main_background.jpg");
-  background-size: cover;
-  min-width: 600px;
-  min-height: 100vh;
-  height: 100vh; 
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-
-  /* define main background color */
-  background-color: white;
-}
-
-.main_content {
-  max-width: 1500px;
-  min-width: 900px;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
-
-.main_content a {
-  color: rgb(216 107 222);
- }
-
-.sidebar {
-  margin-top: 30px;
-  width: 300px;
-  flex-shrink: 0;
-  border-radius: 10px;
-  background-color:  rgba(255, 255, 255, 0.8);
-}
-
-.sidebar ul {
-  margin-top: 0px;
-  padding-top: 30px;
-  padding-bottom: 30px;
-  list-style-type: none;
-  gap: 1.5em;
-  /* declare flex: */
-  display: flex;
-
-  /* define that the content will be displayed vertically: */
-  flex-direction: column;
-
-  /* define spacing between navigation elements: */
-  justify-content: space-around;
-}
-
-.sidebar a {
-  /* style the font of the navigation elements */
-  font-family: sans-serif;
-  font-size: 20px;
-  color: black;
-  text-decoration: none;
-}
-
-.sidebar a:hover{
-  color: rgb(216 107 222);
-  font-weight: bold;  
-}
-
-.page_content{
-
-  max-width: 900px;
-  min-width: 600px;
-  min-height: 318px;
-  width: 900px;
-  height: auto;
-  align-self: flex-start;
-
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-
-  padding: 0 30px 30px;
-  margin: 30px 0 30px 30px;
-  border-radius: 15px;
-
-  background-color:  rgba(255, 255, 255, 0.8);
-}
-
-p, label {
-  text-align: justify;
-  font-family: sans-serif;
-  font-size:medium;
-  line-height: 1.4;
-  color: black;
-}
-
-button[type="submit"] {
-  margin: 10px 0 10px;
-
-  background-color: silver;
-  color: black;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-button[type="submit"]:hover {
-  background-color: #fd7bf7;
-}
-
-.page_content h1 {
-  font-family: sans-serif;
-  color: black;
-  font-size: 28px;
-}
-
-.page_content h2 {
-  font-family: sans-serif;
-  color: black;
-  font-size: 24px;
-}
-
-label {
-  display: block;
-  margin-bottom: 8px;
-  color: #555;
-}
-
-.home_buttons {
-  display: flex; /* Enable Flexbox for the container */
-  justify-content: center; /* Center the buttons horizontally */
-  gap: 60px; /* Add space between the buttons */
-}
-
-.home_buttons button {
-  width: 240px;
-
-  padding: 10px;
-
-  text-align: center;
-  font-family: sans-serif;
-  font-size: 20px;
-  font-weight: bold; 
-  text-decoration: none
-}
-
-footer p {
-  text-align: center;
-  font-size: 12px;
-}
-
-=======
 body {
   margin-left: auto;
   margin-right: auto;
@@ -349,13 +146,28 @@ main {
   border-radius: 15px;
 }
 
-.default_form {
+form {
+  text-align: center;
+}
+
+.form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, auto));
   gap: 0 24px; /* Add space between grid items */
   width: auto; /* Ensure the form takes the full width of the parent */
-  box-sizing: border-box; /* Include padding and border in the element's total width and height */
-  justify-content: center;
+  box-sizing: border-box;; /* Include padding and border in the element's total width and height */
+  justify-content: start; /* Align items to the left */
+  justify-items: start; /* Align items within their grid area to the start (left) */
+  align-items: start; /* Align items to the start of their grid area */
+  text-align: left; /* Ensure text inside the grid items is aligned to the left */
+}
+
+.form-grid p {
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  
+  text-align: left; /* Ensure text inside the <p> elements is aligned to the left */
+  width: 100%; /* Ensure the <p> elements take the full width of the grid item */
 }
 
 p, label {
@@ -364,6 +176,14 @@ p, label {
   font-size:medium;
   line-height: 1.4;
   color: black;
+}
+
+.helptext,
+li
+{
+  text-align: justify;
+  font-family: sans-serif;
+  font-size: small;
 }
 
 button[type="submit"] {
@@ -424,4 +244,3 @@ footer p {
   font-size: 12px;
 }
 
->>>>>>> 9f9de84ee02e82ff27984ae7781aa155bd3ce490

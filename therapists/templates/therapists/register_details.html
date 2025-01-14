@@ -1,41 +1,24 @@
-<<<<<<< HEAD
 {% extends './base.html' %}
 
 {% block content %}
     <div class="page_content">
         <h1>Complete Your Profile</h1>
-
+        
         <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            
-            <!-- Render form fields -->
-            {{ form.as_p }}  <!-- Render form fields as paragraphs -->
-
-            <!-- Submit Button -->
-            <button type="submit">Submit</button>
+            <div class="form-grid">
+                {% csrf_token %}
+                
+                <!-- Render personal details form fields -->
+                {{ personal_form.as_p }}
+                
+                <!-- Render professional details form fields -->
+                {{ pro_form.as_p }}
+            </div>
+                <!-- Submit Button -->
+                <button class="submit_button" type="submit">Submit</button>
         </form>
         
     </div>
 
 
-=======
-{% extends './base.html' %}
-
-{% block content %}
-    <div class="page_content">
-        <h1>Complete Your Profile</h1>
-        
-        <form class="default_form" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            
-            <!-- Render form fields -->
-            {{ form.as_p }}  <!-- Render form fields as paragraphs -->
-            <!-- Submit Button -->
-            <button class="submit_button" type="submit">Submit</button>
-        </form>
-        
-    </div>
-
-
->>>>>>> 9f9de84ee02e82ff27984ae7781aa155bd3ce490
 {% endblock %}
