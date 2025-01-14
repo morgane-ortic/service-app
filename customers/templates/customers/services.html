@@ -21,6 +21,30 @@
                 </li>
                 {% endfor %}
             </ul>
+
+            <!-- New: Dropdown menus under the sidebar -->
+            <div style="margin-top: 20px;">
+                <!-- Country Dropdown -->
+                <label for="countrySelect" style="display: block; margin-bottom: 5px;">Select Country</label>
+                <select id="countrySelect" style="padding: 5px; width: 100%;">
+                    <option value="">🇩🇪 Germany</option>
+                </select>
+
+                <!-- City Dropdown -->
+                <label for="citySelect" style="display: block; margin-top: 15px; margin-bottom: 5px;">Select City</label>
+                <select id="citySelect" style="padding: 5px; width: 100%;">
+                    <option value="Berlin">Berlin</option>
+                    <option value="Hamburg">Hamburg</option>
+                    <option value="Munich">Munich</option>
+                    <option value="Cologne">Cologne</option>
+                    <option value="Frankfurt">Frankfurt</option>
+                    <option value="Stuttgart">Stuttgart</option>
+                    <option value="Düsseldorf">Düsseldorf</option>
+                    <option value="Leipzig">Leipzig</option>
+                    <option value="Dortmund">Dortmund</option>
+                    <option value="Essen">Essen</option>
+                </select>
+            </div>
         </aside>
 
         <!-- Right Column: All Products -->
@@ -56,6 +80,8 @@
         </div>
     </div>
 </div>
+
+
 
 
 <!-- Modal Background -->
@@ -169,27 +195,13 @@
 <!-- PAYMENT WINDOW -->
 <div id="payment_modal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); display: none; z-index: 20; width: 80%; max-width: 700px;">
     <button id="close_payment_modal" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer;">&times;</button>
-    <h2 style="margin-bottom: 20px; text-align: center;">Please choose a payment method below</h2>
-    
-    <!-- Cards Section -->
-    <div style="margin-bottom: 20px;">
-        <h3>Cards</h3>
-        <div id="stripe_card_section" style="display: flex; align-items: center; gap: 10px; border: 1px solid #ccc; padding: 10px; border-radius: 5px;">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Visa_2021.svg/256px-Visa_2021.svg.png" alt="Visa" style="height: 30px;">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Mastercard_2019_logo.svg/256px-Mastercard_2019_logo.svg.png" alt="Mastercard" style="height: 30px;">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/American_Express_logo_%282018%29.svg/256px-American_Express_logo_%282018%29.svg.png" alt="Amex" style="height: 30px;">
-        </div>
-        <button id="stripe_pay_button" style="background-color: #6772e5; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px;">
+    <h2 style="margin-bottom: 20px; text-align: center;">Stripe Payment</h2>
+
+    <!-- Stripe Payment Button -->
+    <div style="text-align: center; margin-bottom: 20px;">
+        <button id="stripe_pay_button" style="background-color: #6772e5; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px;">
             Pay with Stripe
         </button>
-    </div>
-
-    <!-- PayPal Section -->
-    <div style="margin-bottom: 20px;">
-        <h3>Pay with another payment method</h3>
-        <div id="paypal_button_container" style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; text-align: center;">
-            <!-- PayPal Smart Payment Buttons will be rendered here -->
-        </div>
     </div>
 
     <!-- Footer -->
@@ -197,8 +209,10 @@
         <span style="color: green; font-size: 12px;">256-bit SSL encrypted</span>
         <span style="color: #ccc; font-size: 12px;">Securely processed by Global Payments</span>
     </div>
-    
 </div>
+
+
+
 
 
 
@@ -279,52 +293,79 @@
 <!-- JAVASCRIPT FOR CALENDAR MODAL-->
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        const bookingModal = document.getElementById("booking_modal");
         const calendarModal = document.getElementById("calendar_modal");
-        const nextButton = bookingModal.querySelector("button[style*='gold']"); // Next button
+        const bookingModal = document.getElementById("booking_modal");
+        const modalBackground = document.getElementById("modal_background");
         const closeCalendarModal = document.getElementById("close_calendar_modal");
+        const nextButton = bookingModal.querySelector("button[style*='gold']");
         const backToBooking = document.getElementById("back_to_booking");
 
-        // Show the calendar modal and hide the booking modal
+        // Open Calendar Modal
         nextButton.addEventListener("click", () => {
-            bookingModal.style.display = "none"; // Hide the booking modal
-            calendarModal.style.display = "block"; // Show the calendar modal
+            bookingModal.style.display = "none"; // Hide Booking Modal
+            calendarModal.style.display = "block"; // Show Calendar Modal
+            modalBackground.style.display = "block"; // Show Background Overlay
         });
 
-        // Close the calendar modal
+        // Close Calendar Modal
         closeCalendarModal.addEventListener("click", () => {
             calendarModal.style.display = "none";
+            modalBackground.style.display = "none"; // Hide Background Overlay
         });
 
-        // Go back to the booking modal
+        // Close Calendar Modal when clicking outside
+        modalBackground.addEventListener("click", () => {
+            calendarModal.style.display = "none";
+            modalBackground.style.display = "none";
+        });
+
+        // Go Back to Booking Modal
         backToBooking.addEventListener("click", () => {
-            calendarModal.style.display = "none"; // Hide the calendar modal
-            bookingModal.style.display = "block"; // Show the booking modal
+            calendarModal.style.display = "none"; // Hide Calendar Modal
+            bookingModal.style.display = "block"; // Show Booking Modal
         });
     });
 </script>
 
-<!-- JAVASCRIPT FOR PAYMENTS WINDOW-->
+
+<!-- JAVASCRIPT FOR PAYMENTS WINDOW -->
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const paymentModal = document.getElementById("payment_modal");
         const calendarModal = document.getElementById("calendar_modal");
         const closePaymentModal = document.getElementById("close_payment_modal");
-        const payButton = document.getElementById("pay_button"); // From the calendar modal
+        const payButton = document.getElementById("pay_button"); // Button to trigger payment modal
         const stripePayButton = document.getElementById("stripe_pay_button"); // Stripe pay button inside payment modal
+        const modalBackground = document.getElementById("modal_background"); // Reference to modal background
 
-        // Initialize Stripe
-        const stripe = Stripe('pk_test_51QfanDL2WsViswULccd4To2itF8MFURItNqzarLl6E1x5G7oS6aAMq9ItT0HmQMtyP3bDkh3xXtlKhCr49Ux1Z0E00mp1KFLCj');
+        // Function to hide all modals
+        const hideAllModals = () => {
+            calendarModal.style.display = "none"; // Hide calendar modal
+            paymentModal.style.display = "none"; // Hide payment modal
+            modalBackground.style.display = "none"; // Hide background overlay
+        };
 
         // Show Payment Modal
         payButton.addEventListener("click", () => {
-            calendarModal.style.display = "none"; // Hide calendar modal
+            hideAllModals(); // Hide any other visible modals
             paymentModal.style.display = "block"; // Show payment modal
+            modalBackground.style.display = "block"; // Show background overlay
         });
 
-        // Close Payment Modal
+        // Close Payment Modal when "x" button is clicked
         closePaymentModal.addEventListener("click", () => {
-            paymentModal.style.display = "none";
+            hideAllModals(); // Hide all modals and background overlay
+        });
+
+        // Close Payment Modal when clicking outside the modal content
+        document.addEventListener("click", (event) => {
+            if (
+                paymentModal.style.display === "block" &&
+                !paymentModal.contains(event.target) &&
+                event.target !== payButton
+            ) {
+                hideAllModals(); // Hide all modals and background overlay
+            }
         });
 
         // Stripe Payment Handler
@@ -340,27 +381,29 @@
                 },
                 credentials: 'same-origin',
             })
-            
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to create Stripe Checkout session.');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.error) {
-                        alert(data.error); // Display error message
-                    } else {
-                        return stripe.redirectToCheckout({ sessionId: data.id }); // Redirect to Stripe Checkout
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Something went wrong while processing your payment.');
-                });
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to create Stripe Checkout session.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    alert(data.error); // Display error message
+                } else {
+                    return stripe.redirectToCheckout({ sessionId: data.id }); // Redirect to Stripe Checkout
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Something went wrong while processing your payment.');
+            });
         });
     });
 </script>
+
+
+
 
 
 

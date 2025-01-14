@@ -10,6 +10,7 @@ from django.conf import settings
 from django.http import JsonResponse
 import stripe
 
+stripe.api_key = settings.STRIPE_SECRET_KEY  # Set your Stripe secret key
 
 # Placeholder views
 def home(request):
@@ -59,7 +60,7 @@ def bookings(request):
 
 
 
-stripe.api_key = settings.STRIPE_SECRET_KEY  # Set your Stripe secret key
+
 
 def create_checkout_session(request):
     print("create_checkout_session view called")  # Debug print
