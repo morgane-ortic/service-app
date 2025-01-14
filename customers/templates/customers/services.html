@@ -153,44 +153,57 @@
 </div>
 
 <!-- CALENDAR WINDOW -->
-<div id="calendar_modal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); display: none; z-index: 20; width: 80%; max-width: 700px;">
+<div id="calendar_modal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); display: none; z-index: 20; width: 80%; max-width: 700px; display: flex; gap: 20px;">
     <button id="close_calendar_modal" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer;">&times;</button>
     
-    <!-- Calendar Section -->
-    <div style="display: flex; flex-direction: column; gap: 20px;">
+    <!-- Left Side: Calendar -->
+    <div style="flex: 1; display: flex; flex-direction: column; gap: 10px;">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h2 style="margin: 0;">December</h2>
+            <button id="prev_month" style="background: none; border: none; font-size: 20px; cursor: pointer;">&#8592;</button>
             <div>
-                <button style="background: none; border: none; font-size: 20px; cursor: pointer;">&#8592;</button>
-                <button style="background: none; border: none; font-size: 20px; cursor: pointer;">&#8594;</button>
+                <select id="month_selector" style="padding: 5px; border-radius: 5px;">
+                    <!-- Months dynamically filled -->
+                </select>
+                <select id="year_selector" style="padding: 5px; border-radius: 5px;">
+                    <!-- Years dynamically filled -->
+                </select>
             </div>
+            <button id="next_month" style="background: none; border: none; font-size: 20px; cursor: pointer;">&#8594;</button>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center;">
-            <!-- Example of a Day -->
-            <div style="color: green;">1</div>
-            <div style="color: red;">2</div>
-            <!-- Add the rest of the days here dynamically -->
-        </div>
-        <div style="display: flex; justify-content: space-between; padding: 10px;">
-            <span style="color: green;">● Available</span>
-            <span style="color: red;">● Booked out</span>
+        <div id="calendar_grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+            <!-- Days dynamically filled -->
         </div>
     </div>
 
-    <!-- Timeslot Section -->
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-        <button style="padding: 10px; border: 1px solid #ccc; border-radius: 5px; background: #f0f0f0; cursor: pointer;">8:00 am</button>
-        <button style="padding: 10px; border: 1px solid #ccc; border-radius: 5px; background: #f0f0f0; cursor: pointer;">10:00 am</button>
-        <button style="padding: 10px; border: 1px solid #ccc; border-radius: 5px; background: #f0f0f0; cursor: pointer;">12:00 am</button>
-        <!-- Add more timeslots dynamically -->
+    <!-- Right Side: Dropdown Menus -->
+    <div style="flex: 1; display: flex; flex-direction: column; gap: 20px; justify-content: center;">
+        <label for="hour_selector">Hour:</label>
+        <select id="hour_selector" style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+            <!-- Hours 0-11 -->
+        </select>
+
+        <label for="minute_selector">Minutes:</label>
+        <select id="minute_selector" style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+            <option value="0">0</option>
+            <option value="15">15</option>
+            <option value="30">30</option>
+            <option value="45">45</option>
+        </select>
+
+        <label for="period_selector">Period:</label>
+        <select id="period_selector" style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+            <option value="AM">AM</option>
+            <option value="PM">PM</option>
+        </select>
     </div>
 
     <!-- Navigation Buttons -->
-    <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+    <div style="display: flex; justify-content: space-between; margin-top: 20px; width: 100%;">
         <button id="back_to_booking" style="background: #ccc; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Back</button>
         <button id="pay_button" style="background: gold; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Pay</button>
     </div>
 </div>
+
 
 <!-- PAYMENT WINDOW -->
 <div id="payment_modal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); display: none; z-index: 20; width: 80%; max-width: 700px;">
@@ -205,11 +218,17 @@
     </div>
 
     <!-- Footer -->
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <span style="color: green; font-size: 12px;">256-bit SSL encrypted</span>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <button id="back_to_calendar" style="background: #ccc; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Back</button>
+            <span style="color: green; font-size: 12px;">256-bit SSL encrypted</span>
+        </div>
         <span style="color: #ccc; font-size: 12px;">Securely processed by Global Payments</span>
     </div>
 </div>
+
+
+
 
 
 
@@ -293,50 +312,174 @@
 <!-- JAVASCRIPT FOR CALENDAR MODAL-->
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        const calendarModal = document.getElementById("calendar_modal");
+        // Elements
         const bookingModal = document.getElementById("booking_modal");
+        const calendarModal = document.getElementById("calendar_modal");
         const modalBackground = document.getElementById("modal_background");
         const closeCalendarModal = document.getElementById("close_calendar_modal");
-        const nextButton = bookingModal.querySelector("button[style*='gold']");
         const backToBooking = document.getElementById("back_to_booking");
+        const nextButton = bookingModal.querySelector("button[style*='gold']");
 
-        // Open Calendar Modal
+        // Calendar-specific elements
+        const calendarGrid = document.getElementById("calendar_grid");
+        const monthSelector = document.getElementById("month_selector");
+        const yearSelector = document.getElementById("year_selector");
+        const prevMonth = document.getElementById("prev_month");
+        const nextMonth = document.getElementById("next_month");
+        const hourSelector = document.getElementById("hour_selector");
+        const minuteSelector = document.getElementById("minute_selector");
+        const periodSelector = document.getElementById("period_selector");
+
+        // Current date
+        const today = new Date();
+        let currentMonth = today.getMonth();
+        let currentYear = today.getFullYear();
+
+        // Populate dropdown menus for hours
+        for (let i = 0; i < 12; i++) {
+            const option = document.createElement("option");
+            option.value = i;
+            option.textContent = i;
+            hourSelector.appendChild(option);
+        }
+
+        // Populate month and year selectors
+        const months = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        months.forEach((month, index) => {
+            const option = document.createElement("option");
+            option.value = index;
+            option.textContent = month;
+            monthSelector.appendChild(option);
+        });
+
+        for (let year = currentYear - 10; year <= currentYear + 10; year++) {
+            const option = document.createElement("option");
+            option.value = year;
+            option.textContent = year;
+            yearSelector.appendChild(option);
+        }
+
+        // Update the calendar grid
+        const updateCalendar = () => {
+            monthSelector.value = currentMonth;
+            yearSelector.value = currentYear;
+
+            calendarGrid.innerHTML = ""; // Clear previous days
+
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            // Blank days for the first row
+            for (let i = 0; i < firstDay; i++) {
+                const blank = document.createElement("div");
+                calendarGrid.appendChild(blank);
+            }
+
+            // Days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement("div");
+                dayElement.textContent = day;
+                dayElement.style.padding = "10px";
+                dayElement.style.borderRadius = "5px";
+                dayElement.style.cursor = "pointer";
+                dayElement.style.backgroundColor = "#f0f0f0";
+
+                // Highlight selected day
+                dayElement.addEventListener("click", () => {
+                    document.querySelectorAll("#calendar_grid div").forEach(el => {
+                        el.style.backgroundColor = "#f0f0f0"; // Reset
+                    });
+                    dayElement.style.backgroundColor = "#6772e5"; // Highlight
+                });
+
+                calendarGrid.appendChild(dayElement);
+            }
+        };
+
+        // Event listeners for calendar navigation
+        prevMonth.addEventListener("click", () => {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            updateCalendar();
+        });
+
+        nextMonth.addEventListener("click", () => {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            updateCalendar();
+        });
+
+        monthSelector.addEventListener("change", () => {
+            currentMonth = parseInt(monthSelector.value);
+            updateCalendar();
+        });
+
+        yearSelector.addEventListener("change", () => {
+            currentYear = parseInt(yearSelector.value);
+            updateCalendar();
+        });
+
+        // Initialize calendar
+        updateCalendar();
+
+        // Function to open the calendar modal
+        const openCalendarModal = () => {
+            bookingModal.style.display = "none"; // Hide booking modal
+            calendarModal.style.display = "flex"; // Show calendar modal
+            modalBackground.style.display = "block"; // Show background overlay
+        };
+
+        // Function to close the calendar modal
+        const closeCalendar = () => {
+            calendarModal.style.display = "none"; // Hide calendar modal
+            modalBackground.style.display = "none"; // Hide background overlay
+        };
+
+        // Open Calendar Modal when "Next" is clicked
         nextButton.addEventListener("click", () => {
-            bookingModal.style.display = "none"; // Hide Booking Modal
-            calendarModal.style.display = "block"; // Show Calendar Modal
-            modalBackground.style.display = "block"; // Show Background Overlay
+            openCalendarModal();
         });
 
-        // Close Calendar Modal
+        // Close Calendar Modal when the close button is clicked
         closeCalendarModal.addEventListener("click", () => {
-            calendarModal.style.display = "none";
-            modalBackground.style.display = "none"; // Hide Background Overlay
+            closeCalendar();
         });
 
-        // Close Calendar Modal when clicking outside
+        // Close Calendar Modal when clicking the background
         modalBackground.addEventListener("click", () => {
-            calendarModal.style.display = "none";
-            modalBackground.style.display = "none";
+            closeCalendar();
         });
 
-        // Go Back to Booking Modal
+        // Go back to the booking modal when "Back" is clicked
         backToBooking.addEventListener("click", () => {
-            calendarModal.style.display = "none"; // Hide Calendar Modal
-            bookingModal.style.display = "block"; // Show Booking Modal
+            calendarModal.style.display = "none"; // Hide calendar modal
+            bookingModal.style.display = "block"; // Show booking modal
         });
     });
 </script>
 
 
-<!-- JAVASCRIPT FOR PAYMENTS WINDOW -->
+
+
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const paymentModal = document.getElementById("payment_modal");
         const calendarModal = document.getElementById("calendar_modal");
         const closePaymentModal = document.getElementById("close_payment_modal");
-        const payButton = document.getElementById("pay_button"); // Button to trigger payment modal
-        const stripePayButton = document.getElementById("stripe_pay_button"); // Stripe pay button inside payment modal
-        const modalBackground = document.getElementById("modal_background"); // Reference to modal background
+        const backToCalendar = document.getElementById("back_to_calendar");
+        const payButton = document.getElementById("pay_button");
+        const stripePayButton = document.getElementById("stripe_pay_button");
+        const modalBackground = document.getElementById("modal_background");
 
         // Function to hide all modals
         const hideAllModals = () => {
@@ -355,6 +498,12 @@
         // Close Payment Modal when "x" button is clicked
         closePaymentModal.addEventListener("click", () => {
             hideAllModals(); // Hide all modals and background overlay
+        });
+
+        // Navigate Back to Calendar Modal
+        backToCalendar.addEventListener("click", () => {
+            paymentModal.style.display = "none"; // Hide payment modal
+            calendarModal.style.display = "block"; // Show calendar modal
         });
 
         // Close Payment Modal when clicking outside the modal content
@@ -401,6 +550,7 @@
         });
     });
 </script>
+
 
 
 
