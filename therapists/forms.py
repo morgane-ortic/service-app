@@ -32,7 +32,7 @@ class PersonalDetailsForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={'placeholder': 'Enter your full name', 'class': 'input-field'}),
             'gender': forms.Select(attrs={'class': 'select-field'}),
-            'description': forms.Textarea(attrs={'placeholder': 'A short description of yourself', 'class': 'input-field', 'rows': 8, 'cols': 36}),
+            'description': forms.Textarea(attrs={'placeholder': 'A short description of yourself', 'class': 'input-field', 'rows': 8, 'cols': 42}),
             'address': forms.Textarea(attrs={'placeholder': 'Enter your address', 'class': 'input-field', 'rows': 4, 'cols': 36}),
             'phone_number': forms.TextInput(attrs={'placeholder': 'Enter your phone number', 'class': 'input-field'}),
 
@@ -55,14 +55,16 @@ class ProDetailsForm(forms.ModelForm):
     
     class Meta:
         model = Therapist
-        fields = ['number_of_customers', 'years_xp']
+        fields = ['number_of_customers', 'years_xp', 'equipment_pref']
         widgets = {
             'number_of_customers': forms.SelectMultiple(attrs={'class': 'select-field'}),
+            'equipment_pref': forms.Textarea(attrs={'placeholder': 'Enter your equipment preferences', 'class': 'input-field', 'rows': 8, 'cols': 72}),
         }
 
         labels = {
             'number_of_customers': 'Number of Customers' ,
-            'years_xp': 'Years of Experience'
+            'years_xp': 'Years of Experience',
+            'equipment_pref': 'Equipment Preferences'
         }
 
 

@@ -41,12 +41,14 @@
                         {{ personal_form.as_p }}
                     {% elif section == 'professional_details' %}
                         {{ pro_form.as_p }}
+                    {% elif section == 'privacy_security' %}
+                        {{ password_form.as_p }}
                     {% else %}
                         {{ empty_form.as_p }}
                     {% endif %}
                 </div>
                 <!-- Submit Button -->
-                <button class="submit_button" type="submit">Submit</button>
+                <button class="submit_button" type="submit">Save Changes</button>
             </form>
 
         </div>

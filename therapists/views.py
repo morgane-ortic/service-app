@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
 from .forms import RegisterForm, PersonalDetailsForm, ProDetailsForm, EmptyForm
 from core.forms import LoginForm
 from .models import Therapist
@@ -30,8 +31,14 @@ def about(request):
         'base_template': 'therapists/base.html'
     })
 
+
+@login_required
 def profile(request, section='personal_details'):
     therapist = get_object_or_404(Therapist, user=request.user)
+
+    personal_form = None
+    pro_form = None
+    password_form = None
 
     if request.method == 'POST':
         if section == 'personal_details':
@@ -42,24 +49,28 @@ def profile(request, section='personal_details'):
             pro_form = ProDetailsForm(request.POST, instance=therapist)
             if pro_form.is_valid():
                 pro_form.save()
+        elif section == 'privacy_security':
+            password_form = PasswordChangeForm(request.user, request.POST)
+            if password_form.is_valid():
+                user = password_form.save()
+                update_session_auth_hash(request, user)  # Important to keep the user logged in
 
     else:
         if section == 'personal_details':
             personal_form = PersonalDetailsForm(instance=therapist)
-            pro_form = None
         elif section == 'professional_details':
             pro_form = ProDetailsForm(instance=therapist)
-            personal_form = None
-        else:
-            personal_form = None
-            pro_form = None
+        elif section == 'privacy_security':
+            password_form = PasswordChangeForm(request.user)
 
     return render(request, 'therapists/profile.html', {
         'base_template': 'therapists/base.html',
         'section': section,
         'personal_form': personal_form,
-        'pro_form': pro_form
+        'pro_form': pro_form,
+        'password_form': password_form
     })
+
 
 def register(request):
     if request.method == 'POST':
@@ -79,6 +90,7 @@ def register(request):
     else:
         form = RegisterForm()
     return render(request, 'therapists/register.html', {'form': form})
+
 
 @login_required
 def register_details(request):
