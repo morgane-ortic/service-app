@@ -76,14 +76,7 @@ def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-            # Create and save the User instance
-            user = User.objects.create_user(
-                username=email,  # Use email as username
-                email=email,
-                password=password
-            )
+            user = form.save()
             # Log in the user
             login(request, user)
             return redirect('therapists:register_details')  # Ensure this matches the name in urls.py
