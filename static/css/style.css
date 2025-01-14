@@ -179,7 +179,7 @@ p, label {
 }
 
 .helptext,
-li
+form li
 {
   text-align: justify;
   font-family: sans-serif;

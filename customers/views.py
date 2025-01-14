@@ -4,7 +4,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from .models import Customer
 from core.models import Service, ServiceType
-from .forms import RegisterForm, RegisterDetailsForm
+from .forms import RegisterForm, PersonalDetailsForm
 from core.forms import LoginForm
 from django.conf import settings
 from django.http import JsonResponse
@@ -102,8 +102,18 @@ def create_checkout_session(request):
 
 
 
+@login_required
 def profile(request):
-    return render(request, 'customers/profile.html')
+    customer = get_object_or_404(Customer, user=request.user)
+
+    if request.method == 'POST':
+        personal_form = PersonalDetailsForm(request.POST, request.FILES, instance=customer)
+        if personal_form.is_valid():
+            personal_form.save()
+            return redirect('customers:profile')
+    else:
+        personal_form = PersonalDetailsForm(instance=customer)
+    return render(request, 'customers/profile.html', {'personal_form': personal_form})
 
 def about(request):
     return render(request, 'core/about.html', {
@@ -127,7 +137,7 @@ def register(request):
 @login_required
 def register_details(request):
     if request.method == 'POST':
-        form = RegisterDetailsForm(request.POST, request.FILES)  # Pass request.FILES to handle image upload
+        form = PersonalDetailsForm(request.POST, request.FILES)  # Pass request.FILES to handle image upload
         if form.is_valid():
             customer = form.save(commit=False)  # Save the form but don't commit to the database yet
             customer.user = request.user  # Assuming you want to link the customer to the logged-in user
@@ -135,7 +145,7 @@ def register_details(request):
             form.save_m2m()  # Save the many-to-many relationships
             return redirect('customers:register_confirm')  # Redirect after saving
     else:
-        form = RegisterDetailsForm()
+        form = PersonalDetailsForm()
     return render(request, 'customers/register_details.html', {'form': form})
 
 

@@ -54,6 +54,8 @@ def profile(request, section='personal_details'):
             if password_form.is_valid():
                 user = password_form.save()
                 update_session_auth_hash(request, user)  # Important to keep the user logged in
+        
+        return redirect('therapists:profile')
 
     else:
         if section == 'personal_details':
@@ -76,7 +78,14 @@ def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password1']
+            # Create and save the User instance
+            user = User.objects.create_user(
+                username=email,  # Use email as username
+                email=email,
+                password=password
+            )
             # Log in the user
             login(request, user)
             return redirect('therapists:register_details')  # Ensure this matches the name in urls.py

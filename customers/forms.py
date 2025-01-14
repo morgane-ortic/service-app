@@ -26,7 +26,7 @@ class RegisterForm(UserCreationForm):
             user.save()
         return user
 
-class RegisterDetailsForm(forms.ModelForm):
+class PersonalDetailsForm(forms.ModelForm):
     
     class Meta:
         model = Customer
@@ -44,7 +44,7 @@ class RegisterDetailsForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         '''Sets the following fields as optional'''
-        super(RegisterDetailsForm, self).__init__(*args, **kwargs)
+        super(PersonalDetailsForm, self).__init__(*args, **kwargs)
         self.fields['gender'].required = False
         self.fields['description'].required = False
         self.fields['picture'].required = False

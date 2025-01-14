@@ -3,7 +3,17 @@
 {% block content %}
 <div class="page_content">
     <h1>Your Profile</h1>
-    <p>{% lorem 300 w random %}</p>
+
+    <form method="post" enctype="multipart/form-data">
+        <div class="form-grid">
+            {% csrf_token %}
+            
+            <!-- Render form fields -->
+                {{ personal_form.as_p }}
+        </div>
+        <!-- Submit Button -->
+        <button class="submit_button" type="submit">Save Changes</button>
+    </form>
 </div>
 
     <!-- Show customer profile with options to modify personal info -->
