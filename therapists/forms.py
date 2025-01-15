@@ -2,7 +2,6 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Therapist
-from core.models import NumberOfCustomers
 
 
 # initial registration form
@@ -48,21 +47,15 @@ class PersonalDetailsForm(forms.ModelForm):
 
 
 class ProDetailsForm(forms.ModelForm):
-    number_of_customers = forms.ModelMultipleChoiceField(
-        queryset=NumberOfCustomers.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
-        required=True  # Ensure that this field is required
-    )
     
     class Meta:
         model = Therapist
-        fields = ['number_of_customers', 'years_xp', 'equipment_pref']
+        fields = ['years_xp', 'equipment_pref']
         widgets = {
             'equipment_pref': forms.Textarea(attrs={'placeholder': 'Enter your equipment preferences', 'class': 'input-field', 'rows': 8, 'cols': 72}),
         }
 
         labels = {
-            'number_of_customers': 'Number of Customers' ,
             'years_xp': 'Years of Experience',
             'equipment_pref': 'Equipment Preferences'
         }
