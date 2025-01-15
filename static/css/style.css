@@ -54,41 +54,57 @@ header {
 main {
   background-image: url("../img/main_background.jpg");
   background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+
   min-width: 600px;
-  min-height: 100vh;
-  height: 100vh; 
+  min-height: 87vh; 
   display: flex;
   flex-direction: row;
   justify-content: center;
 
   /* define main background color */
-  background-color: rgb(255, 255, 255);
+  background-color: white;
 }
 
 .main_content {
-  max-width: 1500px;
+  max-width: 1600px;
   min-width: 900px;
-  display: flex;
+
+  margin:30px;
+  margin-bottom: auto; /* Push main_content up, leaving space at the bottom */
+  
+  display: inline-flex;
   flex-direction: row;
   justify-content: center;
-}
+  align-items: flex-start;
 
-.main_content a {
-  color: rgb(216 107 222);
- }
-
-.sidebar {
-  margin-top: 30px;
-  width: 300px;
-  flex-shrink: 0;
   border-radius: 10px;
   background-color:  rgba(255, 255, 255, 0.8);
 }
 
+.main_content a, footer a {
+  color: rgb(216 107 222);
+ }
+
+ .sidebar_page {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.sidebar {
+  min-width: 230px;
+  flex-shrink: 0;
+  border-radius: 15px 0 0 15px;
+  background-color: white;
+}
+
 .sidebar ul {
-  margin-top: 0px;
-  padding-top: 30px;
-  padding-bottom: 30px;
+  padding-top: 15px;
+  padding-bottom: 15px;
   list-style-type: none;
   gap: 1.5em;
   /* declare flex: */
@@ -104,7 +120,7 @@ main {
 .sidebar a {
   /* style the font of the navigation elements */
   font-family: sans-serif;
-  font-size: 20px;
+  font-size: medium;
   color: black;
   text-decoration: none;
 }
@@ -116,10 +132,8 @@ main {
 
 .page_content{
 
-  max-width: 900px;
+  max-width: 1140px;
   min-width: 600px;
-  min-height: 318px;
-  width: 900px;
   height: auto;
   align-self: flex-start;
 
@@ -128,10 +142,31 @@ main {
   flex-grow: 1;
 
   padding: 0 30px 30px;
-  margin: 30px 0 30px 30px;
   border-radius: 15px;
+}
 
-  background-color:  rgba(255, 255, 255, 0.8);
+form {
+  text-align: center;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, auto));
+  gap: 0 24px; /* Add space between grid items */
+  width: auto; /* Ensure the form takes the full width of the parent */
+  box-sizing: border-box;; /* Include padding and border in the element's total width and height */
+  justify-content: start; /* Align items to the left */
+  justify-items: start; /* Align items within their grid area to the start (left) */
+  align-items: start; /* Align items to the start of their grid area */
+  text-align: left; /* Ensure text inside the grid items is aligned to the left */
+}
+
+.form-grid p {
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  
+  text-align: left; /* Ensure text inside the <p> elements is aligned to the left */
+  width: 100%; /* Ensure the <p> elements take the full width of the grid item */
 }
 
 p, label {
@@ -140,6 +175,14 @@ p, label {
   font-size:medium;
   line-height: 1.4;
   color: black;
+}
+
+.helptext,
+form li
+{
+  text-align: justify;
+  font-family: sans-serif;
+  font-size: small;
 }
 
 button[type="submit"] {
@@ -160,6 +203,7 @@ button[type="submit"]:hover {
 
 .page_content h1 {
   font-family: sans-serif;
+  text-align: center;
   color: black;
   font-size: 28px;
 }

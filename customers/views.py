@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
@@ -9,7 +10,6 @@ from core.forms import LoginForm
 from django.conf import settings
 from django.http import JsonResponse
 import stripe
-from django.views.decorators.csrf import csrf_exempt
 
 
 # Placeholder views
@@ -26,9 +26,6 @@ def home(request):
         customer = None
     # render 
     return render(request, 'customers/home.html', {'customer': customer})
-
-def bookings(request):
-    return render(request, 'customers/bookings.html')
 
 def services(request):
     service_type_name = request.GET.get('service_type', 'all')
@@ -55,6 +52,10 @@ def service_detail(request, service_id):
 
 def bookings(request):
     return render(request, 'customers/bookings.html')
+
+
+
+
 
 def profile(request):
     return render(request, 'customers/profile.html')
