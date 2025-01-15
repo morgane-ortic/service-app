@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
@@ -94,14 +95,6 @@ def create_checkout_session(request):
         return JsonResponse({'error': str(e)}, status=400)
 
 
-
-
-
-
-
-
-
-
 @login_required
 def profile(request):
     customer = get_object_or_404(Customer, user=request.user)
@@ -110,6 +103,7 @@ def profile(request):
         personal_form = PersonalDetailsForm(request.POST, request.FILES, instance=customer)
         if personal_form.is_valid():
             personal_form.save()
+            messages.success(request, 'Profile details updated successfully.')
             return redirect('customers:profile')
     else:
         personal_form = PersonalDetailsForm(instance=customer)
@@ -143,14 +137,11 @@ def register_details(request):
             customer.user = request.user  # Assuming you want to link the customer to the logged-in user
             customer.save()  # Now save the customer instance
             form.save_m2m()  # Save the many-to-many relationships
-            return redirect('customers:register_confirm')  # Redirect after saving
+            messages.success(request, 'Account created successfully! Welcome.')
+            return redirect('therapists:home')  # Redirect after saving
     else:
         form = PersonalDetailsForm()
     return render(request, 'customers/register_details.html', {'form': form})
-
-
-def register_confirm(request):
-    return render(request, 'customers/register_confirm.html')
 
 
 def user_login(request):

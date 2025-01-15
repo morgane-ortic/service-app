@@ -43,11 +43,25 @@
         </header>
 
         <main>
+
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert {{ message.tags }}">
+                        {{ message }}
+                        <span class="close-btn" onclick="closeMessage()">×</span>
+                    </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
             <div class="main_content">
             {% block content %}
             {% endblock %}
             </div>
         </main>
         <footer> <p>Background image designed by <a href="https://www.freepik.com" target="_blank">Freepik</a></p> 
-</body>
+            
+        <script src="{% static 'js/messages.js' %}"></script>    
+    </body>
 </html>

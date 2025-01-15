@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
@@ -45,18 +46,19 @@ def profile(request, section='personal_details'):
             personal_form = PersonalDetailsForm(request.POST, request.FILES, instance=therapist)
             if personal_form.is_valid():
                 personal_form.save()
+                messages.success(request, 'Personal details updated successfully.')
         elif section == 'professional_details':
             pro_form = ProDetailsForm(request.POST, instance=therapist)
             if pro_form.is_valid():
                 pro_form.save()
+                messages.success(request, 'Professional details updated successfully.')
         elif section == 'privacy_security':
             password_form = PasswordChangeForm(request.user, request.POST)
             if password_form.is_valid():
                 user = password_form.save()
+                messages.success(request, 'Password updated successfully.')
                 update_session_auth_hash(request, user)  # Important to keep the user logged in
-
-        return redirect('therapists:profile')
-
+                
     else:
         if section == 'personal_details':
             personal_form = PersonalDetailsForm(instance=therapist)
@@ -117,10 +119,8 @@ def register_details(request):
             # Create and save the Therapist instance
             therapist = Therapist.objects.create(**therapist_data)
             
-            # Save the many-to-many relationships
-            therapist.number_of_customers.set(pro_form.cleaned_data['number_of_customers'])
-            
-            return redirect('therapists:register_confirm')  # Redirect after saving
+            messages.success(request, 'Account created successfully! Welcome.')
+            return redirect('therapists:home')  # Redirect after saving
     else:
         personal_form = PersonalDetailsForm()
         pro_form = ProDetailsForm()
@@ -129,16 +129,13 @@ def register_details(request):
         'pro_form': pro_form,
     })
 
-
-def register_confirm(request):
-    return render(request, 'therapists/register_confirm.html')
-
 def user_login(request):
     if request.method == 'POST':
         form = LoginForm(request, data=request.POST)  # Pass request and data to the form
         if form.is_valid():
             user = form.get_user()  # Get the authenticated user from the form
             login(request, user)
+            messages.success(request, 'You are now logged in.')
             return redirect('home')
         else:
             form.add_error(None, 'Invalid email or password')
