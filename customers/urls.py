@@ -1,6 +1,9 @@
 from django.urls import path
 from . import views
+from .views import create_checkout_session
 from django.contrib.auth import views as auth_views
+from .views import payment_success, payment_cancel
+from django.http import HttpResponse
 
 app_name = 'customers'
 
@@ -16,5 +19,8 @@ urlpatterns = [
     path('register_confirm/', views.register_confirm, name='register_confirm'),
     path('login/', views.user_login, name='login'),
     path('logout/', views.user_logout, name='logout'),
-    path('create-checkout-session/', views.create_checkout_session, name='create_checkout_session'),
+    path('create-checkout-session/', create_checkout_session, name='create_checkout_session'),
+    path('success/', views.payment_success, name='success'),
+    path('cancel/', views.payment_cancel, name='cancel'),
+    path('favicon.ico', lambda x: HttpResponse(status=204)),  # Ignore favicon requests
 ]

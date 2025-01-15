@@ -1,13 +1,18 @@
 {% extends './base.html' %}
 {% load static %}
-
 {% block content %}
+
+
+
+
+<!--=================================================================  HTML code  ==========================================================================================-->
+
 <div class="page_content" style="margin-top: 60px;">
     {% csrf_token %}
-    <h1>Bookings</h1>
+    <h1>Services</h1>
     <p>Our team of professional practitioners offers top-tier relaxation and rejuvenation. From full-body massages to facials, manicures, and pedicures, we have a range of services to choose from. Explore our options and book your appointment for the ultimate relaxation.</p>
     
-    <div class="bookings_section" style="display: flex; gap: 20px; align-items: flex-start;">
+    <div class="services_section" style="display: flex; gap: 20px; align-items: flex-start;">
         <!-- Left Column: Browse by -->
         <aside class="categories" style="flex: 1; max-width: 200px;">
             <h3>Browse by</h3>
@@ -21,6 +26,30 @@
                 </li>
                 {% endfor %}
             </ul>
+
+            <!-- New: Dropdown menus under the sidebar -->
+            <div style="margin-top: 20px;">
+                <!-- Country Dropdown -->
+                <label for="countrySelect" style="display: block; margin-bottom: 5px;">Select Country</label>
+                <select id="countrySelect" style="padding: 5px; width: 100%;">
+                    <option value="">🇩🇪 Germany</option>
+                </select>
+
+                <!-- City Dropdown -->
+                <label for="citySelect" style="display: block; margin-top: 15px; margin-bottom: 5px;">Select City</label>
+                <select id="citySelect" style="padding: 5px; width: 100%;">
+                    <option value="Berlin">Berlin</option>
+                    <option value="Hamburg">Hamburg</option>
+                    <option value="Munich">Munich</option>
+                    <option value="Cologne">Cologne</option>
+                    <option value="Frankfurt">Frankfurt</option>
+                    <option value="Stuttgart">Stuttgart</option>
+                    <option value="Düsseldorf">Düsseldorf</option>
+                    <option value="Leipzig">Leipzig</option>
+                    <option value="Dortmund">Dortmund</option>
+                    <option value="Essen">Essen</option>
+                </select>
+            </div>
         </aside>
 
         <!-- Right Column: All Products -->
@@ -57,12 +86,14 @@
     </div>
 </div>
 
+<!-- Transparent background for all modals -->
+<div id="modal_background" 
+    style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: none; z-index: 10;">
+</div>
 
-<!-- Modal Background -->
-<div id="modal_background" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: none; z-index: 10;"></div>
-
-<!-- BOOKING OPTIONS WINDOW -->
-<div id="booking_modal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); display: none; z-index: 20; width: 80%; max-width: 700px;">
+<!-- HTML for Services modal -->
+<div id="services_modal" 
+    style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); display: none; z-index: 20; width: 80%; max-width: 700px;">
     <button id="close_modal" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer;">&times;</button>
     
     <!-- Modal Layout -->
@@ -79,7 +110,7 @@
             <div style="display: flex; justify-content: space-between; width: 100%; max-width: 350px; gap: 10px;">
                 <div>
                     <label for="modal_duration">Duration:</label>
-                    <select id="modal_duration" style="padding: 5px; width: 150px;">
+                    <select id="modal_duration" style="padding: 5px; width: 160px;">
                         <option value="60">60 min</option>
                         <option value="90">90 min</option>
                         <option value="120">120 min</option>
@@ -87,7 +118,7 @@
                 </div>
                 <div>
                     <label for="modal_therapist">Preferred Therapist:</label>
-                    <select id="modal_therapist" style="padding: 5px; width: 150px;">
+                    <select id="modal_therapist" style="padding: 5px; width: 160px;">
                         <option value="no_preference">No Preference</option>
                         <option value="male">Male</option>
                         <option value="female">Female</option>
@@ -99,11 +130,11 @@
             <div style="display: flex; justify-content: space-between; width: 100%; max-width: 350px; gap: 10px;">
                 <div>
                     <label for="modal_people_count">Number of People:</label>
-                    <input type="number" id="modal_people_count" min="1" max="10" value="1" style="padding: 5px; width: 150px;">
+                    <input type="number" id="modal_people_count" min="1" max="10" value="1" style="padding: 5px; width: 146px;"> <!-- Updated width -->
                 </div>
                 <div>
                     <label for="modal_participants">Participants:</label>
-                    <select id="modal_participants" style="padding: 5px; width: 150px;">
+                    <select id="modal_participants" style="padding: 5px; width: 160px;">
                         <option value="single">Single (1 person)</option>
                         <option value="couple">Couple (2 people)</option>
                         <option value="group">Group (3+ people)</option>
@@ -117,7 +148,7 @@
             <!-- Price and Next Button Row -->
             <div style="display: flex; justify-content: space-between; width: 100%; max-width: 350px;">
                 <!-- Base Price -->
-                <p id="modal_price" style="margin: 0; font-weight: bold; color: black; text-align: left;">From 50.00€</p>
+                <p id="modal_price" style="margin: 0; font-weight: bold; color: black; text-align: left;">From 70.00€</p>
 
                 <!-- Next Button -->
                 <button style="background-color: gold; color: black; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Next</button>
@@ -126,246 +157,561 @@
     </div>
 </div>
 
-<!-- CALENDAR WINDOW -->
-<div id="calendar_modal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); display: none; z-index: 20; width: 80%; max-width: 700px;">
+<!-- HTML for Calendar modal -->
+<div id="calendar_modal" 
+    style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); display: none; z-index: 20; width: 80%; max-width: 700px;">
     <button id="close_calendar_modal" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer;">&times;</button>
-    
-    <!-- Calendar Section -->
-    <div style="display: flex; flex-direction: column; gap: 20px;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h2 style="margin: 0;">December</h2>
-            <div>
-                <button style="background: none; border: none; font-size: 20px; cursor: pointer;">&#8592;</button>
-                <button style="background: none; border: none; font-size: 20px; cursor: pointer;">&#8594;</button>
+
+    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; gap: 20px;">
+        <h2 style="text-align: center; font-size: 24px; margin-bottom: 20px;">Select Your Date and Time</h2>
+
+        <!-- Date Selection -->
+        <div>
+            <p style="margin: 0; font-size: 16px; font-weight: bold; text-align: center;">Select Date:</p>
+            <div style="display: flex; align-items: flex-start; gap: 10px; margin-top: 10px; justify-content: center;">
+                <div style="text-align: center;">
+                    <label for="select_day" style="display: block; margin-bottom: 5px;">Day</label>
+                    <select id="select_day" style="padding: 5px; width: 80px;"></select>
+                </div>
+                <div style="text-align: center;">
+                    <label for="select_month" style="display: block; margin-bottom: 5px;">Month</label>
+                    <select id="select_month" style="padding: 5px; width: 120px;"></select>
+                </div>
+                <div style="text-align: center;">
+                    <label for="select_year" style="display: block; margin-bottom: 5px;">Year</label>
+                    <select id="select_year" style="padding: 5px; width: 100px;"></select>
+                </div>
             </div>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center;">
-            <!-- Example of a Day -->
-            <div style="color: green;">1</div>
-            <div style="color: red;">2</div>
-            <!-- Add the rest of the days here dynamically -->
+
+        <!-- Time Selection -->
+        <div>
+            <p style="margin: 0; font-size: 16px; font-weight: bold; text-align: center;">Select Time:</p>
+            <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+
+                <!-- Hour Input with Arrows -->
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    <button id="hour_up" style="padding: 10px 15px; border: none; background: #ccc; cursor: pointer; font-size: 18px;">&#9650;</button>
+                    <button id="hour_down" style="padding: 10px 15px; border: none; background: #ccc; cursor: pointer; font-size: 18px;">&#9660;</button>
+                    <input id="hour_input" type="text" value="00" style="width: 60px; text-align: center; border: 1px solid #ccc; border-radius: 5px; font-size: 18px; padding: 8px;">
+                </div>
+
+                <!-- Separator -->
+                <span style="font-size: 24px;">:</span>
+
+
+                <!-- Minute Input with Arrows -->
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    <input id="minute_input" type="text" value="30" style="width: 60px; text-align: center; border: 1px solid #ccc; border-radius: 5px; font-size: 18px; padding: 8px;">
+                    <button id="minute_up" style="padding: 10px 15px; border: none; background: #ccc; cursor: pointer; font-size: 18px;">&#9650;</button>
+                    <button id="minute_down" style="padding: 10px 15px; border: none; background: #ccc; cursor: pointer; font-size: 18px;">&#9660;</button>
+                </div>
+            </div>
         </div>
-        <div style="display: flex; justify-content: space-between; padding: 10px;">
-            <span style="color: green;">● Available</span>
-            <span style="color: red;">● Booked out</span>
+
+        <!-- Navigation Buttons -->
+        <div
+            style="display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 700px; margin-top: 20px;">
+            <button id="back_to_booking"
+                style="background: #ccc; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Back</button>
+            <p id="error_message"
+                style="color: red; font-size: 14px; margin: 0 auto; text-align: center; display: none;">Select a valid
+                time.</p>
+            <button id="go_to_calendar"
+                style="background: gold; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Next</button>
         </div>
+
+    </div>
+</div>
+
+<!-- HTML for Overview modal -->
+<div id="overview_modal" 
+    style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); display: none; z-index: 20; width: 80%; max-width: 700px;">
+    <button id="close_overview_modal" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer;">&times;</button>
+
+    <h2 style="text-align: center; margin-bottom: 20px;">Overview</h2>
+
+    <!-- Selected Details Section -->
+    <div id="overview_content" style="margin-bottom: 20px;">
+        <p><strong>Country:</strong> <span id="overview_country"></span></p>
+        <p><strong>City:</strong> <span id="overview_city"></span></p>
+        <p><strong>Date:</strong> <span id="overview_date"></span></p>
+        <p><strong>Time:</strong> <span id="overview_time"></span></p>
+        <p><strong>Selected Service:</strong> <span id="overview_service"></span></p>
+        <p><strong>Duration:</strong> <span id="overview_duration"></span></p>
+        <p><strong>Number of People:</strong> <span id="overview_people_count"></span></p>
+        <p><strong>Preferred Therapist:</strong> <span id="overview_therapist"></span></p>
     </div>
 
-    <!-- Timeslot Section -->
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
-        <button style="padding: 10px; border: 1px solid #ccc; border-radius: 5px; background: #f0f0f0; cursor: pointer;">8:00 am</button>
-        <button style="padding: 10px; border: 1px solid #ccc; border-radius: 5px; background: #f0f0f0; cursor: pointer;">10:00 am</button>
-        <button style="padding: 10px; border: 1px solid #ccc; border-radius: 5px; background: #f0f0f0; cursor: pointer;">12:00 am</button>
-        <!-- Add more timeslots dynamically -->
-    </div>
+    <!-- Empty Row -->
+    <div style="height: 20px;"></div> <!-- This is the empty row -->
 
     <!-- Navigation Buttons -->
-    <div style="display: flex; justify-content: space-between; margin-top: 20px;">
-        <button id="back_to_booking" style="background: #ccc; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Back</button>
-        <button id="pay_button" style="background: gold; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Pay</button>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+        <button id="back_to_calendar" style="background: #ccc; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Back</button>
+        <button id="proceed_to_payment" style="background: gold; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Proceed to Payment Method</button>
     </div>
 </div>
 
-<!-- PAYMENT WINDOW -->
-<div id="payment_modal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); display: none; z-index: 20; width: 80%; max-width: 700px;">
-    <button id="close_payment_modal" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer;">&times;</button>
-    <h2 style="margin-bottom: 20px; text-align: center;">Please choose a payment method below</h2>
-    
-    <!-- Cards Section -->
-    <div style="margin-bottom: 20px;">
-        <h3>Cards</h3>
-        <div id="stripe_card_section" style="display: flex; align-items: center; gap: 10px; border: 1px solid #ccc; padding: 10px; border-radius: 5px;">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Visa_2021.svg/256px-Visa_2021.svg.png" alt="Visa" style="height: 30px;">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Mastercard_2019_logo.svg/256px-Mastercard_2019_logo.svg.png" alt="Mastercard" style="height: 30px;">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/American_Express_logo_%282018%29.svg/256px-American_Express_logo_%282018%29.svg.png" alt="Amex" style="height: 30px;">
-        </div>
-        <button id="stripe_pay_button" style="background-color: #6772e5; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px;">
+<!-- HTML for Payment method modal -->
+<div id="payment_method_modal" 
+    style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); display: none; z-index: 20; width: 80%; max-width: 700px;">
+    <!-- Close Button -->
+    <button id="close_payment_method_modal" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer;">&times;</button>
+
+    <!-- Title -->
+    <h2 style="margin-bottom: 20px; text-align: center;">Choose Payment Method</h2>
+
+    <!-- Stripe Toggle Button -->
+    <div style="text-align: center; margin: 20px 0;">
+        <label style="display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 16px;">
+            <input type="checkbox" id="stripe_toggle" checked style="transform: scale(1.5); cursor: pointer;">
             Pay with Stripe
-        </button>
+        </label>
     </div>
 
-    <!-- PayPal Section -->
-    <div style="margin-bottom: 20px;">
-        <h3>Pay with another payment method</h3>
-        <div id="paypal_button_container" style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; text-align: center;">
-            <!-- PayPal Smart Payment Buttons will be rendered here -->
+    <!-- Footer with Back Button and Find Therapist Button -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <!-- Back Button -->
+            <button id="back_to_overview" style="background: #ccc; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Back</button>
+            <span style="color: green; font-size: 12px;">256-bit SSL encrypted</span>
         </div>
+        <!-- Find Therapist Button -->
+        <button id="find_therapist" style="background-color: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Find Therapist</button>
     </div>
-
-    <!-- Footer -->
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <span style="color: green; font-size: 12px;">256-bit SSL encrypted</span>
-        <span style="color: #ccc; font-size: 12px;">Securely processed by Global Payments</span>
-    </div>
-    
 </div>
 
 
 
 
+<!--=================================================================  JavaScript code  ====================================================================================-->
 
-<!--===================================================================================================================================================================-->
-
-<!-- JAVASCRIPT FOR BOOKING MODAL-->
+<!-- JavaScript for services modal-->
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        const bookButtons = document.querySelectorAll(".book_button");
-        const modalTitle = document.getElementById("modal_title");
-        const modalPicture = document.getElementById("modal_picture");
         const modalBackground = document.getElementById("modal_background");
-        const bookingModal = document.getElementById("booking_modal");
-        const closeModal = document.getElementById("close_modal");
-        const modalPrice = document.getElementById("modal_price");
-        const modalDuration = document.getElementById("modal_duration");
-        const modalParticipants = document.getElementById("modal_participants");
-        const modalPeopleCount = document.getElementById("modal_people_count");
+        const bookingModal = document.getElementById("services_modal");
+        const calendarModal = document.getElementById("calendar_modal");
+        const paymentModal = document.getElementById("payment_method_modal");
 
-        // Open Modal
+        // Buttons
+        const bookButtons = document.querySelectorAll(".book_button");
+        const closeBookingModal = document.getElementById("close_modal");
+        const nextButtonInBooking = bookingModal.querySelector("button[style*='gold']");
+        const backToBooking = document.getElementById("back_to_booking");
+        const closeCalendarModal = document.getElementById("close_calendar_modal");
+        const proceedToPayment = document.getElementById("proceed_to_payment");
+
+        // Fields for number of people and participants
+        const peopleCountInput = document.getElementById("modal_people_count");
+        const participantsDropdown = document.getElementById("modal_participants");
+
+        // Synchronize participants dropdown with number of people input
+        const syncParticipantsDropdown = () => {
+            const peopleCount = parseInt(peopleCountInput.value, 10);
+
+            if (peopleCount === 1) {
+                participantsDropdown.value = "single";
+            } else if (peopleCount === 2) {
+                participantsDropdown.value = "couple";
+            } else if (peopleCount >= 3) {
+                participantsDropdown.value = "group";
+            }
+        };
+
+        // Update the number of people input when participants dropdown changes
+        const syncPeopleCountInput = () => {
+            const selectedValue = participantsDropdown.value;
+
+            if (selectedValue === "single") {
+                peopleCountInput.value = 1;
+            } else if (selectedValue === "couple") {
+                peopleCountInput.value = 2;
+            } else if (selectedValue === "group") {
+                peopleCountInput.value = 3;
+            }
+        };
+
+        // Add event listeners for synchronization
+        peopleCountInput.addEventListener("input", syncParticipantsDropdown);
+        participantsDropdown.addEventListener("change", syncPeopleCountInput);
+
+        // Open Booking Modal
         bookButtons.forEach(button => {
             button.addEventListener("click", () => {
-                // Get the picture URL and title from the button's data attributes
-                const servicePicture = button.getAttribute("data-service-picture");
                 const serviceTitle = button.getAttribute("data-service-title");
                 const servicePrice = button.getAttribute("data-service-price");
+                const servicePicture = button.getAttribute("data-service-picture");
 
-                // Set the picture and title in the modal
-                modalPicture.src = servicePicture;
-                modalTitle.textContent = serviceTitle;
-                modalPrice.textContent = `From ${servicePrice}€`;
+                document.getElementById("modal_title").textContent = serviceTitle;
+                document.getElementById("modal_picture").src = servicePicture;
+                document.getElementById("modal_price").textContent = `From ${servicePrice}€`;
 
-                // Show the modal
-                modalBackground.style.display = "block";
                 bookingModal.style.display = "block";
+                modalBackground.style.display = "block";
             });
         });
 
-        // Close Modal
-        closeModal.addEventListener("click", () => {
-            modalBackground.style.display = "none";
-            bookingModal.style.display = "none";
+        // Close Booking Modal
+        closeBookingModal.addEventListener("click", () => {
+            closeAllModals();
         });
 
-        // Close Modal When Clicking Outside
+        // Navigate to Calendar Modal
+        nextButtonInBooking.addEventListener("click", () => {
+            bookingModal.style.display = "none";
+            calendarModal.style.display = "block";
+        });
+
+        // Close Calendar Modal
+        closeCalendarModal.addEventListener("click", () => {
+            closeAllModals();
+        });
+
+        // Back to Booking Modal from Calendar
+        backToBooking.addEventListener("click", () => {
+            calendarModal.style.display = "none";
+            bookingModal.style.display = "block";
+        });
+
+        // Proceed to Payment Modal from Calendar
+        proceedToPayment.addEventListener("click", () => {
+            calendarModal.style.display = "none";
+            paymentModal.style.display = "block";
+        });
+
+        // Close all modals
         modalBackground.addEventListener("click", () => {
+            closeAllModals();
+        });
+
+        function closeAllModals() {
+            document.querySelectorAll("[id$='_modal']").forEach(modal => {
+                modal.style.display = "none";
+            });
             modalBackground.style.display = "none";
-            bookingModal.style.display = "none";
-        });
-
-        // Sync Participants with People Count
-        modalParticipants.addEventListener("change", () => {
-            if (modalParticipants.value === "group") {
-                modalPeopleCount.value = Math.max(3, modalPeopleCount.value); // Minimum 3 for groups
-            } else if (modalParticipants.value === "couple") {
-                modalPeopleCount.value = 2;
-            } else {
-                modalPeopleCount.value = 1;
-            }
-        });
-
-        // Sync People Count with Participants
-        modalPeopleCount.addEventListener("change", () => {
-            const people = parseInt(modalPeopleCount.value);
-            if (people >= 3) {
-                modalParticipants.value = "group";
-            } else if (people === 2) {
-                modalParticipants.value = "couple";
-            } else {
-                modalParticipants.value = "single";
-            }
-        });
-    });    
+        }
+    });
 </script>
 
-<!-- JAVASCRIPT FOR CALENDAR MODAL-->
+<!-- JavaScript for calendar modal-->
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        const bookingModal = document.getElementById("booking_modal");
         const calendarModal = document.getElementById("calendar_modal");
-        const nextButton = bookingModal.querySelector("button[style*='gold']"); // Next button
+        const bookingModal = document.getElementById("services_modal");
+        const modalBackground = document.getElementById("modal_background");
         const closeCalendarModal = document.getElementById("close_calendar_modal");
+        const nextButton = document.getElementById("go_to_calendar");
         const backToBooking = document.getElementById("back_to_booking");
 
-        // Show the calendar modal and hide the booking modal
+        const daySelect = document.getElementById("select_day");
+        const monthSelect = document.getElementById("select_month");
+        const yearSelect = document.getElementById("select_year");
+
+        const hourInput = document.getElementById("hour_input");
+        const minuteInput = document.getElementById("minute_input");
+        const hourUp = document.getElementById("hour_up");
+        const hourDown = document.getElementById("hour_down");
+        const minuteUp = document.getElementById("minute_up");
+        const minuteDown = document.getElementById("minute_down");
+
+        const errorMessage = document.getElementById("error_message");
+
+        // Adjust Days Based on Month and Year
+        const adjustDays = () => {
+            const selectedMonth = parseInt(monthSelect.value, 10);
+            const selectedYear = parseInt(yearSelect.value, 10);
+            const daysInMonth = new Date(selectedYear, selectedMonth, 0).getDate();
+
+            const selectedDay = parseInt(daySelect.value, 10);
+            daySelect.innerHTML = ""; // Clear existing options
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const option = document.createElement("option");
+                option.value = day;
+                option.textContent = day;
+                daySelect.appendChild(option);
+            }
+
+            daySelect.value = selectedDay <= daysInMonth ? selectedDay : 1;
+        };
+
+        // Populate Date Dropdowns
+        const populateDateDropdowns = () => {
+            const months = [
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ];
+            months.forEach((month, index) => {
+                const option = document.createElement("option");
+                option.value = index + 1;
+                option.textContent = month;
+                monthSelect.appendChild(option);
+            });
+
+            const currentYear = new Date().getFullYear();
+            for (let year = currentYear; year <= currentYear + 5; year++) {
+                const option = document.createElement("option");
+                option.value = year;
+                option.textContent = year;
+                yearSelect.appendChild(option);
+            }
+
+            const today = new Date();
+            monthSelect.value = today.getMonth() + 1;
+            yearSelect.value = today.getFullYear();
+            adjustDays();
+            daySelect.value = today.getDate();
+        };
+
+        // Validate and Adjust Time Inputs Dynamically
+        const adjustTimeInputs = () => {
+            let hour = parseInt(hourInput.value, 10);
+            let minute = parseInt(minuteInput.value, 10);
+
+            if (hour > 23) {
+                hour = 23;
+            }
+            if (minute > 59) {
+                minute = 59;
+            }
+
+            hourInput.value = hour.toString().padStart(2, "0");
+            minuteInput.value = minute.toString().padStart(2, "0");
+        };
+
+        // Hour and Minute Controls
+        const updateHour = (increment) => {
+            let hour = parseInt(hourInput.value, 10);
+            hour = increment ? (hour + 1) % 24 : (hour + 23) % 24;
+            hourInput.value = hour.toString().padStart(2, "0");
+        };
+
+        const updateMinute = (increment) => {
+            let minute = parseInt(minuteInput.value, 10);
+            minute = increment ? (minute + 5) % 60 : (minute + 55) % 60;
+            minuteInput.value = minute.toString().padStart(2, "0");
+        };
+
+        // Event Listeners
+        hourUp.addEventListener("click", () => updateHour(true));
+        hourDown.addEventListener("click", () => updateHour(false));
+        minuteUp.addEventListener("click", () => updateMinute(true));
+        minuteDown.addEventListener("click", () => updateMinute(false));
+        hourInput.addEventListener("input", adjustTimeInputs);
+        minuteInput.addEventListener("input", adjustTimeInputs);
+
         nextButton.addEventListener("click", () => {
-            bookingModal.style.display = "none"; // Hide the booking modal
-            calendarModal.style.display = "block"; // Show the calendar modal
+            calendarModal.style.display = "none";
+            modalBackground.style.display = "none";
+            // Open the next modal (e.g., payment or overview modal)
         });
 
-        // Close the calendar modal
+        backToBooking.addEventListener("click", () => {
+            calendarModal.style.display = "none";
+            bookingModal.style.display = "block";
+        });
+
         closeCalendarModal.addEventListener("click", () => {
             calendarModal.style.display = "none";
+            modalBackground.style.display = "none";
         });
 
-        // Go back to the booking modal
-        backToBooking.addEventListener("click", () => {
-            calendarModal.style.display = "none"; // Hide the calendar modal
-            bookingModal.style.display = "block"; // Show the booking modal
+        modalBackground.addEventListener("click", () => {
+            if (calendarModal.style.display === "block") {
+                calendarModal.style.display = "none";
+                modalBackground.style.display = "none";
+            }
         });
+
+        monthSelect.addEventListener("change", adjustDays);
+        yearSelect.addEventListener("change", adjustDays);
+
+        // Populate dropdowns on load
+        populateDateDropdowns();
     });
 </script>
 
-<!-- JAVASCRIPT FOR PAYMENTS WINDOW-->
+<!-- JavaScript for overview modal-->
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        const paymentModal = document.getElementById("payment_modal");
-        const calendarModal = document.getElementById("calendar_modal");
-        const closePaymentModal = document.getElementById("close_payment_modal");
-        const payButton = document.getElementById("pay_button"); // From the calendar modal
-        const stripePayButton = document.getElementById("stripe_pay_button"); // Stripe pay button inside payment modal
-
-        // Initialize Stripe
-        const stripe = Stripe('pk_test_51QfanDL2WsViswULccd4To2itF8MFURItNqzarLl6E1x5G7oS6aAMq9ItT0HmQMtyP3bDkh3xXtlKhCr49Ux1Z0E00mp1KFLCj');
-
-        // Show Payment Modal
-        payButton.addEventListener("click", () => {
-            calendarModal.style.display = "none"; // Hide calendar modal
-            paymentModal.style.display = "block"; // Show payment modal
+        const overviewModal = document.getElementById("overview_modal");
+        const closeOverviewModal = document.getElementById("close_overview_modal");
+        const backToCalendar = document.getElementById("back_to_calendar");
+        const proceedToPayment = document.getElementById("proceed_to_payment");
+        const modalBackground = document.getElementById("modal_background");
+    
+        // Elements to populate
+        const overviewService = document.getElementById("overview_service");
+        const overviewDuration = document.getElementById("overview_duration");
+        const overviewTherapist = document.getElementById("overview_therapist");
+        const overviewDate = document.getElementById("overview_date");
+        const overviewTime = document.getElementById("overview_time");
+        const overviewPeopleCount = document.getElementById("overview_people_count");
+        const overviewCountry = document.getElementById("overview_country");
+        const overviewCity = document.getElementById("overview_city");
+    
+        const modalTitle = document.getElementById("modal_title");
+        const modalDuration = document.getElementById("modal_duration");
+        const modalTherapist = document.getElementById("modal_therapist");
+        const modalPeopleCount = document.getElementById("modal_people_count");
+    
+        const selectDay = document.getElementById("select_day");
+        const selectMonth = document.getElementById("select_month");
+        const selectYear = document.getElementById("select_year");
+        const hourInput = document.getElementById("hour_input");
+        const minuteInput = document.getElementById("minute_input");
+    
+        const countrySelect = document.getElementById("countrySelect");
+        const citySelect = document.getElementById("citySelect");
+    
+        // Open the overview modal and display the details
+        const openOverviewModal = () => {
+            const selectedService = modalTitle.textContent;  // Selected service
+            const selectedDuration = modalDuration.options[modalDuration.selectedIndex].text;  // Selected duration
+            const selectedTherapist = modalTherapist.options[modalTherapist.selectedIndex].text;  // Preferred therapist
+            const selectedPeopleCount = modalPeopleCount.value;  // Number of people
+    
+            // Get date and time from calendar modal
+            const selectedDate = `${selectDay.value} ${selectMonth.options[selectMonth.selectedIndex].text} ${selectYear.value}`;
+            const selectedTime = `${hourInput.value}:${minuteInput.value}`;
+    
+            // Get selected country and city
+            const selectedCountry = countrySelect.options[countrySelect.selectedIndex].text;
+            const selectedCity = citySelect.options[citySelect.selectedIndex].text;
+    
+            // Set values in the overview modal
+            overviewService.textContent = selectedService || "N/A";
+            overviewDuration.textContent = selectedDuration || "N/A";
+            overviewTherapist.textContent = selectedTherapist || "N/A";
+            overviewDate.textContent = selectedDate || "N/A";
+            overviewTime.textContent = selectedTime || "N/A";
+            overviewPeopleCount.textContent = selectedPeopleCount || "N/A";
+            overviewCountry.textContent = selectedCountry || "N/A";
+            overviewCity.textContent = selectedCity || "N/A";
+    
+            modalBackground.style.display = "block";
+            overviewModal.style.display = "block";
+        };
+    
+        // Close the overview modal
+        const closeModal = () => {
+            overviewModal.style.display = "none";
+            modalBackground.style.display = "none";
+        };
+    
+        // Close modal when clicking the X button
+        closeOverviewModal.addEventListener("click", closeModal);
+    
+        // Close modal when clicking outside the modal content
+        modalBackground.addEventListener("click", (event) => {
+            if (overviewModal.style.display === "block") {
+                closeModal();
+            }
         });
-
-        // Close Payment Modal
-        closePaymentModal.addEventListener("click", () => {
-            paymentModal.style.display = "none";
+    
+        // Navigate back to the calendar modal
+        backToCalendar.addEventListener("click", () => {
+            closeModal();
+            modalBackground.style.display = "block";
+            document.getElementById("calendar_modal").style.display = "block";
         });
-
-        // Stripe Payment Handler
-        stripePayButton.addEventListener("click", () => {
-            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value; // Get CSRF token
-
-            // Fetch the Stripe Checkout session
-            fetch('/customers/create-checkout-session/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken,
-                },
-                credentials: 'same-origin',
-            })
-            
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to create Stripe Checkout session.');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.error) {
-                        alert(data.error); // Display error message
-                    } else {
-                        return stripe.redirectToCheckout({ sessionId: data.id }); // Redirect to Stripe Checkout
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Something went wrong while processing your payment.');
-                });
+    
+        // Proceed to the payment modal
+        proceedToPayment.addEventListener("click", () => {
+            closeModal();
+            document.getElementById("payment_method_modal").style.display = "block";
         });
+    
+        // Example: Trigger overview modal when clicking the next button in the calendar modal
+        document.getElementById("go_to_calendar").addEventListener("click", openOverviewModal);
     });
+     
 </script>
 
+<!-- JavaScript for payment method modal-->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Modal and Background Elements
+        const modalBackground = document.getElementById("modal_background");
+        const bookingModal = document.getElementById("services_modal");
+        const calendarModal = document.getElementById("calendar_modal");
+        const paymentModal = document.getElementById("payment_method_modal");
+        const overviewModal = document.getElementById("overview_modal");
+    
+        // Buttons
+        const bookButtons = document.querySelectorAll(".book_button");
+        const closeBookingModal = document.getElementById("close_modal");
+        const nextButtonInBooking = bookingModal.querySelector("button[style*='gold']");
+        const backToBooking = document.getElementById("back_to_booking");
+        const closeCalendarModal = document.getElementById("close_calendar_modal");
+        const proceedToPayment = document.getElementById("proceed_to_payment");
+        const closePaymentModal = document.getElementById("close_payment_method_modal");
+        const backToOverview = document.getElementById("back_to_overview");
+        const findTherapistButton = document.getElementById("find_therapist");
+        const stripeToggle = document.getElementById("stripe_toggle");
+    
+        // Ensure Stripe toggle cannot be deselected
+        stripeToggle.addEventListener("change", (event) => {
+            if (!event.target.checked) {
+                // Prevent unchecking
+                event.target.checked = true;
+            }
+        });
+    
+        // Open Booking Modal
+        bookButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                const serviceTitle = button.getAttribute("data-service-title");
+                const servicePrice = button.getAttribute("data-service-price");
+                const servicePicture = button.getAttribute("data-service-picture");
+    
+                document.getElementById("modal_title").textContent = serviceTitle;
+                document.getElementById("modal_picture").src = servicePicture;
+                document.getElementById("modal_price").textContent = `From ${servicePrice}€`;
+    
+                openModal(bookingModal);
+            });
+        });
+    
+        // Automatically select Stripe when opening payment modal
+        proceedToPayment.addEventListener("click", () => {
+            stripeToggle.checked = true; // Automatically check Stripe toggle
+            openModal(paymentModal);
+        });
+    
+        // Find Therapist Button - Redirect to bookings page
+        findTherapistButton.addEventListener("click", () => {
+            window.location.href = '/bookings.html'; // Redirect to bookings.html
+        });
+    
+        // Close Payment Modal
+        closePaymentModal.addEventListener("click", () => closeAllModals());
+    
+        // Back to Overview Modal
+        backToOverview.addEventListener("click", () => openModal(overviewModal));
+    
+        // Close Modal When Clicking Outside
+        modalBackground.addEventListener("click", () => closeAllModals());
+    
+        // Utility Function to Open a Modal with Background
+        function openModal(modal) {
+            closeAllModals();
+            modal.style.display = "block";
+            modalBackground.style.display = "block";
+        }
+    
+        // Utility Function to Close All Modals
+        function closeAllModals() {
+            document.querySelectorAll("[id$='_modal']").forEach(modal => {
+                modal.style.display = "none";
+            });
+            modalBackground.style.display = "none";
+        }
+    });    
+</script>
 
 
 
 {% endblock %}
-
-<script src="https://js.stripe.com/v3/"></script>
-<script src="{% static 'js/stripe.js' %}"></script>
