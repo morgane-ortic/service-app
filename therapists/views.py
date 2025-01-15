@@ -54,7 +54,7 @@ def profile(request, section='personal_details'):
             if password_form.is_valid():
                 user = password_form.save()
                 update_session_auth_hash(request, user)  # Important to keep the user logged in
-        
+
         return redirect('therapists:profile')
 
     else:

@@ -20,11 +20,15 @@
             <div class="menu">
             <ul>
                 {% if user.is_authenticated %}
-                    <li><a href="{% url 'therapists:notifications' %}">Notifications</a></li>
-                    <li><a href="{% url 'therapists:schedule' %}">Your Schedule</a></li>
-                    <li><a href="{% url 'therapists:about' %}">About us</a></li>
-                    <li><a href="{% url 'therapists:profile' 'personal_details' %}">Profile</a></li>
-                    <li><a href="{% url 'therapists:logout' %}">Log Out</a></li>
+                    {% if user.therapist %}
+                        <li><a href="{% url 'therapists:notifications' %}">Notifications</a></li>
+                        <li><a href="{% url 'therapists:schedule' %}">Your Schedule</a></li>
+                        <li><a href="{% url 'therapists:about' %}">About us</a></li>
+                        <li><a href="{% url 'therapists:profile' 'personal_details' %}">Profile</a></li>
+                    {% else %}
+                        <li><a href="{% url 'therapists:register_details' %}">Complete Profile</a></li>
+                    {% endif %}
+                <li><a href="{% url 'therapists:logout' %}">Log Out</a></li>
                 {% else %}
                     <li><a href="{% url 'therapists:login' %}">Log In</a></li>
                     <li><a href="{% url 'therapists:register' %}">Sign up</a></li>
