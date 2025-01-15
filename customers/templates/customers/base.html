@@ -21,10 +21,15 @@
             <div class="menu">
             <ul>
                 {% if user.is_authenticated %}
-                    <li><a href="{% url 'customers:services' %}">Services</a></li>
-                    <li><a href="{% url 'customers:bookings' %}">Bookings</a></li>
-                    <li><a href="{% url 'customers:about' %}">About</a></li>
-                    <li><a href="{% url 'customers:profile' %}">Profile</a></li>
+                    {% if user.customer %}
+                        <li><a href="{% url 'customers:services' %}">Services</a></li>
+                        <li><a href="{% url 'customers:bookings' %}">Bookings</a></li>
+                        <li><a href="{% url 'customers:about' %}">About</a></li>
+                        <li><a href="{% url 'customers:profile' %}">Profile</a></li>
+                    {% else %}
+                        <li><a href="{% url 'customers:register_details' %}">Complete Profile (customer)</a></li>
+                        <li><a href="{% url 'therapists:register_details' %}">Complete Profile (therapist)</a></li>
+                        {% endif %}
                     <li><a href="{% url 'customers:logout' %}">Log Out</a></li>
                 {% else %}
                     <li><a href="{% url 'customers:services' %}">Services</a></li>
@@ -38,11 +43,25 @@
         </header>
 
         <main>
+
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert {{ message.tags }}">
+                        {{ message }}
+                        <span class="close-btn" onclick="closeMessage()">×</span>
+                    </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
             <div class="main_content">
             {% block content %}
             {% endblock %}
             </div>
         </main>
         <footer> <p>Background image designed by <a href="https://www.freepik.com" target="_blank">Freepik</a></p> 
-</body>
+            
+        <script src="{% static 'js/messages.js' %}"></script>    
+    </body>
 </html>

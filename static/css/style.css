@@ -7,49 +7,49 @@ body {
 header {
 
 
-    /* define margins and paddings around the header: */
-    margin-right: auto;
-    margin-left: auto;
-    padding: 0 30px 0 30px;
-  
-    /* define the header background color: */
-    background-color: white;
-  
-    /* declare flex: */
-    display: flex;
-  
-    /* position elements of the header */
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-end;
-    flex-wrap: wrap;
-  }
+  /* define margins and paddings around the header: */
+  margin-right: auto;
+  margin-left: auto;
+  padding: 0 30px 0 30px;
 
-  .menu ul {
-    list-style-type: none;
-    gap: 2em;
-    /* declare flex: */
-    display: flex;
-  
-    /* define that the content will be displayed horizontally: */
-    flex-direction: row;
-  
-    /* define spacing between navigation elements: */
-    justify-content: space-around;
-  }
-  
-  .menu a {
-    /* style the font of the navigation elements */
-    font-family: sans-serif;
-    font-size: 18px;
-    color: black;
-    text-decoration: none;
-  }
+  /* define the header background color: */
+  background-color: white;
 
-  .menu a:hover{
-    color: rgb(216 107 222);
-    font-weight: bold;  
-  }
+  /* declare flex: */
+  display: flex;
+
+  /* position elements of the header */
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.menu ul {
+  list-style-type: none;
+  gap: 2em;
+  /* declare flex: */
+  display: flex;
+
+  /* define that the content will be displayed horizontally: */
+  flex-direction: row;
+
+  /* define spacing between navigation elements: */
+  justify-content: space-around;
+}
+
+.menu a {
+  /* style the font of the navigation elements */
+  font-family: sans-serif;
+  font-size: 18px;
+  color: black;
+  text-decoration: none;
+}
+
+.menu a:hover {
+  color: rgb(216 107 222);
+  font-weight: bold;
+}
 
 main {
   background-image: url("../img/main_background.jpg");
@@ -58,14 +58,46 @@ main {
   background-position: center;
   background-attachment: fixed;
 
+  padding-top: 15px;
+
   min-width: 600px;
-  min-height: 87vh; 
+  min-height: 87vh;
   display: flex;
-  flex-direction: row;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 
   /* define main background color */
   background-color: white;
+}
+
+.messages {
+  border-radius: 15px;
+  text-align: center;
+  color: white;
+  font-family: sans-serif;
+  font-weight: bold;
+  background-color: green;
+  display: inline-block;
+  /* Adjust width to fit content */
+  padding: 10px;
+  z-index: 1000
+}
+
+.close-btn {
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  color: green;
+  margin-left: 5px; /* left margin before button */
+  background-color: white;  /* Background color for the circle */
+  border-radius: 50%; /* Make it a circle */
+  padding: 0 6px; /* Adjust padding for size */
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.close-btn:hover {
+  background-color: dark;  /* Change color on hover */
 }
 
 .main_content {
@@ -73,23 +105,25 @@ main {
   min-width: 900px;
   width: 1140px;
 
-  margin:30px;
-  margin-bottom: auto; /* Push main_content up, leaving space at the bottom */
-  
+  margin: 15px;
+  margin-bottom: auto;
+  /* Push main_content up, leaving space at the bottom */
+
   display: inline-flex;
   flex-direction: row;
   justify-content: center;
   align-items: flex-start;
 
   border-radius: 10px;
-  background-color:  rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.8);
 }
 
-.main_content a, footer a {
+.main_content a,
+footer a {
   color: rgb(216 107 222);
- }
+}
 
- .sidebar_page {
+.sidebar_page {
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -126,12 +160,12 @@ main {
   text-decoration: none;
 }
 
-.sidebar a:hover{
+.sidebar a:hover {
   color: rgb(216 107 222);
-  font-weight: bold;  
+  font-weight: bold;
 }
 
-.page_content{
+.page_content {
 
   max-width: 1140px;
   min-width: 600px;
@@ -151,96 +185,111 @@ form {
 }
 
 .form-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, auto));
-  gap: 0 24px; /* Add space between grid items */
-  width: auto; /* Ensure the form takes the full width of the parent */
-  box-sizing: border-box;; /* Include padding and border in the element's total width and height */
-  justify-content: start; /* Align items to the left */
-  justify-items: start; /* Align items within their grid area to the start (left) */
-  align-items: start; /* Align items to the start of their grid area */
-  text-align: left; /* Ensure text inside the grid items is aligned to the left */
-}
-
-.form-grid p {
   display: flex;
-  flex-direction: column; /* Stack children vertically */
-  
-  text-align: left; /* Ensure text inside the <p> elements is aligned to the left */
-  width: 100%; /* Ensure the <p> elements take the full width of the grid item */
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  /* Add space between grid items */
+  width: 100%;
+
 }
 
-p, label {
-  text-align: justify;
-  font-family: sans-serif;
-  font-size:medium;
-  line-height: 1.4;
-  color: black;
+.form-grid div {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  /* Stack children vertically */
+
+  text-align: left;
+  /* Ensure text inside the <p> elements is aligned to the left */
+  max-width: 300px;
+  /* Ensure the <p> elements take the full width of the grid item */
 }
 
-.helptext,
-form li
-{
-  text-align: justify;
-  font-family: sans-serif;
-  font-size: small;
+
+.profile-picture img {
+  max-width: 100%;
+  max-height: 100%;
+  height: auto; /* Maintain aspect ratio */
+  width: auto; /* Maintain aspect ratio */
+  object-fit: contain; /* Ensure the image fits within the container without stretching */
+
 }
 
-button[type="submit"] {
-  margin: 10px 0 10px;
+  p,
+  label {
+    text-align: justify;
+    font-family: sans-serif;
+    font-size: medium;
+    line-height: 1.4;
+    color: black;
+  }
 
-  background-color: silver;
-  color: black;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-}
+  .helptext,
+  form li {
+    text-align: justify;
+    font-family: sans-serif;
+    font-size: small;
+  }
 
-button[type="submit"]:hover {
-  background-color: #fd7bf7;
-}
+  button[type="submit"] {
+    margin: 10px 0 10px;
 
-.page_content h1 {
-  font-family: sans-serif;
-  text-align: center;
-  color: black;
-  font-size: 28px;
-}
+    background-color: silver;
+    color: black;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+  }
 
-.page_content h2 {
-  font-family: sans-serif;
-  color: black;
-  font-size: 24px;
-}
+  button[type="submit"]:hover {
+    background-color: #fd7bf7;
+  }
 
-label {
-  display: block;
-  margin-bottom: 8px;
-  color: #555;
-}
+  .page_content h1 {
+    font-family: sans-serif;
+    text-align: center;
+    color: black;
+    font-size: 28px;
+  }
 
-.home_buttons {
-  display: flex; /* Enable Flexbox for the container */
-  justify-content: center; /* Center the buttons horizontally */
-  gap: 60px; /* Add space between the buttons */
-}
+  .page_content h2 {
+    font-family: sans-serif;
+    color: black;
+    font-size: 24px;
+  }
 
-.home_buttons button {
-  width: 240px;
+  label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+  }
 
-  padding: 10px;
+  .home_buttons {
+    display: flex;
+    /* Enable Flexbox for the container */
+    justify-content: center;
+    /* Center the buttons horizontally */
+    gap: 60px;
+    /* Add space between the buttons */
+  }
 
-  text-align: center;
-  font-family: sans-serif;
-  font-size: 20px;
-  font-weight: bold; 
-  text-decoration: none
-}
+  .home_buttons button {
+    width: 240px;
 
-footer p {
-  text-align: center;
-  font-size: 12px;
-}
+    padding: 10px;
 
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    text-decoration: none
+  }
+
+  footer p {
+    text-align: center;
+    font-size: 12px;
+  }
