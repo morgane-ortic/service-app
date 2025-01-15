@@ -9,11 +9,13 @@ from core.forms import LoginForm
 from django.conf import settings
 from django.http import JsonResponse
 import stripe
+from django.views.decorators.csrf import csrf_exempt
 
-stripe.api_key = settings.STRIPE_SECRET_KEY  # Set your Stripe secret key
 
 # Placeholder views
 def home(request):
+    print(f"Host: {request.get_host()}")  # Debugging output
+
     # fetch current customer instance
     if request.user.is_authenticated:
         try:
@@ -27,7 +29,6 @@ def home(request):
 
 def bookings(request):
     return render(request, 'customers/bookings.html')
-
 
 def services(request):
     service_type_name = request.GET.get('service_type', 'all')
@@ -52,62 +53,8 @@ def service_detail(request, service_id):
     service = get_object_or_404(Service, id=service_id)
     return render(request, 'customers/service_detail.html', {'service': service})
 
-
 def bookings(request):
     return render(request, 'customers/bookings.html')
-
-
-
-
-
-
-
-def create_checkout_session(request):
-    print("create_checkout_session view called")  # Debug print
-    ...
-
-
-def create_checkout_session(request):
-    print("create_checkout_session view called")  # Debug print statement
-
-    if request.method != 'POST':
-        print("Invalid request method")  # Debug print for invalid method
-        return JsonResponse({'error': 'Invalid request method'}, status=405)
-
-    try:
-        # Create a new Stripe Checkout session
-        session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
-            line_items=[
-                {
-                    'price_data': {
-                        'currency': 'usd',  # Replace with your valid currency code
-                        'product_data': {
-                            'name': 'Your Service Name',  # Replace dynamically if needed
-                        },
-                        'unit_amount': 5000,  # Amount in cents (e.g., $50.00)
-                    },
-                    'quantity': 1,
-                },
-            ],
-            mode='payment',
-            success_url='http://127.0.0.1:8000/success/',  # Adjust to match your success page
-            cancel_url='http://127.0.0.1:8000/cancel/',    # Adjust to match your cancel page
-        )
-        print(f"Checkout session created: {session.id}")  # Debug print for successful session creation
-        return JsonResponse({'id': session.id})
-    except Exception as e:
-        print(f"Error creating checkout session: {e}")  # Debug print for exceptions
-        return JsonResponse({'error': str(e)}, status=400)
-
-
-
-
-
-
-
-
-
 
 def profile(request):
     return render(request, 'customers/profile.html')
@@ -116,7 +63,6 @@ def about(request):
     return render(request, 'core/about.html', {
         'base_template': 'customers/base.html'
     })
-
 
 def register(request):
     if request.method == 'POST':
@@ -137,7 +83,6 @@ def register(request):
         form = RegisterForm()
     return render(request, 'customers/register.html', {'form': form})
 
-
 @login_required
 def register_details(request):
     if request.method == 'POST':
@@ -152,10 +97,8 @@ def register_details(request):
         form = RegisterDetailsForm()
     return render(request, 'customers/register_details.html', {'form': form})
 
-
 def register_confirm(request):
     return render(request, 'customers/register_confirm.html')
-
 
 def user_login(request):
     if request.method == 'POST':
@@ -173,8 +116,47 @@ def user_login(request):
         'form': form
     })
 
-
 def user_logout(request):
     logout(request)
     print('logged out')
     return redirect('home')
+
+
+
+
+
+# Stripe API code ==============================================
+
+stripe.api_key = settings.STRIPE_SECRET_KEY  # Your Stripe secret key
+
+@csrf_exempt
+def create_checkout_session(request):
+    try:
+        # Replace with your dynamic data as needed
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[
+                {
+                    'price_data': {
+                        'currency': 'eur',  # Euro as the currency
+                        'product_data': {
+                            'name': 'Relaxation Massage',  # Replace with the product/service name
+                        },
+                        'unit_amount': 5000,  # Replace with the price in cents (€50.00)
+                    },
+                    'quantity': 1,
+                },
+            ],
+            mode='payment',
+            success_url='https://1a35-185-250-215-99.ngrok-free.app/success/',  # Your success page URL
+            cancel_url='https://1a35-185-250-215-99.ngrok-free.app/cancel/',    # Your cancel page URL
+        )
+        return JsonResponse({'id': checkout_session.id})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
+
+def payment_success(request):
+    return render(request, 'customers/success.html')
+
+def payment_cancel(request):
+    return render(request, 'customers/cancel.html')
