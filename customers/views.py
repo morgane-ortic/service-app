@@ -123,7 +123,8 @@ def profile(request):
         password_form = PasswordChangeForm(request.user)
     return render(request, 'customers/profile.html', {
         'personal_form': personal_form,
-        'password_form': password_form
+        'password_form': password_form,
+        'customer': customer
         })
 
 def about(request):

@@ -76,7 +76,8 @@ def profile(request, section='personal_details'):
         'section': section,
         'personal_form': personal_form,
         'pro_form': pro_form,
-        'password_form': password_form
+        'password_form': password_form,
+        'therapist': therapist
     })
 
 

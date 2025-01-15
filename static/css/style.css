@@ -100,120 +100,122 @@ main {
   background-color: dark;  /* Change color on hover */
 }
 
-  .main_content {
-    max-width: 1140px;
-    min-width: 900px;
-    width: 1140px;
+.main_content {
+  max-width: 1140px;
+  min-width: 900px;
+  width: 1140px;
 
-    margin: 15px;
-    margin-bottom: auto;
-    /* Push main_content up, leaving space at the bottom */
+  margin: 15px;
+  margin-bottom: auto;
+  /* Push main_content up, leaving space at the bottom */
 
-    display: inline-flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: flex-start;
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
 
-    border-radius: 10px;
-    background-color: rgba(255, 255, 255, 0.8);
-  }
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+}
 
-  .main_content a,
-  footer a {
-    color: rgb(216 107 222);
-  }
+.main_content a,
+footer a {
+  color: rgb(216 107 222);
+}
 
-  .sidebar_page {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-  }
+.sidebar_page {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
 
-  .sidebar {
-    min-width: 230px;
-    flex-shrink: 0;
-    border-radius: 15px 0 0 15px;
-    background-color: white;
-  }
+.sidebar {
+  min-width: 230px;
+  flex-shrink: 0;
+  border-radius: 15px 0 0 15px;
+  background-color: white;
+}
 
-  .sidebar ul {
-    padding-top: 15px;
-    padding-bottom: 15px;
-    list-style-type: none;
-    gap: 1.5em;
-    /* declare flex: */
-    display: flex;
+.sidebar ul {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  list-style-type: none;
+  gap: 1.5em;
+  /* declare flex: */
+  display: flex;
 
-    /* define that the content will be displayed vertically: */
-    flex-direction: column;
+  /* define that the content will be displayed vertically: */
+  flex-direction: column;
 
-    /* define spacing between navigation elements: */
-    justify-content: space-around;
-  }
+  /* define spacing between navigation elements: */
+  justify-content: space-around;
+}
 
-  .sidebar a {
-    /* style the font of the navigation elements */
-    font-family: sans-serif;
-    font-size: medium;
-    color: black;
-    text-decoration: none;
-  }
+.sidebar a {
+  /* style the font of the navigation elements */
+  font-family: sans-serif;
+  font-size: medium;
+  color: black;
+  text-decoration: none;
+}
 
-  .sidebar a:hover {
-    color: rgb(216 107 222);
-    font-weight: bold;
-  }
+.sidebar a:hover {
+  color: rgb(216 107 222);
+  font-weight: bold;
+}
 
-  .page_content {
+.page_content {
 
-    max-width: 1140px;
-    min-width: 600px;
-    height: auto;
-    align-self: flex-start;
+  max-width: 1140px;
+  min-width: 600px;
+  height: auto;
+  align-self: flex-start;
 
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 
-    padding: 0 30px 30px;
-    border-radius: 15px;
-  }
+  padding: 0 30px 30px;
+  border-radius: 15px;
+}
 
-  form {
-    text-align: center;
-  }
+form {
+  text-align: center;
+}
 
-  .form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, auto));
-    gap: 0 24px;
-    /* Add space between grid items */
-    width: auto;
-    /* Ensure the form takes the full width of the parent */
-    box-sizing: border-box;
-    ;
-    /* Include padding and border in the element's total width and height */
-    justify-content: start;
-    /* Align items to the left */
-    justify-items: start;
-    /* Align items within their grid area to the start (left) */
-    align-items: start;
-    /* Align items to the start of their grid area */
-    text-align: left;
-    /* Ensure text inside the grid items is aligned to the left */
-  }
+.form-grid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  /* Add space between grid items */
+  width: 100%;
 
-  .form-grid p {
-    display: flex;
-    flex-direction: column;
-    /* Stack children vertically */
+}
 
-    text-align: left;
-    /* Ensure text inside the <p> elements is aligned to the left */
-    width: 100%;
-    /* Ensure the <p> elements take the full width of the grid item */
-  }
+.form-grid div {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  /* Stack children vertically */
+
+  text-align: left;
+  /* Ensure text inside the <p> elements is aligned to the left */
+  max-width: 300px;
+  /* Ensure the <p> elements take the full width of the grid item */
+}
+
+
+.profile-picture img {
+  max-width: 100%;
+  max-height: 100%;
+  height: auto; /* Maintain aspect ratio */
+  width: auto; /* Maintain aspect ratio */
+  object-fit: contain; /* Ensure the image fits within the container without stretching */
+
+}
 
   p,
   label {
