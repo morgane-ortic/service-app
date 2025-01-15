@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
 from .decorators import customer_required
 from .models import Customer
 from core.models import Service, ServiceType
@@ -106,6 +107,12 @@ def profile(request):
     customer = get_object_or_404(Customer, user=request.user)
 
     if request.method == 'POST':
+        password_form = PasswordChangeForm(request.user, request.POST)
+        if password_form.is_valid():
+            user = password_form.save()
+            messages.success(request, 'Password changed successfully.')
+            update_session_auth_hash(request, user)  # Important to keep the user logged in
+            
         personal_form = PersonalDetailsForm(request.POST, request.FILES, instance=customer)
         if personal_form.is_valid():
             personal_form.save()
@@ -113,7 +120,11 @@ def profile(request):
             return redirect('customers:profile')
     else:
         personal_form = PersonalDetailsForm(instance=customer)
-    return render(request, 'customers/profile.html', {'personal_form': personal_form})
+        password_form = PasswordChangeForm(request.user)
+    return render(request, 'customers/profile.html', {
+        'personal_form': personal_form,
+        'password_form': password_form
+        })
 
 def about(request):
     return render(request, 'core/about.html', {

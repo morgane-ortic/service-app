@@ -60,7 +60,7 @@ def profile(request, section='personal_details'):
             password_form = PasswordChangeForm(request.user, request.POST)
             if password_form.is_valid():
                 user = password_form.save()
-                messages.success(request, 'Password updated successfully.')
+                messages.success(request, 'Password changed successfully.')
                 update_session_auth_hash(request, user)  # Important to keep the user logged in
                 
     else:
