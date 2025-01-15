@@ -4,11 +4,13 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
+from .decorators import therapist_required
 from .forms import RegisterForm, PersonalDetailsForm, ProDetailsForm, EmptyForm
 from core.forms import LoginForm
 from .models import Therapist
 
-# Placeholder views
+
+@therapist_required
 def home(request):
     # fetch current therapist instance
     if request.user.is_authenticated:
@@ -21,9 +23,11 @@ def home(request):
     # render 
     return render(request, 'therapists/home.html', {'therapist': therapist})
 
+@therapist_required
 def notifications(request):
     return render(request, 'therapists/notifications.html')
 
+@therapist_required
 def schedule(request):
     return render(request, 'therapists/schedule.html')
 
@@ -98,36 +102,43 @@ def register(request):
 
 @login_required
 def register_details(request):
-    if request.method == 'POST':
-        personal_form = PersonalDetailsForm(request.POST, request.FILES)
-        pro_form = ProDetailsForm(request.POST)
-        
-        if personal_form.is_valid() and pro_form.is_valid():
-            # Combine data from both forms
-            therapist_data = {
-                'user': request.user,
-                'name': personal_form.cleaned_data['name'],
-                'gender': personal_form.cleaned_data['gender'],
-                'description': personal_form.cleaned_data['description'],
-                'address': personal_form.cleaned_data['address'],
-                'phone_number': personal_form.cleaned_data['phone_number'],
-                'picture': personal_form.cleaned_data['picture'],
-                'years_xp': pro_form.cleaned_data['years_xp'],
-                'equipment_pref': pro_form.cleaned_data['equipment_pref'],
-            }
-            
-            # Create and save the Therapist instance
-            therapist = Therapist.objects.create(**therapist_data)
-            
-            messages.success(request, 'Account created successfully! Welcome.')
-            return redirect('therapists:home')  # Redirect after saving
+    # check if user has a therapist profile
+    if hasattr(request.user, 'therapist'):
+        # If so, redirect to homepage
+        return redirect('therapists:home')
+    # If not, prompt user with registration form to complete sign up
     else:
-        personal_form = PersonalDetailsForm()
-        pro_form = ProDetailsForm()
-    return render(request, 'therapists/register_details.html', {
-        'personal_form': personal_form,
-        'pro_form': pro_form,
-    })
+        if request.method == 'POST':
+            personal_form = PersonalDetailsForm(request.POST, request.FILES)
+            pro_form = ProDetailsForm(request.POST)
+            # Save forms to db if valid and create therapist instance
+            if personal_form.is_valid() and pro_form.is_valid():
+                # Combine data from both forms
+                therapist_data = {
+                    'user': request.user,
+                    'name': personal_form.cleaned_data['name'],
+                    'gender': personal_form.cleaned_data['gender'],
+                    'description': personal_form.cleaned_data['description'],
+                    'address': personal_form.cleaned_data['address'],
+                    'phone_number': personal_form.cleaned_data['phone_number'],
+                    'picture': personal_form.cleaned_data['picture'],
+                    'years_xp': pro_form.cleaned_data['years_xp'],
+                    'equipment_pref': pro_form.cleaned_data['equipment_pref'],
+                }
+                
+                # Create and save the Therapist instance
+                therapist = Therapist.objects.create(**therapist_data)
+                
+                messages.success(request, 'Account created successfully! Welcome.')
+                return redirect('therapists:home')  # Redirect after saving
+        # If not all forms are valid, prompt page again to user
+        else:
+            personal_form = PersonalDetailsForm()
+            pro_form = ProDetailsForm()
+        return render(request, 'therapists/register_details.html', {
+            'personal_form': personal_form,
+            'pro_form': pro_form,
+        })
 
 def user_login(request):
     if request.method == 'POST':
@@ -150,8 +161,6 @@ def user_logout(request):
     logout(request)
     return redirect('home')
 
+@therapist_required
 def customer_profile(request):
     return render(request, 'customer_profile/profile.html')
-
-def settings(request):
-    return render(request, 'therapists/settings.html')

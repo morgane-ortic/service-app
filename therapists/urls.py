@@ -19,5 +19,4 @@ urlpatterns = [
     path('logout/', views.user_logout, name='logout'),
 
     path('customer_profile/', views.customer_profile, name='customer_profile'),
-    path('settings/', views.settings, name='settings'),
 ]

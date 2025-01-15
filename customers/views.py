@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
+from .decorators import customer_required
 from .models import Customer
 from core.models import Service, ServiceType
 from .forms import RegisterForm, PersonalDetailsForm
@@ -25,10 +26,11 @@ def home(request):
     # render 
     return render(request, 'customers/home.html', {'customer': customer})
 
+@customer_required
 def bookings(request):
     return render(request, 'customers/bookings.html')
 
-
+@customer_required
 def services(request):
     service_type_name = request.GET.get('service_type', 'all')
     if service_type_name == 'all':
@@ -48,6 +50,7 @@ def services(request):
         'selected_type': service_type_name,
     })
 
+@customer_required
 def service_detail(request, service_id):
     service = get_object_or_404(Service, id=service_id)
     return render(request, 'customers/service_detail.html', {'service': service})
@@ -56,11 +59,13 @@ def service_detail(request, service_id):
 
 stripe.api_key = settings.STRIPE_SECRET_KEY  # Set your Stripe secret key
 
+@customer_required
 def create_checkout_session(request):
     print("create_checkout_session view called")  # Debug print
     ...
 
 
+@customer_required
 def create_checkout_session(request):
     print("create_checkout_session view called")  # Debug print statement
 
@@ -96,6 +101,7 @@ def create_checkout_session(request):
 
 
 @login_required
+@customer_required
 def profile(request):
     customer = get_object_or_404(Customer, user=request.user)
 
@@ -130,18 +136,24 @@ def register(request):
 
 @login_required
 def register_details(request):
-    if request.method == 'POST':
-        form = PersonalDetailsForm(request.POST, request.FILES)  # Pass request.FILES to handle image upload
-        if form.is_valid():
-            customer = form.save(commit=False)  # Save the form but don't commit to the database yet
-            customer.user = request.user  # Assuming you want to link the customer to the logged-in user
-            customer.save()  # Now save the customer instance
-            form.save_m2m()  # Save the many-to-many relationships
-            messages.success(request, 'Account created successfully! Welcome.')
-            return redirect('therapists:home')  # Redirect after saving
+    # check if user has a therapist profile
+    if hasattr(request.user, 'customer'):
+        # If so, redirect to homepage
+        return redirect('customers:home')
+    # If not, prompt user with registration form to complete sign up
     else:
-        form = PersonalDetailsForm()
-    return render(request, 'customers/register_details.html', {'form': form})
+        if request.method == 'POST':
+            form = PersonalDetailsForm(request.POST, request.FILES)  # Pass request.FILES to handle image upload
+            if form.is_valid():
+                customer = form.save(commit=False)  # Save the form but don't commit to the database yet
+                customer.user = request.user  # Assuming you want to link the customer to the logged-in user
+                customer.save()  # Now save the customer instance
+                form.save_m2m()  # Save the many-to-many relationships
+                messages.success(request, 'Account created successfully! Welcome.')
+                return redirect('customers:home')  # Redirect after saving
+        else:
+            form = PersonalDetailsForm()
+        return render(request, 'customers/register_details.html', {'form': form})
 
 
 def user_login(request):
