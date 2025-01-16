@@ -30,7 +30,7 @@
                     {% endif %}
                 <li><a href="{% url 'therapists:logout' %}">Log Out</a></li>
                 {% else %}
-                    <li><a href="{% url 'therapists:login' %}">Log In</a></li>
+                    <li><a href="{% url 'login' %}">Log In</a></li>
                     <li><a href="{% url 'therapists:register' %}">Sign up</a></li>
                 {% endif %}
             </ul>

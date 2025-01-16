@@ -198,7 +198,30 @@ form {
   align-items: center; /* Align items to the center */
 }
 
+.login-form {
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  background-color: white;
+  border-radius: 15px;
+  border: 2px solid gray;
+}
+
+/* Ensure the form group is centered */
+.login-form > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center align the form group elements */
+  position: relative; /* Ensure the container is positioned relatively */
+  width: 100%; /* Ensure the container takes the full width */
+  max-width: 300px; /* Set a maximum width for the container */
+}
+
+.login-form input {
+  background-color: rgb(229, 235, 238);
+}
+
 .form-grid {
+  border: 1px;
   display: inline-flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -220,7 +243,7 @@ form {
 }
 
 .form-field {
-  margin-top: 15px;
+  margin-top: 0px;
   margin-bottom: 15px;
 }
 
@@ -263,12 +286,24 @@ label {
   color: black;
 }
 
-.helptext,
+.helptext, #id_new_password1_helptext {
+  display: None;
+}
+
+.errorlist {
+  color: red;
+  font-weight: bold;
+  padding-left: 0; /* Remove default padding from list items */
+  margin-left: 0; /* Remove default margin from list items */
+  list-style: none; /* Remove bullet points */
+}
+
+.errorlist,
 form li {
   text-align: justify;
   font-family: sans-serif;
   font-size: small;
-  max-width: 400px;
+  max-width: 300px;
 }
 
 button[type="submit"] {
@@ -298,11 +333,13 @@ button[type="submit"]:hover {
   font-family: sans-serif;
   color: black;
   font-size: 24px;
+  text-align: center;
 }
 
 label {
   display: block;
-  margin-bottom: 8px;
+  margin-top: 15px;
+  margin-bottom: 5px;
   color: #555;
 }
 

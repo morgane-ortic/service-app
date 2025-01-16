@@ -6,7 +6,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from .decorators import therapist_required
 from .forms import RegisterForm, PersonalDetailsForm, ProDetailsForm, EmptyForm
-from core.forms import LoginForm
 from .models import Therapist
 
 

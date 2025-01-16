@@ -8,7 +8,6 @@ from .decorators import customer_required
 from .models import Customer
 from core.models import Service, ServiceType
 from .forms import RegisterForm, PersonalDetailsForm
-from core.forms import LoginForm
 from django.conf import settings
 from django.http import JsonResponse
 import stripe
@@ -125,24 +124,7 @@ def register_details(request):
         else:
             form = PersonalDetailsForm()
         return render(request, 'customers/register_details.html', {'form': form})
-
-
-def user_login(request):
-    if request.method == 'POST':
-        form = LoginForm(request, data=request.POST)  # Pass request and data to the form
-        if form.is_valid():
-            user = form.get_user()  # Get the authenticated user from the form
-            login(request, user)
-            # redirect to main app home url
-            return redirect('home')
-        else:
-            form.add_error(None, 'Invalid email or password')
-    else:
-        form = LoginForm()
-    return render(request, 'core/login.html', {
-        'base_template': 'customers/base.html',
-        'form': form
-    })
+    
 
 def user_logout(request):
     logout(request)

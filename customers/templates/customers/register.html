@@ -4,12 +4,12 @@
     <div class="page_content">
         <h1>Create your customer account</h1>
         <div class="button-container">
-            <h2>Sign up with email</h2>
 
             <!-- This will be linked to the proper form in the login view -->
-            <form method="post">
+            <form class="login-form" method="post">
+                <h2>Sign up with email</h2>
                 {% csrf_token %}
-                {{ form }}
+                    {{ form }}
                 <button type="submit">Create Account</button>
             </form>
 
