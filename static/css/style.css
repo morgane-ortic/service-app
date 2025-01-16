@@ -5,12 +5,21 @@ body {
 }
 
 header {
-
+  min-width: 600px;
 
   /* define margins and paddings around the header: */
   margin-right: auto;
   margin-left: auto;
   padding: 0 30px 0 30px;
+
+  /* fix the header at the top of the viewport */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+
+  /* ensure the header stays above other elements */
+  z-index: 1000;
 
   /* define the header background color: */
   background-color: white;
@@ -78,6 +87,12 @@ hr {
 }
 
 .messages {
+  position: absolute;
+  top: 130px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000; /* Ensure it flows over other elements */
+
   border-radius: 15px;
   text-align: center;
   color: white;
@@ -86,13 +101,11 @@ hr {
   background-color: green;
   display: inline-block;
   /* Adjust width to fit content */
-  padding: 10px;
+  padding: 6px 10px 6px;
   z-index: 1000
 }
 
 .close-btn {
-  top: 5px;
-  right: 5px;
   cursor: pointer;
   font-weight: bold;
   color: green;
@@ -109,7 +122,7 @@ hr {
 }
 
 .close-btn:hover {
-  background-color: dark;
+  background-color: lightgrey;
   /* Change color on hover */
 }
 
@@ -118,8 +131,7 @@ hr {
   min-width: 900px;
   width: 1200px;
 
-  margin: 15px;
-  margin-bottom: auto;
+  margin: 80px 0 30px;
   /* Push main_content up, leaving space at the bottom */
 
   display: inline-flex;
@@ -188,7 +200,7 @@ footer a {
   flex-direction: column;
   flex-grow: 1;
 
-  padding: 0 30px 30px;
+  padding: 30px;
   border-radius: 15px;
 }
 
@@ -242,6 +254,17 @@ form {
 
 }
 
+#password-form {
+  max-width: 900px;
+}
+
+#password-form li, #password-form ul {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
 .form-field {
   margin-top: 0px;
   margin-bottom: 15px;
@@ -286,8 +309,8 @@ label {
   color: black;
 }
 
-.helptext, #id_new_password1_helptext {
-  display: None;
+.helptext {
+  display: none;
 }
 
 .errorlist {
