@@ -5,6 +5,9 @@ from therapists.models import Therapist
 # This defines whether the home url points to customer or therapist homepage
 # depending whether a therapist is connected or not
 def home(request):
+    '''This defines whether the home url points to customer or therapist homepage
+    depending whether a therapist is connected or not'''
+    print('Redirecting to homepage')
     # check if a user is logged in
     if request.user.is_authenticated:
         try:

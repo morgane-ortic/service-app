@@ -133,6 +133,7 @@ def user_login(request):
         if form.is_valid():
             user = form.get_user()  # Get the authenticated user from the form
             login(request, user)
+            # redirect to main app home url
             return redirect('home')
         else:
             form.add_error(None, 'Invalid email or password')

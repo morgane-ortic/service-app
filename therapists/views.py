@@ -141,23 +141,6 @@ def register_details(request):
             'pro_form': pro_form,
         })
 
-def user_login(request):
-    if request.method == 'POST':
-        form = LoginForm(request, data=request.POST)  # Pass request and data to the form
-        if form.is_valid():
-            user = form.get_user()  # Get the authenticated user from the form
-            login(request, user)
-            messages.success(request, 'You are now logged in.')
-            return redirect('home')
-        else:
-            form.add_error(None, 'Invalid email or password')
-    else:
-        form = LoginForm()
-    return render(request, 'core/login.html', {
-        'base_template': 'therapists/base.html',
-        'form': form
-    })
-
 def user_logout(request):
     logout(request)
     return redirect('home')
