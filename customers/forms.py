@@ -27,6 +27,13 @@ class RegisterForm(UserCreationForm):
         return user
 
 class PersonalDetailsForm(forms.ModelForm):
+    picture = forms.ImageField(
+        label='Profile Picture',
+        required=False,
+        error_messages={'invalid': "Image files only"},
+        widget=forms.FileInput(attrs={'class': 'input-field'})
+    )
+
     
     class Meta:
         model = Customer

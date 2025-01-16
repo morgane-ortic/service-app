@@ -70,6 +70,13 @@ main {
   background-color: white;
 }
 
+hr {
+  color: rgb(216 107 222);
+  border-style: inset;
+  border-width: 1px;
+  margin: 15px 0 15px;
+}
+
 .messages {
   border-radius: 15px;
   text-align: center;
@@ -89,21 +96,27 @@ main {
   cursor: pointer;
   font-weight: bold;
   color: green;
-  margin-left: 5px; /* left margin before button */
-  background-color: white;  /* Background color for the circle */
-  border-radius: 50%; /* Make it a circle */
-  padding: 0 6px; /* Adjust padding for size */
-  transition: background-color 0.3s; /* Smooth transition for hover effect */
+  margin-left: 5px;
+  /* left margin before button */
+  background-color: white;
+  /* Background color for the circle */
+  border-radius: 50%;
+  /* Make it a circle */
+  padding: 0 6px;
+  /* Adjust padding for size */
+  transition: background-color 0.3s;
+  /* Smooth transition for hover effect */
 }
 
 .close-btn:hover {
-  background-color: dark;  /* Change color on hover */
+  background-color: dark;
+  /* Change color on hover */
 }
 
 .main_content {
-  max-width: 1140px;
+  max-width: 1200px;
   min-width: 900px;
-  width: 1140px;
+  width: 1200px;
 
   margin: 15px;
   margin-bottom: auto;
@@ -131,15 +144,14 @@ footer a {
 }
 
 .sidebar {
-  min-width: 230px;
+  min-width: 210px;
   flex-shrink: 0;
   border-radius: 15px 0 0 15px;
   background-color: white;
 }
 
 .sidebar ul {
-  padding-top: 15px;
-  padding-bottom: 15px;
+  padding: 15px 20px 15px;
   list-style-type: none;
   gap: 1.5em;
   /* declare flex: */
@@ -167,7 +179,7 @@ footer a {
 
 .page_content {
 
-  max-width: 1140px;
+  max-width: 1200px;
   min-width: 600px;
   height: auto;
   align-self: flex-start;
@@ -181,115 +193,141 @@ footer a {
 }
 
 form {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Align items to the center */
 }
 
 .form-grid {
-  display: flex;
+  display: inline-flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: left;
   gap: 30px;
   /* Add space between grid items */
-  width: 100%;
-
+  width: auto;
 }
 
-.form-grid div {
-  display: flex;
+.form-grid div, .form-grid p {
+  display: inline-flex;
   flex-direction: column;
   flex-wrap: wrap;
   /* Stack children vertically */
-
-  text-align: left;
-  /* Ensure text inside the <p> elements is aligned to the left */
+  justify-content: left;
+  /* Ensure the elements are aligned to the left */
   max-width: 300px;
-  /* Ensure the <p> elements take the full width of the grid item */
+
 }
 
+.form-field {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.profile-picture {
+  width: 200px;
+  /* Set the width of the container */
+  max-height: 280px;
+  /* Set the maximum height for the container */
+  margin-bottom: 20px;
+  overflow: hidden;
+  /* Hide any overflow */
+  display: inline-block;
+  /* Allow the container to adjust its height based on the image */
+  position: relative;
+  /* Ensure the image is positioned relative to the container */
+}
 
 .profile-picture img {
   max-width: 100%;
-  max-height: 100%;
-  height: auto; /* Maintain aspect ratio */
-  width: auto; /* Maintain aspect ratio */
-  object-fit: contain; /* Ensure the image fits within the container without stretching */
+  height: auto;
+  /* Maintain aspect ratio */
+  width: auto;
+  /* Maintain aspect ratio */
+  object-fit: cover;
+  /* Crop the image to fit within the container */
 
 }
 
-  p,
-  label {
-    text-align: justify;
-    font-family: sans-serif;
-    font-size: medium;
-    line-height: 1.4;
-    color: black;
-  }
+textarea, input {
+  padding: 5px;
+  border-radius: 12px;
+}
 
-  .helptext,
-  form li {
-    text-align: justify;
-    font-family: sans-serif;
-    font-size: small;
-  }
+p,
+label {
+  text-align: justify;
+  font-family: sans-serif;
+  font-size: medium;
+  line-height: 1.4;
+  color: black;
+}
 
-  button[type="submit"] {
-    margin: 10px 0 10px;
+.helptext,
+form li {
+  text-align: justify;
+  font-family: sans-serif;
+  font-size: small;
+  max-width: 400px;
+}
 
-    background-color: silver;
-    color: black;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-  }
+button[type="submit"] {
+  margin: 10px 0 10px;
 
-  button[type="submit"]:hover {
-    background-color: #fd7bf7;
-  }
+  background-color: silver;
+  color: black;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
 
-  .page_content h1 {
-    font-family: sans-serif;
-    text-align: center;
-    color: black;
-    font-size: 28px;
-  }
+button[type="submit"]:hover {
+  background-color: #fd7bf7;
+}
 
-  .page_content h2 {
-    font-family: sans-serif;
-    color: black;
-    font-size: 24px;
-  }
+.page_content h1 {
+  font-family: sans-serif;
+  text-align: center;
+  color: black;
+  font-size: 28px;
+}
 
-  label {
-    display: block;
-    margin-bottom: 8px;
-    color: #555;
-  }
+.page_content h2 {
+  font-family: sans-serif;
+  color: black;
+  font-size: 24px;
+}
 
-  .home_buttons {
-    display: flex;
-    /* Enable Flexbox for the container */
-    justify-content: center;
-    /* Center the buttons horizontally */
-    gap: 60px;
-    /* Add space between the buttons */
-  }
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: #555;
+}
 
-  .home_buttons button {
-    width: 240px;
+.home_buttons {
+  display: flex;
+  /* Enable Flexbox for the container */
+  justify-content: center;
+  /* Center the buttons horizontally */
+  gap: 60px;
+  /* Add space between the buttons */
+}
 
-    padding: 10px;
+.home_buttons button {
+  width: 240px;
 
-    text-align: center;
-    font-family: sans-serif;
-    font-size: 20px;
-    font-weight: bold;
-    text-decoration: none
-  }
+  padding: 10px;
 
-  footer p {
-    text-align: center;
-    font-size: 12px;
-  }
+  text-align: center;
+  font-family: sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  text-decoration: none
+}
+
+footer p {
+  text-align: center;
+  font-size: 12px;
+}
