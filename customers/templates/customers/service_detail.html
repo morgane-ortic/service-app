@@ -2,7 +2,13 @@
 {% load static %}
 {% block content %}
 
-<div class="service_detail" style="display: flex; flex-direction: column; align-items: flex-start; justify-content: center; margin: 0 20px; position: absolute; top: 53%; transform: translateY(-50%);">
+<div class="service_detail" 
+     style="display: flex; flex-direction: column; align-items: flex-start; 
+            justify-content: center; margin: 0 20px; position: absolute; 
+            top: 53%; transform: translateY(-50%); 
+            background: rgba(255, 255, 255, 0.9); 
+            padding: 20px; border-radius: 10px; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
     <!-- Header Section with Back Button and Centered Service Name -->
     <div style="display: flex; align-items: center; justify-content: flex-start; width: 100%; margin-bottom: 20px;">
         <button 
@@ -76,6 +82,7 @@
         </form>
     </div>
 </div>
+
 
 <script>
     const serviceLengths = {{ service.service_lengths|safe }};  // Pass service_lengths as JSON

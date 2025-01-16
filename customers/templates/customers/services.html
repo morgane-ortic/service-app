@@ -255,17 +255,26 @@
 
 <!-- HTML for Payment method modal -->
 <div id="payment_method_modal" 
-    style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); display: none; z-index: 20; width: 80%; max-width: 700px;">
+     style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            background: white; padding: 20px; border-radius: 10px; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); display: none; z-index: 20; 
+            width: 80%; max-width: 700px;">
     <!-- Close Button -->
-    <button id="close_payment_method_modal" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer;">&times;</button>
+    <button id="close_payment_method_modal" 
+            style="position: absolute; top: 10px; right: 10px; 
+                   background: none; border: none; font-size: 20px; cursor: pointer;">
+        &times;
+    </button>
 
     <!-- Title -->
     <h2 style="margin-bottom: 20px; text-align: center;">Choose Payment Method</h2>
 
     <!-- Stripe Toggle Button -->
     <div style="text-align: center; margin: 20px 0;">
-        <label style="display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 16px;">
-            <input type="checkbox" id="stripe_toggle" checked style="transform: scale(1.5); cursor: pointer;">
+        <label style="display: flex; align-items: center; justify-content: center; 
+                      gap: 10px; font-size: 16px;">
+            <input type="checkbox" id="stripe_toggle" checked 
+                   style="transform: scale(1.5); cursor: pointer;">
             Pay with Stripe
         </label>
     </div>
@@ -274,13 +283,23 @@
     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
         <div style="display: flex; align-items: center; gap: 10px;">
             <!-- Back Button -->
-            <button id="back_to_overview" style="background: #ccc; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Back</button>
+            <button id="back_to_overview" 
+                    style="background: #ccc; border: none; padding: 10px 20px; 
+                           border-radius: 5px; cursor: pointer;">
+                Back
+            </button>
             <span style="color: green; font-size: 12px;">256-bit SSL encrypted</span>
         </div>
-        <!-- Find Therapist Button -->
-        <button id="find_therapist" style="background-color: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Find Therapist</button>
+        <!-- Find Therapist Button (HARD-CODED PATH) -->
+        <button id="find_therapist"
+                style="background-color: #4CAF50; color: white; border: none; 
+                       padding: 10px 20px; border-radius: 5px; cursor: pointer;"
+                onclick="window.location.href='/customers/bookings/'">
+            Find Therapist
+        </button>
     </div>
 </div>
+
 
 
 
