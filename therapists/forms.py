@@ -2,10 +2,9 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Therapist
-from core.models import AcceptedCustomerGroups
 
 
-# initial registration form
+# Initial registration form
 class RegisterForm(UserCreationForm):
     class Meta:
         model = User
@@ -27,39 +26,77 @@ class RegisterForm(UserCreationForm):
 
 
 # Registration detailed form
-class RegisterDetailsForm(forms.ModelForm):
-    number_of_customers = forms.ModelMultipleChoiceField(
-        queryset=NumberOfCustomers.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
-        required=True  # Ensure that this field is required
+class PersonalDetailsForm(forms.ModelForm):
+    picture = forms.ImageField(
+        label='Profile Picture',
+        required=False,
+        error_messages={'invalid': "Image files only"},
+        widget=forms.FileInput(attrs={'class': 'input-field'})
     )
+
     class Meta:
         model = Therapist
-        fields = ['first_name', 'last_name', 'gender', 'age', 'pronouns', 'description',
-                  'street', 'number', 'postcode', 'city', 'country',
-                  'phone_number', 'picture', 'years_xp', 'accepted_customer_groups']
-        
-        widgets = {'first_name': forms.TextInput(attrs={'placeholder': 'Enter your first name', 'class': 'input-field'}),
-                   'last_name': forms.TextInput(attrs={'placeholder': 'Enter your last name', 'class': 'input-field'}),
-                   'gender': forms.Select(attrs={'class': 'select-field'}),
-                   'description': forms.Textarea(attrs={'placeholder': 'A short description of yourself', 'class': 'input-field', 'rows': 8, 'cols': 40}),
-                   'street': forms.TextInput(attrs={'placeholder': 'Enter your street', 'class': 'input-field'}),
-                   'number': forms.TextInput(attrs={'placeholder': 'Enter your house number', 'class': 'input-field'}),
-                   'postcode': forms.TextInput(attrs={'placeholder': 'Enter your postcode', 'class': 'input-field'}),
-                   'city': forms.TextInput(attrs={'placeholder': 'Enter your city', 'class': 'input-field'}),
-                   'country': forms.TextInput(attrs={'placeholder': 'Enter your country', 'class': 'input-field'}),
-                   'phone_number': forms.TextInput(attrs={'placeholder': 'Enter your phone number', 'class': 'input-field'}),
-                   'accepted_customer_groups': forms.SelectMultiple(attrs={'class': 'select-field'}),}
+        fields = [
+            'first_name', 'last_name', 'gender', 'age', 'description',
+            'street', 'number', 'postcode', 'city', 'country', 
+            'phone_number', 'pronouns', 'picture'
+        ]
+        widgets = {
+            'first_name': forms.TextInput(attrs={'placeholder': 'Enter your first name', 'class': 'input-field'}),
+            'last_name': forms.TextInput(attrs={'placeholder': 'Enter your last name', 'class': 'input-field'}),
+            'gender': forms.Select(attrs={'class': 'select-field'}),
+            'age': forms.NumberInput(attrs={'placeholder': 'Enter your age', 'class': 'input-field'}),
+            'description': forms.Textarea(attrs={'placeholder': 'A short description of yourself', 'class': 'input-field', 'rows': 8}),
+            'street': forms.TextInput(attrs={'placeholder': 'Street name', 'class': 'input-field'}),
+            'number': forms.TextInput(attrs={'placeholder': 'House number', 'class': 'input-field'}),
+            'postcode': forms.TextInput(attrs={'placeholder': 'Postcode', 'class': 'input-field'}),
+            'city': forms.TextInput(attrs={'placeholder': 'City', 'class': 'input-field'}),
+            'country': forms.TextInput(attrs={'placeholder': 'Country', 'class': 'input-field'}),
+            'phone_number': forms.TextInput(attrs={'placeholder': 'Phone number', 'class': 'input-field'}),
+            'pronouns': forms.Select(attrs={'class': 'select-field'}),
+        }
+        labels = {
+            'first_name': 'First Name',
+            'last_name': 'Last Name',
+            'gender': 'Gender',
+            'age': 'Age',
+            'description': 'Description',
+            'street': 'Street',
+            'number': 'House Number',
+            'postcode': 'Postcode',
+            'city': 'City',
+            'country': 'Country',
+            'phone_number': 'Phone Number',
+            'pronouns': 'Preferred Pronouns',
+            'picture': 'Profile Picture',
+        }
 
-    def __init__(self, *args, **kwargs):
-        """
-        Sets certain fields as optional.
-        """
-        super().__init__(*args, **kwargs)
-        self.fields['gender'].required = False
-        self.fields['street'].required = False
-        self.fields['number'].required = False
-        self.fields['postcode'].required = False
-        self.fields['city'].required = False
-        self.fields['country'].required = False
-        self.fields['phone_number'].required = False
+
+class ProDetailsForm(forms.ModelForm):
+    class Meta:
+        model = Therapist
+        fields = [
+            'qualifications', 'specialties', 'years_xp', 
+            'accepted_customer_groups', 'provided_equipment', 'required_equipment'
+        ]
+        widgets = {
+            'qualifications': forms.Textarea(attrs={'placeholder': 'List your qualifications', 'class': 'input-field', 'rows': 4}),
+            'specialties': forms.Textarea(attrs={'placeholder': 'List your specialties', 'class': 'input-field', 'rows': 4}),
+            'years_xp': forms.NumberInput(attrs={'placeholder': 'Years of experience', 'class': 'input-field'}),
+            'accepted_customer_groups': forms.CheckboxSelectMultiple(),
+            'provided_equipment': forms.Textarea(attrs={'placeholder': 'Equipment you provide', 'class': 'input-field', 'rows': 4}),
+            'required_equipment': forms.Textarea(attrs={'placeholder': 'Equipment required from clients', 'class': 'input-field', 'rows': 4}),
+        }
+        labels = {
+            'qualifications': 'Qualifications',
+            'specialties': 'Specialties',
+            'years_xp': 'Years of Experience',
+            'accepted_customer_groups': 'Accepted Customer Groups',
+            'provided_equipment': 'Provided Equipment',
+            'required_equipment': 'Required Equipment',
+        }
+
+
+# Empty placeholder form
+class EmptyForm(forms.Form):
+    pass
