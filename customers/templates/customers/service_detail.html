@@ -1,8 +1,14 @@
 {% extends './base.html' %}
 {% load static %}
-
 {% block content %}
-<div class="service_detail" style="display: flex; flex-direction: column; align-items: flex-start; justify-content: center; margin: 0 20px; position: absolute; top: 53%; transform: translateY(-50%);">
+
+<div class="service_detail" 
+     style="display: flex; flex-direction: column; align-items: flex-start; 
+            justify-content: center; margin: 0 20px; position: absolute; 
+            top: 53%; transform: translateY(-50%); 
+            background: rgba(255, 255, 255, 0.9); 
+            padding: 20px; border-radius: 10px; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
     <!-- Header Section with Back Button and Centered Service Name -->
     <div style="display: flex; align-items: center; justify-content: flex-start; width: 100%; margin-bottom: 20px;">
         <button 
@@ -53,11 +59,6 @@
                         
                     </span>
                 </div>
-                <div style="flex: 1; text-align: center;">
-                    <span style="font-weight: bold;">
-                        
-                    </span>
-                </div>
             </div>
 
             <!-- Row for Inputs and Price/Booking -->
@@ -77,14 +78,11 @@
                 <input type="number" id="groupSize" name="groupSize" min="1" max="10" value="1" style="padding: 5px; flex: 1; max-width: 180px;" onchange="updateParticipantsDropdown()">
 
                 <p id="price" style="font-weight: bold; margin: 0; flex: 1; text-align: center; max-width: 180px;">Price: {{ service.base_price }}€</p>
-
-                <button type="submit" style="background-color: rgb(216, 107, 222); color: white; border: none; border-radius: 5px; padding: 10px 20px; font-size: 14px; cursor: pointer; flex: 1; max-width: 180px;">
-                    Book Now
-                </button>
             </div>
         </form>
     </div>
 </div>
+
 
 <script>
     const serviceLengths = {{ service.service_lengths|safe }};  // Pass service_lengths as JSON

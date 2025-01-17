@@ -11,7 +11,7 @@ from .forms import RegisterForm, PersonalDetailsForm
 from django.conf import settings
 from django.http import JsonResponse
 import stripe
-from django.views.decorators.csrf import csrf_exempt
+from core.models import Booking
 
 
 # Placeholder views
@@ -57,6 +57,9 @@ def services(request):
 def service_detail(request, service_id):
     service = get_object_or_404(Service, id=service_id)
     return render(request, 'customers/service_detail.html', {'service': service})
+
+from django.shortcuts import render, redirect
+from core.models import Booking
 
 def bookings(request):
     return render(request, 'customers/bookings.html')

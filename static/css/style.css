@@ -67,15 +67,21 @@ main {
   background-position: center;
   background-attachment: fixed;
 
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+
   padding-top: 15px;
 
   min-width: 600px;
+  min-height: 87vh; 
   min-height: 87vh;
   display: flex;
   flex-direction: column;
   align-items: center;
 
   /* define main background color */
+  background-color: white;
   background-color: white;
 }
 
@@ -127,8 +133,14 @@ hr {
 }
 
 .main_content {
+  max-width: 1600px;
   max-width: 1200px;
   min-width: 900px;
+
+  margin:30px;
+  margin-bottom: auto; /* Push main_content up, leaving space at the bottom */
+  
+  display: inline-flex;
   width: 1200px;
 
   margin: 80px 0 30px;
@@ -140,9 +152,23 @@ hr {
   align-items: flex-start;
 
   border-radius: 10px;
+  background-color:  rgba(255, 255, 255, 0.8);
+  align-items: flex-start;
+
+  border-radius: 10px;
   background-color: rgba(255, 255, 255, 0.8);
 }
 
+.main_content a, footer a {
+  color: rgb(216 107 222);
+ }
+
+ .sidebar_page {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
 .main_content a,
 footer a {
   color: magenta;
@@ -156,13 +182,18 @@ footer a {
 }
 
 .sidebar {
+  min-width: 230px;
   min-width: 210px;
   flex-shrink: 0;
+  border-radius: 15px 0 0 15px;
+  background-color: white;
   border-radius: 15px 0 0 15px;
   background-color: white;
 }
 
 .sidebar ul {
+  padding-top: 15px;
+  padding-bottom: 15px;
   padding: 15px 20px 15px;
   list-style-type: none;
   gap: 1.5em;
@@ -180,6 +211,7 @@ footer a {
   /* style the font of the navigation elements */
   font-family: sans-serif;
   font-size: medium;
+  font-size: medium;
   color: black;
   text-decoration: none;
 }
@@ -191,6 +223,7 @@ footer a {
 
 .page_content {
 
+  max-width: 1140px;
   max-width: 1200px;
   min-width: 600px;
   height: auto;
@@ -200,6 +233,7 @@ footer a {
   flex-direction: column;
   flex-grow: 1;
 
+  padding: 0 30px 30px;
   padding: 30px;
   border-radius: 15px;
 }
@@ -215,6 +249,33 @@ form {
   margin-bottom: 10px;
   background-color: white;
   border-radius: 15px;
+}
+
+form {
+  text-align: center;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, auto));
+  gap: 0 24px; /* Add space between grid items */
+  width: auto; /* Ensure the form takes the full width of the parent */
+  box-sizing: border-box;; /* Include padding and border in the element's total width and height */
+  justify-content: start; /* Align items to the left */
+  justify-items: start; /* Align items within their grid area to the start (left) */
+  align-items: start; /* Align items to the start of their grid area */
+  text-align: left; /* Ensure text inside the grid items is aligned to the left */
+}
+
+.form-grid p {
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  
+  text-align: left; /* Ensure text inside the <p> elements is aligned to the left */
+  width: 100%; /* Ensure the <p> elements take the full width of the grid item */
+}
+
+p, label {
   border: 2px solid gray;
 }
 
@@ -309,6 +370,14 @@ label {
   color: black;
 }
 
+.helptext,
+form li
+{
+  text-align: justify;
+  font-family: sans-serif;
+  font-size: small;
+}
+
 .helptext {
   display: none;
 }
@@ -347,6 +416,7 @@ button[type="submit"]:hover {
 
 .page_content h1 {
   font-family: sans-serif;
+  text-align: center;
   text-align: center;
   color: black;
   font-size: 28px;

@@ -1,9 +1,8 @@
 from django.db import models
 
 
-class NumberOfCustomers(models.Model):
-    '''Enables multiple choices to be selected at once'''
-    # CREATED A FORM TO HANDLE THIS CHOICE
+class AcceptedCustomerGroups(models.Model):
+    """Enables multiple choices to be selected at once"""
     CHOICES = [
         ('single', 'Single'),
         ('couple', 'Couple'),
@@ -11,35 +10,35 @@ class NumberOfCustomers(models.Model):
     ]
     choice = models.CharField(max_length=30, choices=CHOICES)
 
+    class Meta:
+        verbose_name = "Accepted Customer Group"
+        verbose_name_plural = "Accepted Customer Groups"
+
     def __str__(self):
         return self.choice
+
     
 
-class Booking(models.Model):
-    CUSTOMER_NUMBER = [
-        ('one', 'One'),
-        ('couple', 'Couple'),
-        ('group', 'Group'),
-    ]
 
-    # 'on_delete=models.NULL' makes sure the booking stays in the DB even if the therapist gets deleted
-    # 'null=True' ensures this is possible, by allowing the FK to be set to NULL when the related PK gets deleted
+class Booking(models.Model):
     customer = models.ForeignKey('customers.Customer', on_delete=models.SET_NULL, null=True, related_name='booking')
     therapist = models.ForeignKey('therapists.Therapist', on_delete=models.SET_NULL, null=True, related_name='booking')
     service = models.ForeignKey('therapists.TherapistService', on_delete=models.SET_NULL, null=True, related_name='booking')
-    number_of_customers = models.ManyToManyField(NumberOfCustomers) # relationship to NumberOfCustomers model
+    number_of_customers = models.PositiveIntegerField(default=1)  # Directly store the number of customers as an integer
     address = models.CharField(max_length=255)
     booking_date_time = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
-        
+    price = models.FloatField(max_length=6, default=0.00)  # Default value set to 0.00
+
     def __str__(self):
         formatted_date_time = self.booking_date_time.strftime("%Y-%m-%d %H:%M")
-        return  (
+        return (
             f'Booking ID: {self.id}\n'
             f'Customer: {self.customer.user.username}\n'
             f'Therapist: {self.therapist.user.username}\n'
             f'Booking Time: {formatted_date_time}\n'
         )
+    
 
 
 
