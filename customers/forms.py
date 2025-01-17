@@ -27,6 +27,13 @@ class RegisterForm(UserCreationForm):
         return user
 
 class PersonalDetailsForm(forms.ModelForm):
+    picture = forms.ImageField(
+        label='Profile Picture',
+        required=False,
+        error_messages={'invalid': "Image files only"},
+        widget=forms.FileInput(attrs={'class': 'input-field'})
+    )
+
     
     class Meta:
         model = Customer
@@ -34,7 +41,7 @@ class PersonalDetailsForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={'placeholder': 'Enter your full name', 'class': 'input-field'}),
             'gender': forms.Select(attrs={'class': 'select-field'}),
-            'description': forms.Textarea(attrs={'placeholder': 'A short description of yourself', 'class': 'input-field', 'rows': 8, 'cols': 40}),
+            'description': forms.Textarea(attrs={'placeholder': 'A short description of yourself', 'class': 'input-field', 'rows': 8, 'cols': 48}),
         }
         labels = {
             'name': 'Your name',

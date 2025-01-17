@@ -38,11 +38,46 @@
                     
                     <!-- Render form fields based on the section -->
                     {% if section == 'personal_details' %}
-                        {{ personal_form.as_p }}
+                        <div class="form-group">
+                            {{ personal_form.picture.label_tag }}
+                            {% if therapist.picture %}
+                                <div class="profile-picture">
+                                    <img src="{{ therapist.picture.url }}" alt="Profile Picture">
+                                </div>
+                            {% endif %}
+                            {{ personal_form.picture }}
+                        </div>
+                        <div class="form-group">
+                            <div class="form-field">
+                                {{ personal_form.name.label_tag }}
+                                {{ personal_form.name }}
+                            </div>
+                            <div class="form-field">
+                                {{ personal_form.gender.label_tag }}
+                                {{ personal_form.gender }}
+                            </div>
+                            <div class="form-field">
+                                {{ personal_form.description.label_tag }}
+                                {{ personal_form.description }}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="form-field">
+                                {{ personal_form.address.label_tag }}
+                                {{ personal_form.address }}
+                            </div>
+                            <div class="form-field">
+                                {{ personal_form.phone_number.label_tag }}
+                                {{ personal_form.phone_number }}
+                            </div>
+                        </div>
+
                     {% elif section == 'professional_details' %}
                         {{ pro_form.as_p }}
+
                     {% elif section == 'privacy_security' %}
                         {{ password_form.as_p }}
+
                     {% else %}
                         {{ empty_form.as_p }}
                     {% endif %}

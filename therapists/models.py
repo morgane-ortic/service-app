@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from core.models import NumberOfCustomers
 
 
 class Therapist(models.Model):
@@ -27,7 +26,6 @@ class Therapist(models.Model):
     qualifications = models.CharField(max_length=1000, null=True, blank=True)
     specialties = models.CharField(max_length=1000, null=True, blank=True)
     years_xp = models.IntegerField()
-    number_of_customers = models.ManyToManyField(NumberOfCustomers) # relationship to NumberOfCustomers model
     equipment_pref = models.TextField(max_length=1000, blank=True, null=True)
 
     def __str__(self):

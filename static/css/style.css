@@ -5,51 +5,60 @@ body {
 }
 
 header {
+  min-width: 600px;
 
+  /* define margins and paddings around the header: */
+  margin-right: auto;
+  margin-left: auto;
+  padding: 0 30px 0 30px;
 
-    /* define margins and paddings around the header: */
-    margin-right: auto;
-    margin-left: auto;
-    padding: 0 30px 0 30px;
-  
-    /* define the header background color: */
-    background-color: white;
-  
-    /* declare flex: */
-    display: flex;
-  
-    /* position elements of the header */
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-end;
-    flex-wrap: wrap;
-  }
+  /* fix the header at the top of the viewport */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
 
-  .menu ul {
-    list-style-type: none;
-    gap: 2em;
-    /* declare flex: */
-    display: flex;
-  
-    /* define that the content will be displayed horizontally: */
-    flex-direction: row;
-  
-    /* define spacing between navigation elements: */
-    justify-content: space-around;
-  }
-  
-  .menu a {
-    /* style the font of the navigation elements */
-    font-family: sans-serif;
-    font-size: 18px;
-    color: black;
-    text-decoration: none;
-  }
+  /* ensure the header stays above other elements */
+  z-index: 1000;
 
-  .menu a:hover{
-    color: rgb(216 107 222);
-    font-weight: bold;  
-  }
+  /* define the header background color: */
+  background-color: white;
+
+  /* declare flex: */
+  display: flex;
+
+  /* position elements of the header */
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.menu ul {
+  list-style-type: none;
+  gap: 2em;
+  /* declare flex: */
+  display: flex;
+
+  /* define that the content will be displayed horizontally: */
+  flex-direction: row;
+
+  /* define spacing between navigation elements: */
+  justify-content: space-around;
+}
+
+.menu a {
+  /* style the font of the navigation elements */
+  font-family: sans-serif;
+  font-size: 18px;
+  color: black;
+  text-decoration: none;
+}
+
+.menu a:hover {
+  color: rgb(216 107 222);
+  font-weight: bold;
+}
 
 main {
   background-image: url("../img/main_background.jpg");
@@ -58,38 +67,88 @@ main {
   background-position: center;
   background-attachment: fixed;
 
+  padding-top: 15px;
+
   min-width: 600px;
-  min-height: 87vh; 
+  min-height: 87vh;
   display: flex;
-  flex-direction: row;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 
   /* define main background color */
   background-color: white;
 }
 
-.main_content {
-  max-width: 1140px;
-  min-width: 900px;
-  width: 1140px;
+hr {
+  color: rgb(216 107 222);
+  border-style: inset;
+  border-width: 1px;
+  margin: 15px 0 15px;
+}
 
-  margin:30px;
-  margin-bottom: auto; /* Push main_content up, leaving space at the bottom */
-  
+.messages {
+  position: absolute;
+  top: 130px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000; /* Ensure it flows over other elements */
+
+  border-radius: 15px;
+  text-align: center;
+  color: white;
+  font-family: sans-serif;
+  font-weight: bold;
+  background-color: green;
+  display: inline-block;
+  /* Adjust width to fit content */
+  padding: 6px 10px 6px;
+  z-index: 1000
+}
+
+.close-btn {
+  cursor: pointer;
+  font-weight: bold;
+  color: green;
+  margin-left: 5px;
+  /* left margin before button */
+  background-color: white;
+  /* Background color for the circle */
+  border-radius: 50%;
+  /* Make it a circle */
+  padding: 0 6px;
+  /* Adjust padding for size */
+  transition: background-color 0.3s;
+  /* Smooth transition for hover effect */
+}
+
+.close-btn:hover {
+  background-color: lightgrey;
+  /* Change color on hover */
+}
+
+.main_content {
+  max-width: 1200px;
+  min-width: 900px;
+  width: 1200px;
+
+  margin: 80px 0 30px;
+  /* Push main_content up, leaving space at the bottom */
+
   display: inline-flex;
   flex-direction: row;
   justify-content: center;
   align-items: flex-start;
 
   border-radius: 10px;
-  background-color:  rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.8);
 }
 
-.main_content a, footer a {
-  color: rgb(216 107 222);
- }
+.main_content a,
+footer a {
+  color: magenta;
+}
 
- .sidebar_page {
+.sidebar_page {
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -97,15 +156,14 @@ main {
 }
 
 .sidebar {
-  min-width: 230px;
+  min-width: 210px;
   flex-shrink: 0;
   border-radius: 15px 0 0 15px;
   background-color: white;
 }
 
 .sidebar ul {
-  padding-top: 15px;
-  padding-bottom: 15px;
+  padding: 15px 20px 15px;
   list-style-type: none;
   gap: 1.5em;
   /* declare flex: */
@@ -126,14 +184,14 @@ main {
   text-decoration: none;
 }
 
-.sidebar a:hover{
+.sidebar a:hover {
   color: rgb(216 107 222);
-  font-weight: bold;  
+  font-weight: bold;
 }
 
-.page_content{
+.page_content {
 
-  max-width: 1140px;
+  max-width: 1200px;
   min-width: 600px;
   height: auto;
   align-self: flex-start;
@@ -142,48 +200,133 @@ main {
   flex-direction: column;
   flex-grow: 1;
 
-  padding: 0 30px 30px;
+  padding: 30px;
   border-radius: 15px;
 }
 
 form {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Align items to the center */
+}
+
+.login-form {
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  background-color: white;
+  border-radius: 15px;
+  border: 2px solid gray;
+}
+
+/* Ensure the form group is centered */
+.login-form > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center align the form group elements */
+  position: relative; /* Ensure the container is positioned relatively */
+  width: 100%; /* Ensure the container takes the full width */
+  max-width: 300px; /* Set a maximum width for the container */
+}
+
+.login-form input {
+  background-color: rgb(229, 235, 238);
 }
 
 .form-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, auto));
-  gap: 0 24px; /* Add space between grid items */
-  width: auto; /* Ensure the form takes the full width of the parent */
-  box-sizing: border-box;; /* Include padding and border in the element's total width and height */
-  justify-content: start; /* Align items to the left */
-  justify-items: start; /* Align items within their grid area to the start (left) */
-  align-items: start; /* Align items to the start of their grid area */
-  text-align: left; /* Ensure text inside the grid items is aligned to the left */
+  border: 1px;
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: left;
+  gap: 30px;
+  /* Add space between grid items */
+  width: auto;
 }
 
-.form-grid p {
-  display: flex;
-  flex-direction: column; /* Stack children vertically */
-  
-  text-align: left; /* Ensure text inside the <p> elements is aligned to the left */
-  width: 100%; /* Ensure the <p> elements take the full width of the grid item */
+.form-grid div, .form-grid p {
+  display: inline-flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  /* Stack children vertically */
+  justify-content: left;
+  /* Ensure the elements are aligned to the left */
+  max-width: 300px;
+
 }
 
-p, label {
+#password-form {
+  max-width: 900px;
+}
+
+#password-form li, #password-form ul {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.form-field {
+  margin-top: 0px;
+  margin-bottom: 15px;
+}
+
+.profile-picture {
+  width: 200px;
+  /* Set the width of the container */
+  max-height: 280px;
+  /* Set the maximum height for the container */
+  margin-bottom: 20px;
+  overflow: hidden;
+  /* Hide any overflow */
+  display: inline-block;
+  /* Allow the container to adjust its height based on the image */
+  position: relative;
+  /* Ensure the image is positioned relative to the container */
+}
+
+.profile-picture img {
+  max-width: 100%;
+  height: auto;
+  /* Maintain aspect ratio */
+  width: auto;
+  /* Maintain aspect ratio */
+  object-fit: cover;
+  /* Crop the image to fit within the container */
+
+}
+
+textarea, input {
+  padding: 5px;
+  border-radius: 12px;
+}
+
+p,
+label {
   text-align: justify;
   font-family: sans-serif;
-  font-size:medium;
+  font-size: medium;
   line-height: 1.4;
   color: black;
 }
 
-.helptext,
-form li
-{
+.helptext {
+  display: none;
+}
+
+.errorlist {
+  color: red;
+  font-weight: bold;
+  padding-left: 0; /* Remove default padding from list items */
+  margin-left: 0; /* Remove default margin from list items */
+  list-style: none; /* Remove bullet points */
+}
+
+.errorlist,
+form li {
   text-align: justify;
   font-family: sans-serif;
   font-size: small;
+  max-width: 300px;
 }
 
 button[type="submit"] {
@@ -193,7 +336,7 @@ button[type="submit"] {
   color: black;
   padding: 10px 20px;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 16px;
 }
@@ -213,18 +356,23 @@ button[type="submit"]:hover {
   font-family: sans-serif;
   color: black;
   font-size: 24px;
+  text-align: center;
 }
 
 label {
   display: block;
-  margin-bottom: 8px;
+  margin-top: 15px;
+  margin-bottom: 5px;
   color: #555;
 }
 
 .home_buttons {
-  display: flex; /* Enable Flexbox for the container */
-  justify-content: center; /* Center the buttons horizontally */
-  gap: 60px; /* Add space between the buttons */
+  display: flex;
+  /* Enable Flexbox for the container */
+  justify-content: center;
+  /* Center the buttons horizontally */
+  gap: 60px;
+  /* Add space between the buttons */
 }
 
 .home_buttons button {
@@ -235,7 +383,7 @@ label {
   text-align: center;
   font-family: sans-serif;
   font-size: 20px;
-  font-weight: bold; 
+  font-weight: bold;
   text-decoration: none
 }
 
@@ -243,4 +391,3 @@ footer p {
   text-align: center;
   font-size: 12px;
 }
-

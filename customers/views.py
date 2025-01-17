@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.contrib.auth.models import User
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
+from .decorators import customer_required
 from .models import Customer
 from core.models import Service, ServiceType
 from .forms import RegisterForm, PersonalDetailsForm
-from core.forms import LoginForm
 from django.conf import settings
 from django.http import JsonResponse
 import stripe
@@ -27,9 +29,11 @@ def home(request):
     # render 
     return render(request, 'customers/home.html', {'customer': customer})
 
+@customer_required
 def bookings(request):
     return render(request, 'customers/bookings.html')
 
+@customer_required
 def services(request):
     service_type_name = request.GET.get('service_type', 'all')
     if service_type_name == 'all':
@@ -48,7 +52,8 @@ def services(request):
         'service_types': service_types,
         'selected_type': service_type_name,
     })
-    
+
+@customer_required
 def service_detail(request, service_id):
     service = get_object_or_404(Service, id=service_id)
     return render(request, 'customers/service_detail.html', {'service': service})
@@ -57,17 +62,30 @@ def bookings(request):
     return render(request, 'customers/bookings.html')
 
 @login_required
+@customer_required
 def profile(request):
     customer = get_object_or_404(Customer, user=request.user)
 
     if request.method == 'POST':
+        password_form = PasswordChangeForm(request.user, request.POST)
+        if password_form.is_valid():
+            user = password_form.save()
+            messages.success(request, 'Password changed successfully.')
+            update_session_auth_hash(request, user)  # Important to keep the user logged in
+            
         personal_form = PersonalDetailsForm(request.POST, request.FILES, instance=customer)
         if personal_form.is_valid():
             personal_form.save()
+            messages.success(request, 'Profile details updated successfully.')
             return redirect('customers:profile')
     else:
         personal_form = PersonalDetailsForm(instance=customer)
-    return render(request, 'customers/profile.html', {'personal_form': personal_form})
+        password_form = PasswordChangeForm(request.user)
+    return render(request, 'customers/profile.html', {
+        'personal_form': personal_form,
+        'password_form': password_form,
+        'customer': customer
+        })
 
 def about(request):
     return render(request, 'core/about.html', {
@@ -88,36 +106,25 @@ def register(request):
 
 @login_required
 def register_details(request):
-    if request.method == 'POST':
-        form = PersonalDetailsForm(request.POST, request.FILES)  # Pass request.FILES to handle image upload
-        if form.is_valid():
-            customer = form.save(commit=False)  # Save the form but don't commit to the database yet
-            customer.user = request.user  # Assuming you want to link the customer to the logged-in user
-            customer.save()  # Now save the customer instance
-            form.save_m2m()  # Save the many-to-many relationships
-            return redirect('customers:register_confirm')  # Redirect after saving
+    # check if user has a therapist profile
+    if hasattr(request.user, 'customer'):
+        # If so, redirect to homepage
+        return redirect('customers:home')
+    # If not, prompt user with registration form to complete sign up
     else:
-        form = PersonalDetailsForm()
-    return render(request, 'customers/register_details.html', {'form': form})
-
-def register_confirm(request):
-    return render(request, 'customers/register_confirm.html')
-
-def user_login(request):
-    if request.method == 'POST':
-        form = LoginForm(request, data=request.POST)  # Pass request and data to the form
-        if form.is_valid():
-            user = form.get_user()  # Get the authenticated user from the form
-            login(request, user)
-            return redirect('home')
+        if request.method == 'POST':
+            form = PersonalDetailsForm(request.POST, request.FILES)  # Pass request.FILES to handle image upload
+            if form.is_valid():
+                customer = form.save(commit=False)  # Save the form but don't commit to the database yet
+                customer.user = request.user  # Assuming you want to link the customer to the logged-in user
+                customer.save()  # Now save the customer instance
+                form.save_m2m()  # Save the many-to-many relationships
+                messages.success(request, 'Account created successfully! Welcome.')
+                return redirect('customers:home')  # Redirect after saving
         else:
-            form.add_error(None, 'Invalid email or password')
-    else:
-        form = LoginForm()
-    return render(request, 'core/login.html', {
-        'base_template': 'customers/base.html',
-        'form': form
-    })
+            form = PersonalDetailsForm()
+        return render(request, 'customers/register_details.html', {'form': form})
+    
 
 def user_logout(request):
     logout(request)
