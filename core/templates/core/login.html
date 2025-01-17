@@ -4,12 +4,12 @@
     <div class="page_content">
         <h1>Log in</h1>
         <div class="button-container">
-            <h2>Log in with email</h2>
 
-            <!-- This will be linked to the proper form in the login view -->
-            <form method="post">
+            <!-- This is linked to the proper form in the login view -->
+            <form class="login-form" method="post">
+                <h2>Log in with email</h2>
                 {% csrf_token %}
-                {{ form }}
+                    {{ form }}
                 <button type="submit">Log In</button>
             </form>
 

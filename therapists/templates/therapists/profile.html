@@ -8,7 +8,6 @@
                 <li><a href="{% url 'therapists:profile' 'personal_details' %}">Personal Details</a></li>
                 <li><a href="{% url 'therapists:profile' 'professional_details' %}">Professional Details</a></li>
                 <li><a href="{% url 'therapists:profile' 'service_settings' %}">Service Settings</a></li>
-                <li><a href="{% url 'therapists:profile' 'equipment' %}">Equipment</a></li>
                 <li><a href="{% url 'therapists:profile' 'payment_settings' %}">Payment settings</a></li>
                 <li><a href="{% url 'therapists:profile' 'privacy_security' %}">Privacy and Security</a></li>
             </ul>
@@ -18,25 +17,75 @@
 
             {% if section == 'personal_details' %}
                 <h2>Personal Details</h2>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae fuga eveniet ipsum, totam quidem vero hic impedit recusandae repellendus ea esse nesciunt excepturi accusamus, iste et nemo, accusantium molestias possimus!</p>
-                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Architecto explicabo, quo sint, officiis error autem maxime quisquam voluptate corporis dolore, unde animi facilis rerum et harum expedita quibusdam eveniet illum!</p>
-                <!-- Personal details content -->
+
             {% elif section == 'professional_details' %}
                 <h2>Professional Details</h2>
-                <!-- Professional details content -->
+                
             {% elif section == 'service_settings' %}
                 <h2>Service Settings</h2>
-                <!-- Service settings content -->
-            {% elif section == 'equipment' %}
-                <h2>Equipment</h2>
-                <!-- Equipment content -->
+                
             {% elif section == 'payment_settings' %}
                 <h2>Payment Settings</h2>
-                <!-- Payment settings content -->
+                
             {% elif section == 'privacy_security' %}
                 <h2>Privacy and Security</h2>
-                <!-- Privacy and security content -->
+                
             {% endif %}
+        
+            <form method="post" enctype="multipart/form-data">
+                <div class="form-grid">
+                    {% csrf_token %}
+                    
+                    <!-- Render form fields based on the section -->
+                    {% if section == 'personal_details' %}
+                        <div class="form-group">
+                            {{ personal_form.picture.label_tag }}
+                            {% if therapist.picture %}
+                                <div class="profile-picture">
+                                    <img src="{{ therapist.picture.url }}" alt="Profile Picture">
+                                </div>
+                            {% endif %}
+                            {{ personal_form.picture }}
+                        </div>
+                        <div class="form-group">
+                            <div class="form-field">
+                                {{ personal_form.name.label_tag }}
+                                {{ personal_form.name }}
+                            </div>
+                            <div class="form-field">
+                                {{ personal_form.gender.label_tag }}
+                                {{ personal_form.gender }}
+                            </div>
+                            <div class="form-field">
+                                {{ personal_form.description.label_tag }}
+                                {{ personal_form.description }}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="form-field">
+                                {{ personal_form.address.label_tag }}
+                                {{ personal_form.address }}
+                            </div>
+                            <div class="form-field">
+                                {{ personal_form.phone_number.label_tag }}
+                                {{ personal_form.phone_number }}
+                            </div>
+                        </div>
+
+                    {% elif section == 'professional_details' %}
+                        {{ pro_form.as_p }}
+
+                    {% elif section == 'privacy_security' %}
+                        {{ password_form.as_p }}
+
+                    {% else %}
+                        {{ empty_form.as_p }}
+                    {% endif %}
+                </div>
+                <!-- Submit Button -->
+                <button class="submit_button" type="submit">Save Changes</button>
+            </form>
+
         </div>
     </div>
 
