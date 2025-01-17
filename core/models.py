@@ -1,9 +1,8 @@
 from django.db import models
 
 
-class NumberOfCustomers(models.Model):
-    '''Enables multiple choices to be selected at once'''
-    # CREATED A FORM TO HANDLE THIS CHOICE
+class AcceptedCustomerGroups(models.Model):
+    """Enables multiple choices to be selected at once"""
     CHOICES = [
         ('single', 'Single'),
         ('couple', 'Couple'),
@@ -11,8 +10,13 @@ class NumberOfCustomers(models.Model):
     ]
     choice = models.CharField(max_length=30, choices=CHOICES)
 
+    class Meta:
+        verbose_name = "Accepted Customer Group"
+        verbose_name_plural = "Accepted Customer Groups"
+
     def __str__(self):
         return self.choice
+
     
 
 

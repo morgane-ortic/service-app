@@ -4,41 +4,29 @@
 
 <div style="width: 1800px; height: 700px; padding: 30px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
     <div style="display: flex; gap: 20px; align-items: stretch;">
-        <!-- Left Panel: Active Bookings and History -->
+        <!-- Left Panel: History -->
         <div class="history" style="flex: 1;">
             <h2>History</h2>
-            <div class="history-item">
-                <button>Use address</button>
-                <button>Request Therapist</button>
-                <button onclick="toggleText(this)" style="width: 160px;">Add to favorites</button>
-                <p><strong>Date:</strong> 11.10.2024</p>
-                <p><strong>Location:</strong> Winiger Strasse, Berlin 10000 bla bla</p>
-                <p><strong>Therapist:</strong> Casandra Sternritter, Thai Massagist</p>
-                <p><strong>Service:</strong> Thai Massage – 60 minutes</p>
-                <p><strong>Price:</strong> €80</p>
-            </div>
-            <hr>
-            <div class="history-item">
-                <button>Use address</button>
-                <button>Request Therapist</button>
-                <button onclick="toggleText(this)" style="width: 160px;">Add to favorites</button>
-                <p><strong>Date:</strong> 21.03.2023</p>
-                <p><strong>Location:</strong> Winiger Strasse, Berlin 10000 bla bla</p>
-                <p><strong>Therapist:</strong> Casandra Sternritter, Thai Massagist</p>
-                <p><strong>Service:</strong> Thai Massage – 60 minutes</p>
-                <p><strong>Price:</strong> €80</p>
-            </div>
+            {% if bookings %}
+                {% for booking in bookings %}
+                    <div class="history-item" style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                        <button>Use address</button>
+                        <button>Request Therapist</button>
+                        <button onclick="toggleText(this)" style="width: 160px;">Add to favorites</button>
+                        <p><strong>Date:</strong> {{ booking.booking_date_time|date:"d.m.Y H:i" }}</p>
+                        <p><strong>Location:</strong> {{ booking.address }}</p>
+                        <p><strong>Therapist:</strong> {{ booking.therapist.user.first_name }} {{ booking.therapist.user.last_name }}</p>
+                        <p><strong>Service:</strong> {{ booking.service.name }}</p>
+                        <p><strong>Price:</strong> €{{ booking.price }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No booking history available.</p>
+            {% endif %}
         </div>
-        <hr>
-        <div class="booking-details" style="flex: 1;">
-            <h2>Active Booking</h2>
-            <p><strong>Date:</strong> 11.10.2024</p>
-            <p><strong>Location:</strong> Winiger Strasse, Berlin 10000 bla bla</p>
-            <p><strong>Therapist:</strong> Casandra Sternritter, Thai Massagist</p>
-            <p><strong>Service:</strong> Thai Massage – 60 minutes</p>
-            <p><strong>Price:</strong> €80</p>
-            <div class="status-message">Your therapist is on their way</div>
-        </div>
+        
+        <!-- Divider -->
+        <hr style="height: 100%; border-left: 1px solid #ccc;">
 
         <!-- Right Panel: Google Map -->
         <div class="map-container" style="flex: 1.5; display: flex; flex-direction: column; height: 100%;">

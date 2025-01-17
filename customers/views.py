@@ -10,6 +10,7 @@ from core.forms import LoginForm
 from django.conf import settings
 from django.http import JsonResponse
 import stripe
+from core.models import Booking
 
 
 # Placeholder views
@@ -50,10 +51,27 @@ def service_detail(request, service_id):
     service = get_object_or_404(Service, id=service_id)
     return render(request, 'customers/service_detail.html', {'service': service})
 
+from django.shortcuts import render, redirect
+from core.models import Booking
+
 def bookings(request):
-    return render(request, 'customers/bookings.html')
+    # Ensure the user is authenticated
+    if not request.user.is_authenticated:
+        return redirect('login')  # Redirect to login if the user is not authenticated
 
+    # Check if the user has a related Customer object
+    if not hasattr(request.user, 'customer'):
+        return render(request, 'customers/bookings.html', {
+            'bookings': [],
+            'error': 'No customer profile found for this user. Please contact support.',
+        })
 
+    # Fetch the currently logged-in customer's bookings
+    customer = request.user.customer
+    bookings = Booking.objects.filter(customer=customer).order_by('-booking_date_time')
+
+    # Render the template with the bookings context
+    return render(request, 'customers/bookings.html', {'bookings': bookings})
 
 
 
