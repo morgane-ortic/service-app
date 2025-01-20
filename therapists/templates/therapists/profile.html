@@ -75,6 +75,20 @@
                     {% elif section == 'professional_details' %}
                         {{ pro_form.as_p }}
 
+                    {% elif section == 'service_settings' %}
+                        <div class="form-group">
+                            <div class="form-field">
+                                {{ service_form.service.label_tag }}
+                                {{ service_form.service }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-field">
+                                {{ service_form.prices.label_tag }}
+                                {{ service_form.prices }}
+                            </div>
+                        </div>
+
                     {% elif section == 'privacy_security' %}
                         {{ password_form.as_p }}
 

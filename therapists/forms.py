@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Therapist
+from .models import Therapist, TherapistService
+from core.models import Service
 
 
 # Initial registration form
@@ -96,6 +97,33 @@ class ProDetailsForm(forms.ModelForm):
             'required_equipment': 'Required Equipment',
         }
 
+
+class TherapistServiceForm(forms.ModelForm):
+    service = forms.ModelChoiceField(
+        queryset=Service.objects.all(),
+        widget=forms.Select,
+        required=True,
+        label='Select Service'
+    )
+
+    class Meta:
+        model = TherapistService
+        fields = ['service', 'prices']
+    
+        widgets = {
+            'prices': forms.Textarea(attrs={'rows': 3, 'cols': 20}),  # Adjust the size of the input field
+        }
+
+    def __init__(self, *args, **kwargs):
+        therapist = kwargs.pop('therapist', None)
+        super().__init__(*args, **kwargs)
+        if therapist:
+            used_services = TherapistService.objects.filter(therapist=therapist).values_list('service', flat=True)
+            self.fields['service'].queryset = Service.objects.exclude(id__in=used_services)
+
+        # Set initial value for prices based on the selected service
+        if self.instance and self.instance.pk:
+            self.fields['prices'].initial = self.instance.service.prices
 
 # Empty placeholder form
 class EmptyForm(forms.Form):

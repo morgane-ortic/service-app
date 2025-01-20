@@ -54,7 +54,7 @@ class Therapist(models.Model):
 class TherapistService(models.Model):
     therapist = models.ForeignKey(Therapist, on_delete=models.CASCADE, related_name='services')
     service = models.ForeignKey('core.Service', on_delete=models.CASCADE, related_name='therapist_services')
-    base_price = models.DecimalField(max_digits=6, decimal_places=2)
+    base_price = models.DecimalField(max_digits=6, decimal_places=2, default=60)
     prices = models.JSONField(default=list)
 
     def __str__(self):
