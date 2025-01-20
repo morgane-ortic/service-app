@@ -28,7 +28,8 @@ class Booking(models.Model):
     address = models.CharField(max_length=255)
     booking_date_time = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
-    price = models.FloatField(max_length=6, default=0.00)  # Default value set to 0.00
+    base_price = models.DecimalField(max_digits=6, decimal_places=2)
+    prices = models.JSONField(default=list)
 
     def __str__(self):
         formatted_date_time = self.booking_date_time.strftime("%Y-%m-%d %H:%M")
@@ -52,10 +53,9 @@ class ServiceType(models.Model):
 class Service(models.Model):
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=1000, null=True)
-    base_price = models.DecimalField(max_digits=6, decimal_places=2)  # Max price is 9999.99
+    base_price = models.DecimalField(max_digits=6, decimal_places=2)
+    prices = models.JSONField(default=list)
     picture = models.ImageField(upload_to='service_pictures/')  # For uploading pictures
-    service_types = models.ManyToManyField(ServiceType)
-    service_lengths = models.JSONField(default=list)  # Store lengths and prices as JSON
 
     def __str__(self):
         return self.name
