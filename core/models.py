@@ -68,7 +68,7 @@ class Service(models.Model):
         :param customer_type: str, e.g., "single", "couple", "group"
         :return: decimal.Decimal or None if not found
         """
-        for entry in self.service_lengths:
+        for entry in self.prices:
             if str(entry[0]) == duration:  # Match the duration
                 return entry[1].get(customer_type)  # Return the price for the specified customer type
         return None  # Return None if no matching duration or customer type is found
