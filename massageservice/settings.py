@@ -27,7 +27,7 @@ ALLOWED_HOSTS = [
 ]
 
 
-CSRF_TRUSTED_ORIGINS = ['https://aa4b-37-122-139-251.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = ['https://6be3-37-122-138-176.ngrok-free.app']
 
 
 

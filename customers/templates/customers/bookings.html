@@ -318,7 +318,9 @@
     document.addEventListener("DOMContentLoaded", function () {
         const requestPreference = document.getElementById("request-preference");
         const therapistNameInput = document.getElementById("therapist-name");
+        const searchTherapistButton = document.getElementById("search-therapist-btn");
         const dynamicText = document.getElementById("dynamic-text");
+        const currentBookingDetails = document.getElementById("current-booking-details");
 
         // Enable or disable input based on dropdown selection
         function handleDropdownChange() {
@@ -345,19 +347,32 @@
             }
         }
 
-        // Attach event listeners to dropdown
+        // Disable elements if "No current selection." is displayed
+        function updateElementsBasedOnSelection() {
+            const hasNoSelection = currentBookingDetails.textContent.trim() === "No current selection.";
+            requestPreference.disabled = hasNoSelection;
+            therapistNameInput.disabled = hasNoSelection || therapistNameInput.value.trim() === "";
+            searchTherapistButton.disabled = hasNoSelection;
+        }
+
+        // Attach event listeners
         requestPreference.addEventListener("change", function () {
             handleDropdownChange();
             updateDynamicText();
         });
 
-        // Initialize the dropdown behavior and dynamic text on page load
+        // Observe changes in the current booking details to handle "No current selection."
+        const observer = new MutationObserver(updateElementsBasedOnSelection);
+        observer.observe(currentBookingDetails, { childList: true, subtree: true });
+
+        // Initialize the dropdown behavior, dynamic text, and element states on page load
         handleDropdownChange();
         updateDynamicText();
+        updateElementsBasedOnSelection();
     });
 </script>
 
-<script>  // Functions to make the 'Request Therapist' button work
+<script> // Functions to make the 'Request Therapist' button work
     document.addEventListener("DOMContentLoaded", function () {
         const therapistNameInput = document.getElementById("therapist-name");
         const requestPreference = document.getElementById("request-preference");
