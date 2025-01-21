@@ -74,8 +74,7 @@ main {
   padding-top: 15px;
 
   min-width: 600px;
-  min-height: 87vh; 
-  min-height: 87vh;
+  min-height: 92vh; 
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -275,10 +274,6 @@ form {
   width: 100%; /* Ensure the <p> elements take the full width of the grid item */
 }
 
-p, label {
-  border: 2px solid gray;
-}
-
 /* Ensure the form group is centered */
 .login-form > div {
   display: flex;
@@ -343,6 +338,7 @@ p, label {
   /* Allow the container to adjust its height based on the image */
   position: relative;
   /* Ensure the image is positioned relative to the container */
+  border-radius: 6px;
 }
 
 .profile-picture img {
@@ -356,9 +352,14 @@ p, label {
 
 }
 
-textarea, input {
+textarea {
   padding: 5px;
-  border-radius: 12px;
+  border-radius: 8px;
+}
+
+input {
+  padding: 5px;
+  border-radius: 15px;
 }
 
 p,

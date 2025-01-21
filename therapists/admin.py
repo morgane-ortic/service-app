@@ -25,6 +25,6 @@ class AcceptedCustomerGroupsAdmin(admin.ModelAdmin):
 
 @admin.register(TherapistService)
 class TherapistServiceAdmin(admin.ModelAdmin):
-    list_display = ('therapist', 'service', 'price')
+    list_display = ('therapist', 'service', 'base_price')
     search_fields = ('therapist__first_name', 'therapist__last_name', 'service__name')
     list_filter = ('therapist__first_name', 'therapist__last_name', 'service__name')
