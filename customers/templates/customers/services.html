@@ -7,7 +7,6 @@
 
 <!--=================================================================  HTML code  ==========================================================================================-->
 
-<div class="page_content" style="margin-top: 20px; width: 1600px;">
 <div class="page_content">
     {% csrf_token %}
     <h1>Services</h1>
@@ -294,10 +293,11 @@
         <!-- Find Therapist Button (HARD-CODED PATH) -->
         <button id="find_therapist"
                 style="background-color: #4CAF50; color: white; border: none; 
-                       padding: 10px 20px; border-radius: 5px; cursor: pointer;"
-                onclick="window.location.href='/customers/bookings/'">
+                    padding: 10px 20px; border-radius: 5px; cursor: pointer;"
+                onclick="saveBookingDetails()">
             Find Therapist
         </button>
+
     </div>
 </div>
 
@@ -731,6 +731,30 @@
         }
     });    
 </script>
+
+<!-- JavaScript for saving all details so we can call them later from the bookings page-->
+<script>
+    function saveBookingDetails() {
+        const bookingData = {
+            serviceName: document.getElementById("overview_service")?.textContent || "N/A",
+            duration: document.getElementById("overview_duration")?.textContent || "N/A",
+            therapist: document.getElementById("overview_therapist")?.textContent || "No Preference",
+            peopleCount: document.getElementById("overview_people_count")?.textContent || "1",
+            date: document.getElementById("overview_date")?.textContent || "N/A",
+            time: document.getElementById("overview_time")?.textContent || "N/A",
+            city: document.getElementById("citySelect")?.value || "N/A",
+            country: document.getElementById("countrySelect")?.options[document.getElementById("countrySelect").selectedIndex]?.text || "N/A", // Fetch country text
+            paymentMethod: document.getElementById("stripe_toggle")?.checked ? "Stripe" : "Other",
+        };
+
+        console.log("Saving Booking Data:", bookingData); // Debugging log
+        localStorage.setItem("bookingData", JSON.stringify(bookingData)); // Save to localStorage
+
+        // Redirect to bookings page
+        window.location.href = "/customers/bookings/";
+    }
+</script>
+
 
 
 
