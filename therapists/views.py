@@ -7,6 +7,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from .decorators import therapist_required
 from .forms import RegisterForm, PersonalDetailsForm, ProDetailsForm, TherapistServiceForm
 from .models import Therapist, TherapistService
+from core.models import Service
 
 
 @therapist_required
@@ -85,19 +86,37 @@ def profile(request, section='personal_details'):
 
 
 def service_settings(request, therapist_id):
-    print('LOADING SERVICE SETTINGS')
+    print('Getting therapist instance in view...')
     therapist = get_object_or_404(Therapist, id=therapist_id)
     
-    # Handle form submission for creating a new TherapistService
     if request.method == 'POST':
         service_form = TherapistServiceForm(request.POST, therapist=therapist)
         if service_form.is_valid():
-            therapist_service = service_form.save(commit=False)
-            therapist_service.therapist = therapist
-            therapist_service.save()
-            return redirect('therapists:profile', section='service_settings')
+            if 'select_service' in request.POST:
+                # Service selected, reinitialize form with prices
+                service = service_form.cleaned_data['service']
+                print(f"Selected Service: {service.name}")  # Debug statement
+                service_form = TherapistServiceForm(therapist=therapist, initial={'service': service})
+            else:
+                # Save the form
+                therapist_service = service_form.save(commit=False)
+                therapist_service.therapist = therapist
+                therapist_service.save()
+                return redirect('therapists:profile', section='service_settings')
     else:
         service_form = TherapistServiceForm(therapist=therapist)
+    
+    if 'delete_service_id' in request.GET:
+        service_id = request.GET['delete_service_id']
+        therapist_service = get_object_or_404(TherapistService, id=service_id)
+        therapist_service.delete()
+        return redirect('therapists:profile', section='service_settings')
+    
+    return render(request, 'therapists/profile.html', {
+        'section': 'service_settings',
+        'service_form': service_form,
+        'therapist': therapist,
+    })
     
     # Handle deletion of TherapistService
     if 'delete_service_id' in request.GET:

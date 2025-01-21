@@ -82,12 +82,20 @@
                                 {{ service_form.service }}
                             </div>
                         </div>
-                        <div class="form-group">
-                            <div class="form-field">
-                                {{ service_form.prices.label_tag }}
-                                {{ service_form.prices }}
-                            </div>
-                        </div>
+                
+                        {% for field in service_form %}
+                            {% if "price_" in field.name %}
+                                <div class="form-group">
+                                    <div class="form-field">
+                                        {{ field.label_tag }}
+                                        {{ field }}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}  
+                              
+                        <!-- Add Select Service Button -->
+                        <button class="submit_button" type="submit" name="select_service">Select Service</button>
 
                     {% elif section == 'privacy_security' %}
                         {{ password_form.as_p }}

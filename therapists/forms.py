@@ -108,22 +108,53 @@ class TherapistServiceForm(forms.ModelForm):
 
     class Meta:
         model = TherapistService
-        fields = ['service', 'prices']
+        fields = ['service']
     
         widgets = {
             'prices': forms.Textarea(attrs={'rows': 3, 'cols': 20}),  # Adjust the size of the input field
         }
 
     def __init__(self, *args, **kwargs):
+        print('Getting therapist instance in form...')
         therapist = kwargs.pop('therapist', None)
+        print(f"kwargs: {kwargs}")  # Debug statement
         super().__init__(*args, **kwargs)
         if therapist:
+            print(f'Therapist found: {therapist}')
             used_services = TherapistService.objects.filter(therapist=therapist).values_list('service', flat=True)
             self.fields['service'].queryset = Service.objects.exclude(id__in=used_services)
 
-        # Set initial value for prices based on the selected service
-        if self.instance and self.instance.pk:
-            self.fields['prices'].initial = self.instance.service.prices
+        # Dynamically add fields for each price
+        if 'initial' in kwargs and 'service' in kwargs['initial']:
+            service = kwargs['initial']['service']
+            prices = service.prices
+            print(f"Service: {service.name}, Prices: {prices}")  # Debug statement
+            for duration, price_dict in prices:
+                for customer_type, price in price_dict.items():
+                    field_name = f'price_{duration}_{customer_type}'
+                    print(f"Adding field: {field_name} with initial value: {price}")  # Debug statement
+                    self.fields[field_name] = forms.DecimalField(
+                        initial=price,
+                        label=f'{duration} minutes - {customer_type.capitalize()}',
+                        required=False
+                    )
+
+        else:
+            print('Service data not found!')
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        prices = []
+        for duration, price_dict in self.instance.service.prices:
+            new_price_dict = {}
+            for customer_type in price_dict.keys():
+                field_name = f'price_{duration}_{customer_type}'
+                new_price_dict[customer_type] = self.cleaned_data[field_name]
+            prices.append([duration, new_price_dict])
+        instance.prices = prices
+        if commit:
+            instance.save()
+        return instance
 
 # Empty placeholder form
 class EmptyForm(forms.Form):
