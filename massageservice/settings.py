@@ -22,11 +22,12 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
-    '1a35-185-250-215-99.ngrok-free.app',  # Exact ngrok domain
+    '6c23-95-81-13-250.ngrok-free.app',  # Exact ngrok domain
     '.ngrok-free.app',  # Wildcard for any ngrok domain
 ]
 
 
+CSRF_TRUSTED_ORIGINS = ['https://aa4b-37-122-139-251.ngrok-free.app']
 
 
 

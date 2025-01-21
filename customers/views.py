@@ -7,13 +7,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from .decorators import customer_required
 from .models import Customer
-from core.models import Service, ServiceType
+from core.models import Service, ServiceType, Booking
 from .forms import RegisterForm, PersonalDetailsForm
 from django.conf import settings
 from django.http import JsonResponse
 import stripe
-from core.models import Booking
-
+from customers.models import Customer
+from django.utils.timezone import now  # Import 'now' for date comparison
 
 # Placeholder views
 def home(request):
@@ -30,13 +30,88 @@ def home(request):
     # render 
     return render(request, 'customers/home.html', {'customer': customer})
 
+from django.utils.timezone import now
+from django.db.models import Q
+
 @customer_required
 def bookings(request):
-    return render(request, 'customers/bookings.html')
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    try:
+        customer = Customer.objects.get(user=request.user)
+
+        # Update the status of bookings that have passed their booking_date_time to "completed"
+        Booking.objects.filter(
+            customer=customer,
+            status='active',
+            booking_date_time__lt=now()
+        ).update(status='completed')
+
+        # Fetch past bookings (history)
+        past_bookings = Booking.objects.filter(
+            customer=customer,
+            status__in=['completed', 'cancelled']
+        ).select_related('therapist', 'service__service').order_by('-booking_date_time')
+
+        # Fetch active bookings (future bookings)
+        active_bookings = Booking.objects.filter(
+            customer=customer,
+            status='active',
+            booking_date_time__gte=now()
+        ).select_related('therapist', 'service__service').order_by('booking_date_time')
+
+        # Retrieve the current booking data from the session, if available
+        current_booking = request.session.get('current_booking', None)
+
+    except Customer.DoesNotExist:
+        past_bookings = []
+        active_bookings = []
+        error_message = 'No customer profile found for this user. Please contact support.'
+
+        return render(request, 'customers/bookings.html', {
+            'past_bookings': past_bookings,
+            'active_bookings': active_bookings,
+            'current_booking': None,
+            'error': error_message,
+        })
+
+    return render(request, 'customers/bookings.html', {
+        'past_bookings': past_bookings,
+        'active_bookings': active_bookings,
+        'current_booking': current_booking,
+    })
+
+@csrf_exempt
+def cancel_booking(request, booking_id):
+    if request.method == "POST":
+        # Ensure the user is authenticated
+        if not request.user.is_authenticated:
+            return JsonResponse({"error": "Unauthorized"}, status=401)
+
+        # Get the booking object
+        booking = get_object_or_404(Booking, id=booking_id, customer__user=request.user)
+
+        # Update the booking's status to "cancelled"
+        booking.status = "cancelled"
+        booking.save()
+
+        return JsonResponse({"success": True, "message": "Booking cancelled successfully."})
+    
+    return JsonResponse({"error": "Invalid request method."}, status=400)
+
+def get_addresses(request):
+    if request.user.is_authenticated:
+        # Fetch unique addresses from the bookings of the current customer
+        addresses = Booking.objects.filter(customer__user=request.user).values_list('address', flat=True).distinct()
+        return JsonResponse(list(addresses), safe=False)
+    return JsonResponse({"error": "Unauthorized"}, status=401)
 
 @customer_required
 def services(request):
     service_type_name = request.GET.get('service_type', 'all')
+
+    # Fetch services based on the service type filter
     if service_type_name == 'all':
         services = Service.objects.all()
     else:
@@ -48,22 +123,38 @@ def services(request):
 
     service_types = ServiceType.objects.all()
 
+    # Handle saving booking details via POST request
+    if request.method == 'POST':
+        # Extract booking details from the form data
+        booking_data = {
+            "service_name": request.POST.get("service_name"),
+            "duration": request.POST.get("duration"),
+            "therapist": request.POST.get("therapist"),
+            "people_count": request.POST.get("people_count"),
+            "date": request.POST.get("date"),
+            "time": request.POST.get("time"),
+            "city": request.POST.get("city"),
+            "country": request.POST.get("country"),
+            "payment_method": request.POST.get("payment_method"),
+        }
+
+        # Save the booking data in the session
+        request.session["current_booking"] = booking_data
+
+        # Redirect to the bookings page
+        return redirect("customers:bookings")
+
     return render(request, 'customers/services.html', {
         'services': services,
         'service_types': service_types,
         'selected_type': service_type_name,
     })
 
+
 @customer_required
 def service_detail(request, service_id):
     service = get_object_or_404(Service, id=service_id)
     return render(request, 'customers/service_detail.html', {'service': service})
-
-from django.shortcuts import render, redirect
-from core.models import Booking
-
-def bookings(request):
-    return render(request, 'customers/bookings.html')
 
 @login_required
 @customer_required
@@ -129,7 +220,6 @@ def register_details(request):
             form = PersonalDetailsForm()
         return render(request, 'customers/register_details.html', {'form': form})
     
-
 def user_logout(request):
     logout(request)
     print('logged out')

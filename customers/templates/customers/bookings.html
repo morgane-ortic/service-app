@@ -2,41 +2,108 @@
 {% load static %}
 {% block content %}
 
-<div style="width: 1800px; height: 700px; padding: 30px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-    <div style="display: flex; gap: 20px; align-items: stretch;">
-        <!-- Left Panel: History -->
-        <div class="history" style="flex: 1;">
-            <h2>History</h2>
-            {% if bookings %}
-                {% for booking in bookings %}
-                    <div class="history-item" style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
-                        <button>Use address</button>
-                        <button>Request Therapist</button>
-                        <button onclick="toggleText(this)" style="width: 160px;">Add to favorites</button>
-                        <p><strong>Date:</strong> {{ booking.booking_date_time|date:"d.m.Y H:i" }}</p>
-                        <p><strong>Location:</strong> {{ booking.address }}</p>
-                        <p><strong>Therapist:</strong> {{ booking.therapist.user.first_name }} {{ booking.therapist.user.last_name }}</p>
-                        <p><strong>Service:</strong> {{ booking.service.name }}</p>
-                        <p><strong>Price:</strong> €{{ booking.price }}</p>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <p>No booking history available.</p>
-            {% endif %}
+<div style="height: 700px; max-width: 1700px; padding: 30px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); background-color: rgb(255, 255, 255);">
+    <div style="width: 1600px; display: flex; gap: 20px; align-items: stretch; height: 100%;">
+
+        <!-- Left Column: Active Bookings on Top, Booking History on Bottom -->
+        <div style="flex: 1.05; display: flex; flex-direction: column; height: 100%; gap: 10px;">
+
+            <!-- Active Bookings Section -->
+            <div id="active-bookings" style="flex: 1; overflow-y: auto; border: 1px solid #ccc; border-radius: 10px; padding: 15px; background-color: white;">
+                <h2>Active Bookings</h2>
+                {% if active_bookings %}
+                    {% for booking in active_bookings %}
+                        <div id="active-booking-{{ booking.id }}" class="active-item" style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                            <button onclick="useAddress('{{ booking.address|escapejs }}')">Use address</button>
+                            <button onclick="cancelBooking('{{ booking.id }}')">Cancel Booking</button>
+                            <p><strong>Date and Time:</strong> {{ booking.booking_date_time|date:"d.m.Y, H:i" }}</p>
+                            <p><strong>Location:</strong> {{ booking.address }}</p>
+                            <p><strong>Therapist:</strong> 
+                                {% if booking.therapist %}
+                                    {{ booking.therapist.user.first_name }} {{ booking.therapist.user.last_name }}
+                                {% else %}
+                                    No therapist assigned
+                                {% endif %}
+                            </p>
+                            <p><strong>Service:</strong> 
+                                {% if booking.service %}
+                                    {{ booking.service.service.name }} ({{ booking.service.price }})
+                                {% else %}
+                                    No service assigned
+                                {% endif %}
+                            </p>
+                            <p><strong>Price:</strong> €{{ booking.price }}</p>
+                            <p><strong>Status:</strong> {{ booking.get_status_display }}</p> <!-- Display status -->
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No active bookings available.</p>
+                {% endif %}
+            </div>
+
+            <!-- Booking History Section -->
+            <div id="history-container" class="history" style="flex: 1; overflow-y: auto; border: 1px solid #ccc; border-radius: 10px; padding: 15px; background-color:rgb(255, 255, 255);">
+                <h2>Booking History</h2>
+                {% if error %}
+                    <p style="color: red;">{{ error }}</p>
+                {% else %}
+                    {% if past_bookings %}
+                        {% for booking in past_bookings %}
+                            <div class="history-item" style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                                <button onclick="useAddress('{{ booking.address|escapejs }}')">Use address</button>
+                                <button>Request Therapist</button>
+                                <button onclick="toggleText(this)" style="width: 160px;">Add to favorites</button>
+                                <p><strong>Date and Time:</strong> {{ booking.booking_date_time|date:"d.m.Y, H:i" }}</p>
+                                <p><strong>Location:</strong> {{ booking.address }}</p>
+                                <p><strong>Therapist:</strong> 
+                                    {% if booking.therapist %}
+                                        {{ booking.therapist.user.first_name }} {{ booking.therapist.user.last_name }}
+                                    {% else %}
+                                        No therapist assigned
+                                    {% endif %}
+                                </p>
+                                <p><strong>Service:</strong> 
+                                    {% if booking.service %}
+                                        {{ booking.service.service.name }} ({{ booking.service.price }})
+                                    {% else %}
+                                        No service assigned
+                                    {% endif %}
+                                </p>
+                                <p><strong>Price:</strong> €{{ booking.price }}</p>
+                                <p><strong>Status:</strong> {{ booking.get_status_display }}</p> <!-- Display status -->
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>No booking history available.</p>
+                    {% endif %}
+                {% endif %}
+            </div>
         </div>
-        
-        <!-- Divider -->
-        <hr style="height: 100%; border-left: 1px solid #ccc;">
+
+        <!-- Middle Column: Current Booking -->
+        <div style="flex: 1; display: flex; flex-direction: column; height: 100%;">
+            <div id="current-booking" style="flex: 1; border: 1px solid #ccc; border-radius: 10px; padding: 15px; background-color:rgb(255, 255, 255); overflow-y: auto;">
+                <h2>Current selection</h2>
+                <button id="clear-selection-button">Clear Selection</button>
+                <div id="current-booking-details">
+                    <!-- Current Booking details will be dynamically injected here -->
+                </div>
+            </div>
+        </div>
 
         <!-- Right Panel: Google Map -->
         <div class="map-container" style="flex: 1.5; display: flex; flex-direction: column; height: 100%;">
             <div class="map-header" style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
-                <input type="text" placeholder="Enter your address" style="flex: 1; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
-                <button style="background-color: rgb(216, 107, 222); color: white; border: none; border-radius: 5px; padding: 8px 16px;">Search for a therapist</button>
+                <input list="addresses" id="address-input" placeholder="Enter your address" style="flex: 1; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+                <datalist id="addresses">
+                    <!-- Options will be dynamically populated -->
+                </datalist>
+                <button onclick="searchTherapist()">Search for a therapist</button>
             </div>
-            <div class="map" style="flex-grow: 1; height: 400px; overflow: hidden; border-radius: 10px;">
+            <div class="map" style="flex-grow: 1; height: 660px; overflow: hidden; border-radius: 10px;">
                 <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d243647.78029578898!2d13.144554764086133!3d52.506513272037446!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47a85bcd54f89f45%3A0xb431fdcfc7c76c8c!2sBerlin%2C%20Germany!5e0!3m2!1sen!2sus!4v1608257029775!5m2!1sen!2sus"
+                    id="map-frame"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d243647.78029578898!2d13.144554764086133!3d52.506513272037446!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47a85bcd54f89f45%3A0xb431fdcfc7c76c8c!2sBerlin%2C%20Germany!5e0!3m2!1sen!2us!4v1608257029775!5m2!1sen!2us"
                     width="100%"
                     height="100%"
                     style="border: none;"
@@ -48,33 +115,250 @@
     </div>
 </div>
 
-<script>
+<script> // Function to set the address into the input field
+    function useAddress(address) {
+        const addressInput = document.getElementById('address-input');
+        addressInput.value = address;
+    }
+</script>
+
+<script> // Function to preload all user selections from Services page
     document.addEventListener("DOMContentLoaded", function () {
-        const buttons = document.querySelectorAll("button");
+        // Select the Clear Selection button and the booking details container
+        const clearSelectionButton = document.getElementById("clear-selection-button");
+        const currentBookingDetails = document.getElementById("current-booking-details");
 
-        buttons.forEach((button) => {
-            updateHoverEffect(button);
+        // Add an event listener for the Clear Selection button
+        clearSelectionButton.addEventListener("click", function () {
+            // Clear localStorage key for current booking
+            localStorage.removeItem("bookingData");
+
+            // Update the Current Booking section with a default message
+            currentBookingDetails.innerHTML = "<p>No current selection.</p>";
         });
-    });
 
-    function updateHoverEffect(button) {
-        // Remove any existing hover listeners
-        button.removeEventListener('mouseover', button.hoverInListener);
-        button.removeEventListener('mouseout', button.hoverOutListener);
+        // Optionally, load current booking data on page load
+        function loadCurrentBooking() {
+            const bookingData = JSON.parse(localStorage.getItem("bookingData"));
 
-        // Add hover effects only if the text is "Favorite"
-        if (button.textContent.trim() === 'Favorite') {
-            button.hoverInListener = function () {
-                this.textContent = 'Remove from favorites';
-            };
-
-            button.hoverOutListener = function () {
-                this.textContent = 'Favorite';
-            };
-
-            button.addEventListener('mouseover', button.hoverInListener);
-            button.addEventListener('mouseout', button.hoverOutListener);
+            if (bookingData) {
+                currentBookingDetails.innerHTML = `
+                    <p><strong>Service:</strong> ${bookingData.serviceName || "N/A"}</p>
+                    <p><strong>Duration:</strong> ${bookingData.duration || "N/A"}</p>
+                    <p><strong>Therapist:</strong> ${bookingData.therapist || "No Preference"}</p>
+                    <p><strong>Number of People:</strong> ${bookingData.peopleCount || "N/A"}</p>
+                    <p><strong>Date:</strong> ${bookingData.date || "N/A"}</p>
+                    <p><strong>Time:</strong> ${bookingData.time || "N/A"}</p>
+                    <p><strong>City:</strong> ${bookingData.city || "N/A"}</p>
+                    <p><strong>Country:</strong> ${bookingData.country || "N/A"}</p>
+                    <p><strong>Payment Method:</strong> ${bookingData.paymentMethod || "N/A"}</p>
+                `;
+            } else {
+                currentBookingDetails.innerHTML = "<p>No current selection.</p>";
+            }
         }
+
+        // Load the current booking on page load
+        loadCurrentBooking();
+    });
+</script>
+
+<script> // Function to cancel an active booking
+    document.addEventListener("DOMContentLoaded", function () {
+        const activeBookingsContainer = document.getElementById("active-bookings");
+        const historyContainer = document.getElementById("history-container");
+
+        // Function to cancel a booking and move it to history
+        async function cancelBooking(bookingId) {
+            // Show a confirmation dialog
+            const confirmation = confirm("Are you sure you want to cancel this booking?");
+            if (!confirmation) {
+                return; // Exit if the user clicks "No"
+            }
+
+            try {
+                // Send a request to the backend to cancel the booking
+                const response = await fetch(`/customers/cancel-booking/${bookingId}/`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": getCookie("csrftoken"),
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to cancel booking.");
+                }
+
+                // Update the UI
+                const bookingElement = document.querySelector(`#active-booking-${bookingId}`);
+                if (!bookingElement) {
+                    alert("Booking not found!");
+                    return;
+                }
+
+                // Clone the booking and update the UI
+                bookingElement.id = `history-booking-${bookingId}`;
+                const cancelledStatusHTML = `<p><strong>Status:</strong> Cancelled</p>`;
+                bookingElement.insertAdjacentHTML("beforeend", cancelledStatusHTML);
+                historyContainer.insertAdjacentHTML("beforeend", bookingElement.outerHTML);
+                bookingElement.remove();
+
+                // Show a message if no Active Bookings remain
+                if (activeBookingsContainer.querySelectorAll(".active-item").length === 0) {
+                    activeBookingsContainer.innerHTML = `
+                        <h2>Active Bookings</h2>
+                        <p>No active bookings available.</p>
+                    `;
+                }
+
+                alert("Booking successfully cancelled.");
+            } catch (error) {
+                console.error(error);
+                alert("An error occurred while canceling the booking.");
+            }
+        }
+
+        // Helper function to get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+                const cookies = document.cookie.split(";");
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === name + "=") {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Expose the cancelBooking function globally
+        window.cancelBooking = cancelBooking;
+    });
+</script>
+
+<script> // Function to fetch all addresses and show all previously used addresses withouth repeating them
+    document.addEventListener("DOMContentLoaded", async function () {
+        const addressInput = document.getElementById("address-input");
+        const datalist = document.getElementById("addresses");
+
+        // Function to fetch addresses from the database
+        async function fetchAddresses() {
+            try {
+                const response = await fetch('/customers/get-addresses/'); // Adjust the endpoint URL
+                if (!response.ok) {
+                    throw new Error("Failed to fetch addresses.");
+                }
+
+                const addresses = await response.json();
+
+                // Get unique addresses
+                const uniqueAddresses = [...new Set(addresses)];
+
+                // Populate the datalist
+                uniqueAddresses.forEach(address => {
+                    const option = document.createElement("option");
+                    option.value = address;
+                    datalist.appendChild(option);
+                });
+            } catch (error) {
+                console.error("Error fetching addresses:", error);
+                alert("Failed to load addresses. Please try again.");
+            }
+        }
+
+        // Function to search therapist based on the selected/entered address
+        async function searchTherapist() {
+            const selectedAddress = addressInput.value;
+            if (!selectedAddress) {
+                alert("Please select or enter an address.");
+                return;
+            }
+
+            // Update the Google Maps iframe source with the selected address
+            const mapFrame = document.getElementById("map-frame");
+            const query = encodeURIComponent(selectedAddress);
+            const newMapSrc = `https://www.google.com/maps/embed/v1/search?key=YOUR_GOOGLE_MAPS_API_KEY&q=${query}`;
+            mapFrame.src = newMapSrc;
+        }
+
+        // Assign the searchTherapist function globally
+        window.searchTherapist = searchTherapist;
+
+        // Fetch and populate addresses on page load
+        await fetchAddresses();
+    });
+</script>
+
+{% endblock %}
+
+<script>
+    function toggleText(button) {
+        const currentText = button.textContent.trim();
+
+        if (currentText === 'Add to favorites') {
+            button.textContent = 'Favorite';
+        } else {
+            button.textContent = 'Add to favorites';
+        }
+    }
+
+    async function searchTherapist() {
+        const addressInput = document.getElementById('address-input').value;
+        if (!addressInput) {
+            alert('Please enter an address.');
+            return;
+        }
+
+        const mapFrame = document.getElementById('map-frame');
+        const query = encodeURIComponent(addressInput);
+        const newMapSrc = `https://www.google.com/maps/embed/v1/search?key=YOUR_GOOGLE_MAPS_API_KEY&q=${query}`;
+        mapFrame.src = newMapSrc;
+    }
+
+    async function fetchBookingHistory() {
+        try {
+            const response = await fetch('/api/bookings'); // Adjust the URL to match your endpoint
+            if (!response.ok) {
+                throw new Error('Failed to fetch booking history');
+            }
+            const bookings = await response.json();
+
+            const historyContainer = document.getElementById('history-container');
+            if (bookings.length > 0) {
+                const bookingList = bookings.map(booking => `
+                    <div class="booking-item" style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                        <p><strong>Date and Time:</strong> ${new Date(booking.booking_date_time).toLocaleDateString()}, ${new Date(booking.booking_date_time).toLocaleTimeString()}</p>
+                        <p><strong>Location:</strong> ${booking.address}</p>
+                        <p><strong>Therapist:</strong> ${booking.therapist_name ? booking.therapist_name : booking.therapist_username ? booking.therapist_username : 'No therapist assigned'}</p>
+                        <p><strong>Service:</strong> ${booking.service_name}</p>
+                        <p><strong>Price:</strong> €${booking.price.toFixed(2)}</p>
+                    </div>
+                `).join('');
+                historyContainer.innerHTML = bookingList;
+            } else {
+                historyContainer.innerHTML = '<p>No booking history available.</p>';
+            }
+        } catch (error) {
+            console.error(error);
+            const historyContainer = document.getElementById('history-container');
+            historyContainer.innerHTML = '<p>Error fetching booking history. Please try again later.</p>';
+        }
+    }
+
+    // Fetch booking history on page load
+    document.addEventListener('DOMContentLoaded', fetchBookingHistory);
+</script>
+
+<script>
+    function useAddress(address) {
+        // Find the address input field by its ID
+        const addressInput = document.getElementById('address-input');
+        // Set the input field's value to the provided address
+        addressInput.value = address;
     }
 
     function toggleText(button) {
@@ -85,12 +369,21 @@
         } else {
             button.textContent = 'Add to favorites';
         }
+    }
 
-        // Update hover effects based on the new text
-        updateHoverEffect(button);
+    async function searchTherapist() {
+        const addressInput = document.getElementById('address-input').value;
+        if (!addressInput) {
+            alert('Please enter an address.');
+            return;
+        }
+
+        const mapFrame = document.getElementById('map-frame');
+        const query = encodeURIComponent(addressInput);
+        const newMapSrc = `https://www.google.com/maps/embed/v1/search?key=YOUR_GOOGLE_MAPS_API_KEY&q=${query}`;
+        mapFrame.src = newMapSrc;
     }
 </script>
 
 
 
-{% endblock %}
