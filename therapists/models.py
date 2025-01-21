@@ -58,7 +58,7 @@ class TherapistService(models.Model):
     prices = models.JSONField(default=list)
 
     def __str__(self):
-        return f"{self.therapist.first_name} - {self.service.name} (${self.price})"
+        return f"{self.therapist.first_name} - {self.service.name} (${self.base_price})"
 
 
 

@@ -27,12 +27,12 @@
                             </p>
                             <p><strong>Service:</strong> 
                                 {% if booking.service %}
-                                    {{ booking.service.service.name }} ({{ booking.service.price }})
+                                    {{ booking.service.service.name }}
                                 {% else %}
                                     No service assigned
                                 {% endif %}
                             </p>
-                            <p><strong>Price:</strong> €{{ booking.price }}</p>
+                            <p><strong>Price:</strong> €{{ booking.base_price }}</p>
                             <p><strong>Status:</strong> {{ booking.get_status_display }}</p> <!-- Display status -->
                         </div>
                     {% endfor %}
@@ -63,12 +63,12 @@
                                 </p>
                                 <p><strong>Service:</strong> 
                                     {% if booking.service %}
-                                        {{ booking.service.service.name }} ({{ booking.service.price }})
+                                        {{ booking.service.service.name }}
                                     {% else %}
                                         No service assigned
                                     {% endif %}
                                 </p>
-                                <p><strong>Price:</strong> €{{ booking.price }}</p>
+                                <p><strong>Price:</strong> €{{ booking.base_price }}</p>
                                 <p><strong>Status:</strong> {{ booking.get_status_display }}</p> <!-- Display status -->
                             </div>
                         {% endfor %}
@@ -339,9 +339,9 @@
             const selectedOption = requestPreference.value;
 
             if (selectedOption === "no-preference") {
-                dynamicText.textContent = "The system will search for all available therapists in your area for the next 10 minutes.";
+                dynamicText.textContent = "The system will search for all available therapists in your area with your prefference for the next 10 minutes.";
             } else if (selectedOption === "request-therapist") {
-                dynamicText.textContent = "The system will search for your specified therapist for 5 minutes, if unavailable it will search for all available therapists for another 5 minutes.";
+                dynamicText.textContent = "The system will search for your specified therapist for 5 minutes, if unavailable it will search for all available therapists with your prefference for another 5 minutes.";
             } else if (selectedOption === "request-therapist-only") {
                 dynamicText.textContent = "The system will look for your specified therapist for 10 minutes, after which it will stop if the therapist is not found.";
             }
