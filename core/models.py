@@ -38,7 +38,8 @@ class Booking(models.Model):
     address = models.CharField(max_length=255)
     booking_date_time = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
-    price = models.FloatField(max_length=6, default=0.00)  # Default value set to 0.00
+    base_price = models.DecimalField(max_digits=6, decimal_places=2)
+    prices = models.JSONField(default=list)
 
     # Status field to track the state of the booking
     status = models.CharField(
@@ -79,10 +80,9 @@ class ServiceType(models.Model):
 class Service(models.Model):
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=1000, null=True)
-    base_price = models.DecimalField(max_digits=6, decimal_places=2)  # Max price is 9999.99
+    base_price = models.DecimalField(max_digits=6, decimal_places=2)
+    prices = models.JSONField(default=list)
     picture = models.ImageField(upload_to='service_pictures/')  # For uploading pictures
-    service_types = models.ManyToManyField(ServiceType)
-    service_lengths = models.JSONField(default=list)  # Store lengths and prices as JSON
 
     def __str__(self):
         return self.name
@@ -95,7 +95,7 @@ class Service(models.Model):
         :param customer_type: str, e.g., "single", "couple", "group"
         :return: decimal.Decimal or None if not found
         """
-        for entry in self.service_lengths:
+        for entry in self.prices:
             if str(entry[0]) == duration:  # Match the duration
                 return entry[1].get(customer_type)  # Return the price for the specified customer type
         return None  # Return None if no matching duration or customer type is found
