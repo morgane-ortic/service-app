@@ -102,10 +102,34 @@ def cancel_booking(request, booking_id):
 
 def get_addresses(request):
     if request.user.is_authenticated:
-        # Fetch unique addresses from the bookings of the current customer
         addresses = Booking.objects.filter(customer__user=request.user).values_list('address', flat=True).distinct()
         return JsonResponse(list(addresses), safe=False)
     return JsonResponse({"error": "Unauthorized"}, status=401)
+
+@login_required
+def get_current_booking(request):
+    if request.user.is_authenticated:
+        response_data = {}
+
+        # Fetch therapists associated with the user's bookings
+        bookings = Booking.objects.filter(customer__user=request.user).select_related('therapist__user')
+        therapist_names = []
+
+        for booking in bookings:
+            if booking.therapist and booking.therapist.user:
+                therapist_names.append(
+                    f"{booking.therapist.user.first_name} {booking.therapist.user.last_name}"
+                )
+
+        # Remove duplicates and add "No Selected Therapist" as the first option
+        unique_therapists = [" - "] + sorted(set(therapist_names))
+        response_data["therapists"] = unique_therapists
+
+        return JsonResponse(response_data)
+
+    return JsonResponse({"error": "Unauthorized"}, status=401)
+
+
 
 @customer_required
 def services(request):
@@ -149,7 +173,6 @@ def services(request):
         'service_types': service_types,
         'selected_type': service_type_name,
     })
-
 
 @customer_required
 def service_detail(request, service_id):

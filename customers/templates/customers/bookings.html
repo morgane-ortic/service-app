@@ -51,8 +51,7 @@
                         {% for booking in past_bookings %}
                             <div class="history-item" style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
                                 <button onclick="useAddress('{{ booking.address|escapejs }}')">Use address</button>
-                                <button>Request Therapist</button>
-                                <button onclick="toggleText(this)" style="width: 160px;">Add to favorites</button>
+                                <button onclick="requestTherapist('{{ booking.therapist.user.first_name }} {{ booking.therapist.user.last_name }}')">Request Therapist</button>
                                 <p><strong>Date and Time:</strong> {{ booking.booking_date_time|date:"d.m.Y, H:i" }}</p>
                                 <p><strong>Location:</strong> {{ booking.address }}</p>
                                 <p><strong>Therapist:</strong> 
@@ -85,12 +84,37 @@
             <div id="current-booking" style="flex: 1; border: 1px solid #ccc; border-radius: 10px; padding: 15px; background-color:rgb(255, 255, 255); overflow-y: auto;">
                 <h2>Current selection</h2>
                 <button id="clear-selection-button">Clear Selection</button>
-                <div id="current-booking-details">
-                    <!-- Current Booking details will be dynamically injected here -->
+                <div id="current-booking-details"></div>
+                <br>
+                <!-- Therapist Selection and Request Options -->
+                <div style="margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px;">
+                    <!-- Dropdown and Input Section -->
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <!-- Description Text -->
+                        <p style="margin: 0; font-weight: bold;">Therapist request method:</p>
+
+                        <!-- First Dropdown Menu -->
+                        <select id="request-preference" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+                            <option value="no-preference">No Preference</option>
+                            <option value="request-therapist">Request Therapist</option>
+                            <option value="request-therapist-only">Request Therapist Only</option>
+                        </select>
+
+                        <!-- Input Text Field -->
+                        <input
+                            type="text"
+                            id="therapist-name"
+                            placeholder="Enter therapist name"
+                            style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;"
+                            disabled
+                        />
+                        <button id="search-therapist-btn">Search for a Therapist</button>
+                        <!-- Dynamic Text Section -->
+                        <p id="dynamic-text" style="margin: 0; font-style: italic; color: #555;"></p>
+                    </div>
                 </div>
             </div>
         </div>
-
         <!-- Right Panel: Google Map -->
         <div class="map-container" style="flex: 1.5; display: flex; flex-direction: column; height: 100%;">
             <div class="map-header" style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
@@ -98,7 +122,6 @@
                 <datalist id="addresses">
                     <!-- Options will be dynamically populated -->
                 </datalist>
-                <button onclick="searchTherapist()">Search for a therapist</button>
             </div>
             <div class="map" style="flex-grow: 1; height: 660px; overflow: hidden; border-radius: 10px;">
                 <iframe
@@ -145,12 +168,10 @@
                 currentBookingDetails.innerHTML = `
                     <p><strong>Service:</strong> ${bookingData.serviceName || "N/A"}</p>
                     <p><strong>Duration:</strong> ${bookingData.duration || "N/A"}</p>
-                    <p><strong>Therapist:</strong> ${bookingData.therapist || "No Preference"}</p>
+                    <p><strong>Therapist sex:</strong> ${bookingData.therapist || "No Preference"}</p>
                     <p><strong>Number of People:</strong> ${bookingData.peopleCount || "N/A"}</p>
-                    <p><strong>Date:</strong> ${bookingData.date || "N/A"}</p>
-                    <p><strong>Time:</strong> ${bookingData.time || "N/A"}</p>
-                    <p><strong>City:</strong> ${bookingData.city || "N/A"}</p>
-                    <p><strong>Country:</strong> ${bookingData.country || "N/A"}</p>
+                    <p><strong>Date and Time:</strong> ${bookingData.date || "N/A"}, ${bookingData.time || "N/A"}</p>
+                    <p><strong>Country and City:</strong> ${bookingData.country || "N/A"}, ${bookingData.city || "N/A"}</p>
                     <p><strong>Payment Method:</strong> ${bookingData.paymentMethod || "N/A"}</p>
                 `;
             } else {
@@ -293,32 +314,101 @@
     });
 </script>
 
+<script> // Logic for the dropdown menu and the input field in the Current booking window
+    document.addEventListener("DOMContentLoaded", function () {
+        const requestPreference = document.getElementById("request-preference");
+        const therapistNameInput = document.getElementById("therapist-name");
+        const dynamicText = document.getElementById("dynamic-text");
+
+        // Enable or disable input based on dropdown selection
+        function handleDropdownChange() {
+            const selectedOption = requestPreference.value;
+
+            if (selectedOption === "no-preference") {
+                therapistNameInput.value = ""; // Clear input
+                therapistNameInput.disabled = true; // Disable input
+            } else {
+                therapistNameInput.disabled = false; // Enable input
+            }
+        }
+
+        // Update dynamic text under "Search for Therapist" button
+        function updateDynamicText() {
+            const selectedOption = requestPreference.value;
+
+            if (selectedOption === "no-preference") {
+                dynamicText.textContent = "The system will search for all available therapists in your area for the next 10 minutes.";
+            } else if (selectedOption === "request-therapist") {
+                dynamicText.textContent = "The system will search for your specified therapist for 5 minutes, if unavailable it will search for all available therapists for another 5 minutes.";
+            } else if (selectedOption === "request-therapist-only") {
+                dynamicText.textContent = "The system will look for your specified therapist for 10 minutes, after which it will stop if the therapist is not found.";
+            }
+        }
+
+        // Attach event listeners to dropdown
+        requestPreference.addEventListener("change", function () {
+            handleDropdownChange();
+            updateDynamicText();
+        });
+
+        // Initialize the dropdown behavior and dynamic text on page load
+        handleDropdownChange();
+        updateDynamicText();
+    });
+</script>
+
+<script>  // Functions to make the 'Request Therapist' button work
+    document.addEventListener("DOMContentLoaded", function () {
+        const therapistNameInput = document.getElementById("therapist-name");
+        const requestPreference = document.getElementById("request-preference");
+
+        // Function to enable the input field and update dropdown and text field
+        window.requestTherapist = function (therapistName) {
+            if (therapistName && therapistName !== "No therapist assigned") {
+                therapistNameInput.value = therapistName; // Fill therapist name
+                therapistNameInput.disabled = false; // Enable input field
+                requestPreference.value = "request-therapist"; // Set dropdown to "Request Therapist"
+
+                // Trigger change event for dynamic text update
+                const event = new Event('change');
+                requestPreference.dispatchEvent(event);
+            }
+        };
+    });
+</script>
+
+<script> // Function that tells the customer what will happen after pressing the 'Search for a Therapist' button
+    document.addEventListener("DOMContentLoaded", function () {
+        const requestPreference = document.getElementById("request-preference");
+        const searchTherapistButton = document.getElementById("search-therapist-btn");
+
+        // Function to get the description based on the dropdown selection
+        function getTherapistSearchDescription() {
+            const selectedOption = requestPreference.value;
+
+            if (selectedOption === "no-preference") {
+                return "We will search for all available therapists in your area for the next 10 minutes.";
+            } else if (selectedOption === "request-therapist") {
+                return "We will search for your specified therapist for 5 minutes. If unavailable, we will search for all available therapists for another 5 minutes.";
+            } else if (selectedOption === "request-therapist-only") {
+                return "We will search for your specified therapist for 10 minutes. If the therapist is not found, the search will stop.";
+            }
+        }
+
+        // Attach event listener to the "Search for a Therapist" button
+        searchTherapistButton.addEventListener("click", function () {
+            // Get the appropriate message
+            const message = getTherapistSearchDescription();
+
+            // Display the popup
+            alert(message);
+        });
+    });
+</script>
+
 {% endblock %}
 
-<script>
-    function toggleText(button) {
-        const currentText = button.textContent.trim();
-
-        if (currentText === 'Add to favorites') {
-            button.textContent = 'Favorite';
-        } else {
-            button.textContent = 'Add to favorites';
-        }
-    }
-
-    async function searchTherapist() {
-        const addressInput = document.getElementById('address-input').value;
-        if (!addressInput) {
-            alert('Please enter an address.');
-            return;
-        }
-
-        const mapFrame = document.getElementById('map-frame');
-        const query = encodeURIComponent(addressInput);
-        const newMapSrc = `https://www.google.com/maps/embed/v1/search?key=YOUR_GOOGLE_MAPS_API_KEY&q=${query}`;
-        mapFrame.src = newMapSrc;
-    }
-
+<script> // Function to fetch all bookings that are cancelled or complete
     async function fetchBookingHistory() {
         try {
             const response = await fetch('/api/bookings'); // Adjust the URL to match your endpoint
@@ -351,38 +441,6 @@
 
     // Fetch booking history on page load
     document.addEventListener('DOMContentLoaded', fetchBookingHistory);
-</script>
-
-<script>
-    function useAddress(address) {
-        // Find the address input field by its ID
-        const addressInput = document.getElementById('address-input');
-        // Set the input field's value to the provided address
-        addressInput.value = address;
-    }
-
-    function toggleText(button) {
-        const currentText = button.textContent.trim();
-
-        if (currentText === 'Add to favorites') {
-            button.textContent = 'Favorite';
-        } else {
-            button.textContent = 'Add to favorites';
-        }
-    }
-
-    async function searchTherapist() {
-        const addressInput = document.getElementById('address-input').value;
-        if (!addressInput) {
-            alert('Please enter an address.');
-            return;
-        }
-
-        const mapFrame = document.getElementById('map-frame');
-        const query = encodeURIComponent(addressInput);
-        const newMapSrc = `https://www.google.com/maps/embed/v1/search?key=YOUR_GOOGLE_MAPS_API_KEY&q=${query}`;
-        mapFrame.src = newMapSrc;
-    }
 </script>
 
 
