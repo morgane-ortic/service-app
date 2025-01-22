@@ -14,7 +14,6 @@
                 {% if active_bookings %}
                     {% for booking in active_bookings %}
                         <div id="active-booking-{{ booking.id }}" class="active-item" style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
-                            <button onclick="useAddress('{{ booking.address|escapejs }}')">Use address</button>
                             <button onclick="cancelBooking('{{ booking.id }}')">Cancel Booking</button>
                             <p><strong>Date and Time:</strong> {{ booking.booking_date_time|date:"d.m.Y, H:i" }}</p>
                             <p><strong>Location:</strong> {{ booking.address }}</p>
@@ -50,7 +49,6 @@
                     {% if past_bookings %}
                         {% for booking in past_bookings %}
                             <div class="history-item" style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
-                                <button onclick="useAddress('{{ booking.address|escapejs }}')">Use address</button>
                                 <button onclick="requestTherapist('{{ booking.therapist.user.first_name }} {{ booking.therapist.user.last_name }}')">Request Therapist</button>
                                 <p><strong>Date and Time:</strong> {{ booking.booking_date_time|date:"d.m.Y, H:i" }}</p>
                                 <p><strong>Location:</strong> {{ booking.address }}</p>
@@ -88,55 +86,203 @@
                 <br>
                 <!-- Therapist Selection and Request Options -->
                 <div style="margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px;">
-                    <!-- Dropdown and Input Section -->
-                    <div style="display: flex; flex-direction: column; gap: 10px;">
-                        <!-- Description Text -->
-                        <p style="margin: 0; font-weight: bold;">Therapist request method:</p>
+                    <!-- Description Text -->
+                    <p style="margin: 0; font-weight: bold;">Therapist request method:</p>
 
-                        <!-- First Dropdown Menu -->
-                        <select id="request-preference" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
-                            <option value="no-preference">No Preference</option>
-                            <option value="request-therapist">Request Therapist</option>
-                            <option value="request-therapist-only">Request Therapist Only</option>
-                        </select>
+                    <!-- First Dropdown Menu -->
+                    <select id="request-preference" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+                        <option value="no-preference">No Preference</option>
+                        <option value="request-therapist">Request Therapist</option>
+                        <option value="request-therapist-only">Request Therapist Only</option>
+                    </select>
 
-                        <!-- Input Text Field -->
-                        <input
-                            type="text"
-                            id="therapist-name"
-                            placeholder="Enter therapist name"
-                            style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;"
-                            disabled
-                        />
-                        <button id="search-therapist-btn">Search for a Therapist</button>
-                        <!-- Dynamic Text Section -->
-                        <p id="dynamic-text" style="margin: 0; font-style: italic; color: #555;"></p>
-                    </div>
+                    <!-- Input Text Field -->
+                    <input
+                        type="text"
+                        id="therapist-name"
+                        placeholder="Enter therapist name"
+                        style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;"
+                        disabled
+                    />
+                    <button id="search-therapist-btn">Search for a Therapist</button>
+                    <!-- Dynamic Text Section -->
+                    <p id="dynamic-text" style="margin: 0; font-style: italic; color: #555;"></p>
                 </div>
             </div>
         </div>
-        <!-- Right Panel: Google Map -->
+
         <div class="map-container" style="flex: 1.5; display: flex; flex-direction: column; height: 100%;">
             <div class="map-header" style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
-                <input list="addresses" id="address-input" placeholder="Enter your address" style="flex: 1; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
-                <datalist id="addresses">
-                    <!-- Options will be dynamically populated -->
-                </datalist>
+                <!-- Text Input Field -->
+                <input 
+                    type="text" 
+                    id="address-text-input" 
+                    placeholder="Enter your address" 
+                    style="flex: 0.5; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+                
+                <!-- Dropdown Menu -->
+                <select 
+                    id="address-dropdown" 
+                    style="flex: 0.5; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+                    <option value="">Select a saved address</option>
+                </select>
             </div>
-            <div class="map" style="flex-grow: 1; height: 660px; overflow: hidden; border-radius: 10px;">
-                <iframe
-                    id="map-frame"
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d243647.78029578898!2d13.144554764086133!3d52.506513272037446!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47a85bcd54f89f45%3A0xb431fdcfc7c76c8c!2sBerlin%2C%20Germany!5e0!3m2!1sen!2us!4v1608257029775!5m2!1sen!2us"
-                    width="100%"
-                    height="100%"
-                    style="border: none;"
-                    allowfullscreen="true"
-                    loading="lazy">
-                </iframe>
-            </div>
+            <div id="map" style="flex-grow: 1; height: 660px; overflow: hidden; border-radius: 10px;"></div>
         </div>
     </div>
 </div>
+</div>
+
+<!-- Include Leaflet.js -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const map = L.map("map").setView([51.1657, 10.4515], 6); // Default view of Germany
+
+        const textInput = document.getElementById("address-text-input");
+        const dropdown = document.getElementById("address-dropdown");
+
+        // Add MapTiler Basic tiles
+        const mapTilerKey = "dQU8l7BnjaDMES4hXJ0n"; // Replace with your MapTiler API key
+        L.tileLayer(`https://api.maptiler.com/maps/basic-v2/{z}/{x}/{y}.png?key=${mapTilerKey}`, {
+            attribution: '&copy; <a href="https://www.maptiler.com/">MapTiler</a> contributors &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>',
+            maxZoom: 19
+        }).addTo(map);
+
+        let customerMarker = null;
+        let typingTimeout = null; // Timeout for the delayed address loading
+
+        const geocodeService = "https://nominatim.openstreetmap.org/search"; // OSM Geocoding endpoint
+
+        // Function to geocode an address to coordinates
+        async function geocode(address) {
+            try {
+                const response = await fetch(
+                    `${geocodeService}?q=${encodeURIComponent(address)}&format=json&addressdetails=1&limit=1`
+                );
+                const data = await response.json();
+                if (data.length === 0) throw new Error("Address not found");
+                return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+            } catch (error) {
+                console.error("Geocoding error:", error); // Log the error silently
+                return null; // Return null if geocoding fails
+            }
+        }
+
+        // Function to update the map for a given address
+        async function updateMap(address) {
+            const coordinates = await geocode(address);
+            if (!coordinates) return; // Do nothing if geocoding fails
+
+            // Remove existing customer marker
+            if (customerMarker) map.removeLayer(customerMarker);
+
+            // Add new marker and center the map
+            customerMarker = L.marker(coordinates).addTo(map).bindPopup(address).openPopup();
+            map.setView(coordinates, 15); // Center the map on the address
+        }
+
+        // Reset dropdown if text input changes
+        textInput.addEventListener("input", () => {
+            if (dropdown.value) dropdown.value = ""; // Reset dropdown menu
+
+            // Clear previous timeout
+            if (typingTimeout) clearTimeout(typingTimeout);
+
+            // Set new timeout to load the address after 3 seconds
+            typingTimeout = setTimeout(() => {
+                const enteredAddress = textInput.value.trim();
+                if (enteredAddress.length > 0) {
+                    updateMap(enteredAddress); // Update map for text input address
+                }
+            }, 3000); // Delay of 3 seconds
+        });
+
+        // Reset text input if dropdown selection changes
+        dropdown.addEventListener("change", () => {
+            if (textInput.value.trim()) textInput.value = ""; // Reset text input field
+            const selectedAddress = dropdown.value;
+            if (selectedAddress) {
+                updateMap(selectedAddress); // Update map for dropdown-selected address
+            }
+        });
+
+// Function to load current booking data and set map view
+function loadCurrentBooking() {
+    const bookingData = JSON.parse(localStorage.getItem("bookingData"));
+    
+    if (bookingData) {
+        const { city } = bookingData;  // Extracting only the city
+        let initialCoordinates = [51.1657, 10.4515]; // Default to Germany (if no city selected)
+
+        // Set initial coordinates based on city
+        if (city) {
+            switch (city.toLowerCase()) {
+                case "berlin":
+                    initialCoordinates = [52.5200, 13.4050]; // Berlin
+                    break;
+                case "hamburg":
+                    initialCoordinates = [53.5511, 9.9937]; // Hamburg
+                    break;
+                case "munich":
+                    initialCoordinates = [48.1351, 11.5820]; // Munich
+                    break;
+                case "cologne":
+                    initialCoordinates = [50.9375, 6.9603]; // Cologne
+                    break;
+                case "frankfurt":
+                    initialCoordinates = [50.1109, 8.6821]; // Frankfurt
+                    break;
+                case "stuttgart":
+                    initialCoordinates = [48.7758, 9.1829]; // Stuttgart
+                    break;
+                case "düsseldorf":
+                    initialCoordinates = [51.2217, 6.7762]; // Düsseldorf
+                    break;
+                case "leipzig":
+                    initialCoordinates = [51.3397, 12.3731]; // Leipzig
+                    break;
+                case "dortmund":
+                    initialCoordinates = [51.5136, 7.4653]; // Dortmund
+                    break;
+                case "essen":
+                    initialCoordinates = [51.4556, 7.0131]; // Essen
+                    break;
+                default:
+                    initialCoordinates = [51.1657, 10.4515]; // Default to Germany
+                    break;
+            }
+        }
+
+        // Set the initial view of the map
+        map.setView(initialCoordinates, 12); // Zoom level adjusted based on city
+    } else {
+        // Default to Germany if no city in booking data
+        map.setView([51.1657, 10.4515], 6); // View of Germany
+    }
+}
+
+        // Load current booking on page load
+        loadCurrentBooking();
+
+        // Clear selection and reset booking data
+        const clearSelectionButton = document.getElementById("clear-selection-button");
+        clearSelectionButton.addEventListener("click", function () {
+            localStorage.removeItem("bookingData");
+            document.getElementById("current-booking-details").innerHTML = "<p>No current selection.</p>";
+            map.setView([51.1657, 10.4515], 6); // Reset to Germany
+        });
+    });
+</script>
+
+
+
+
+
 
 <script> // Function to set the address into the input field
     function useAddress(address) {
@@ -263,8 +409,8 @@
 
 <script> // Function to fetch all addresses and show all previously used addresses withouth repeating them
     document.addEventListener("DOMContentLoaded", async function () {
-        const addressInput = document.getElementById("address-input");
-        const datalist = document.getElementById("addresses");
+        const textInput = document.getElementById("address-text-input");
+        const dropdown = document.getElementById("address-dropdown");
 
         // Function to fetch addresses from the database
         async function fetchAddresses() {
@@ -279,11 +425,12 @@
                 // Get unique addresses
                 const uniqueAddresses = [...new Set(addresses)];
 
-                // Populate the datalist
+                // Populate the dropdown
                 uniqueAddresses.forEach(address => {
                     const option = document.createElement("option");
                     option.value = address;
-                    datalist.appendChild(option);
+                    option.textContent = address;
+                    dropdown.appendChild(option);
                 });
             } catch (error) {
                 console.error("Error fetching addresses:", error);
@@ -291,19 +438,28 @@
             }
         }
 
-        // Function to search therapist based on the selected/entered address
-        async function searchTherapist() {
-            const selectedAddress = addressInput.value;
+        // Function to get the selected or entered address
+        async function getAddress() {
+            let selectedAddress = textInput.value.trim(); // Default to the text input value
             if (!selectedAddress) {
-                alert("Please select or enter an address.");
-                return;
+                selectedAddress = dropdown.value; // Fallback to the dropdown value if text input is empty
             }
 
-            // Update the Google Maps iframe source with the selected address
-            const mapFrame = document.getElementById("map-frame");
-            const query = encodeURIComponent(selectedAddress);
-            const newMapSrc = `https://www.google.com/maps/embed/v1/search?key=YOUR_GOOGLE_MAPS_API_KEY&q=${query}`;
-            mapFrame.src = newMapSrc;
+            if (!selectedAddress) {
+                alert("Please enter or select an address.");
+                return null;
+            }
+
+            return selectedAddress;
+        }
+
+        // Function to search therapist based on the selected/entered address
+        async function searchTherapist() {
+            const address = await getAddress();
+            if (!address) return;
+
+            // Example: Update the map or do something with the selected address
+            console.log(`Searching with address: ${address}`);
         }
 
         // Assign the searchTherapist function globally
@@ -314,7 +470,7 @@
     });
 </script>
 
-<script> // Logic for the dropdown menu and the input field in the Current booking window
+<script> // Logic for the dropdown menu and the input field in the Current Booking window
     document.addEventListener("DOMContentLoaded", function () {
         const requestPreference = document.getElementById("request-preference");
         const therapistNameInput = document.getElementById("therapist-name");
