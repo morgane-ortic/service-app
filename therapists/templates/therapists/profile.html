@@ -27,18 +27,43 @@
 
                 <h2>Service Settings</h2>
 
-                <form method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="service">
-                        <div class="form-field">
-                            {{ service_form.service.label_tag }}
-                            {{ service_form.service }}
+                <div>
+                    <h3>Your Services</h3>
+                    
+                    <form method="post">
+                        {% for form in service_forms %}
+                            <div class="form-grid">
+                                {% for form in service_forms %}
+                                    <div class="form-grid">
+                                        {% for field in form %}
+                                            <div class="form-field">
+                                                {% if field.name.endswith('_name') %}
+                                                    {{ field.label }}
+                                                {% else %}
+                                                    {{ field.label_tag }}
+                                                    {{ field }}
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endfor %}
+                        <button class="submit_button" type="submit" name="save_changes">Save Service Changes</button>
+                    </form>
+
+                    <h3>Add a Service</h3>
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="service">
+                            <div class="form-field">
+                                {{ service_form.service.label_tag }}
+                                {{ service_form.service }}
+                            </div>
+                            <!-- Add Select Service Button -->
+                            <button class="submit_button" type="submit" name="select_service">Add Service</button>                        
                         </div>
-                        <!-- Add Select Service Button -->
-                        <button class="submit_button" type="submit" name="select_service">Add Service</button>                        
-                    </div>
-                </form>
-                
+                    </form>
+                </div>
 
             {% elif section == 'payment_settings' %}
                 <h2>Payment Settings</h2>

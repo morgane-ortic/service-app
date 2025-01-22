@@ -5,7 +5,7 @@ from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from .decorators import therapist_required
-from .forms import RegisterForm, PersonalDetailsForm, ProDetailsForm, TherapistServiceForm
+from .forms import RegisterForm, PersonalDetailsForm, ProDetailsForm, AddServiceForm, TherapistServiceForm
 from .models import Therapist, TherapistService
 from core.models import Service
 
@@ -85,19 +85,24 @@ def profile(request, section='personal_details'):
     })
 
 
+
+from django.shortcuts import render, get_object_or_404
+from .forms import AddServiceForm, TherapistServiceForm
+from .models import Therapist, TherapistService
+
 def service_settings(request, therapist_id):
     therapist = get_object_or_404(Therapist, id=therapist_id)
     
     if request.method == 'POST':
         print(f"POST data: {request.POST}")  # Debug statement
-        service_form = TherapistServiceForm(request.POST, therapist=therapist)
+        service_form = AddServiceForm(request.POST, therapist=therapist)
         if service_form.is_valid():
             print('Form is valid')
             if 'select_service' in request.POST:
                 # Service selected, reinitialize form with prices
                 service = service_form.cleaned_data['service']
                 print(f"Selected Service: {service.name}")  # Debug statement
-                service_form = TherapistServiceForm(therapist=therapist, initial={'service': service})
+                service_form = AddServiceForm(therapist=therapist, initial={'service': service})
                 # Create a new TherapistService instance
                 therapist_service = service_form.save(commit=False)
                 therapist_service.therapist = therapist
@@ -109,13 +114,33 @@ def service_settings(request, therapist_id):
                 return redirect('therapists:profile', section='service_settings')
         else:
             print(f"Form errors: {service_form.errors}")  # Debug statement
+
+        # Handle saving changes to existing services
+        for service in TherapistService.objects.filter(therapist=therapist):
+            form = TherapistServiceForm(request.POST, service_instance=service)
+            if form.is_valid():
+                prices = []
+                for duration, price_dict in service.prices:
+                    new_price_dict = {}
+                    for customer_type in price_dict.keys():
+                        field_name = f'price_{service.id}_{duration}_{customer_type}'
+                        new_price_dict[customer_type] = float(form.cleaned_data[field_name])  # Convert to float
+                    prices.append([duration, new_price_dict])
+                service.prices = prices
+                service.save()
+                print(f"Updated Service: {service.service.name}")  # Debug statement
     else:
         print('Sending GET request')
-        service_form = TherapistServiceForm(therapist=therapist)
+        service_form = AddServiceForm(therapist=therapist)
+    
+    # Get all services for the therapist
+    therapist_services = TherapistService.objects.filter(therapist=therapist)
+    service_forms = [TherapistServiceForm(service_instance=service) for service in therapist_services]
     
     return render(request, 'therapists/profile.html', {
         'section': 'service_settings',
         'service_form': service_form,
+        'service_forms': service_forms,
         'therapist': therapist,
     })
 
