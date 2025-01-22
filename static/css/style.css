@@ -133,8 +133,8 @@ hr {
 }
 
 .main_content {
-  max-width: 1600px;
-  min-width: 900px;
+  
+  width: 1200px;
   margin:30px;
   margin-bottom: auto; /* Push main_content up, leaving space at the bottom */
   
@@ -221,6 +221,7 @@ footer a {
 
 .page_content {
 
+  max-width: 1200px;
   min-width: 600px;
   height: auto;
   align-self: flex-start;
