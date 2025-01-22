@@ -307,7 +307,13 @@ form {
   justify-content: left;
   /* Ensure the elements are aligned to the left */
   max-width: 300px;
+}
 
+.service {
+  display: flex;
+  flex-direction: row;
+  gap: 30px; /* Add space between items */
+  align-items: flex-end; /* Align all items to the bottom */
 }
 
 #password-form {
@@ -413,6 +419,11 @@ button[type="submit"] {
 
 button[type="submit"]:hover {
   background-color: #fd7bf7;
+}
+
+.service button {
+  flex: 0 1 auto; /* Prevent elements from taking all available space */
+  height: 36px; /* Ensure button height is auto */
 }
 
 .page_content h1 {

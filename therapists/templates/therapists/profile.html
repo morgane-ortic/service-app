@@ -18,20 +18,37 @@
             {% if section == 'personal_details' %}
                 <h2>Personal Details</h2>
 
+
             {% elif section == 'professional_details' %}
                 <h2>Professional Details</h2>
                 
+
             {% elif section == 'service_settings' %}
+
                 <h2>Service Settings</h2>
+
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="service">
+                        <div class="form-field">
+                            {{ service_form.service.label_tag }}
+                            {{ service_form.service }}
+                        </div>
+                        <!-- Add Select Service Button -->
+                        <button class="submit_button" type="submit" name="select_service">Add Service</button>                        
+                    </div>
+                </form>
                 
+
             {% elif section == 'payment_settings' %}
                 <h2>Payment Settings</h2>
                 
+
             {% elif section == 'privacy_security' %}
                 <h2>Privacy and Security</h2>
                 
             {% endif %}
-        
+            
             <form method="post" enctype="multipart/form-data">
                 <div class="form-grid">
                     {% csrf_token %}
@@ -74,28 +91,6 @@
 
                     {% elif section == 'professional_details' %}
                         {{ pro_form.as_p }}
-
-                    {% elif section == 'service_settings' %}
-                        <div class="form-group">
-                            <div class="form-field">
-                                {{ service_form.service.label_tag }}
-                                {{ service_form.service }}
-                            </div>
-                        </div>
-                
-                        {% for field in service_form %}
-                            {% if "price_" in field.name %}
-                                <div class="form-group">
-                                    <div class="form-field">
-                                        {{ field.label_tag }}
-                                        {{ field }}
-                                    </div>
-                                </div>
-                            {% endif %}
-                        {% endfor %}  
-                              
-                        <!-- Add Select Service Button -->
-                        <button class="submit_button" type="submit" name="select_service">Select Service</button>
 
                     {% elif section == 'privacy_security' %}
                         {{ password_form.as_p }}

@@ -86,44 +86,32 @@ def profile(request, section='personal_details'):
 
 
 def service_settings(request, therapist_id):
-    print('Getting therapist instance in view...')
     therapist = get_object_or_404(Therapist, id=therapist_id)
     
     if request.method == 'POST':
+        print(f"POST data: {request.POST}")  # Debug statement
         service_form = TherapistServiceForm(request.POST, therapist=therapist)
         if service_form.is_valid():
+            print('Form is valid')
             if 'select_service' in request.POST:
                 # Service selected, reinitialize form with prices
                 service = service_form.cleaned_data['service']
                 print(f"Selected Service: {service.name}")  # Debug statement
                 service_form = TherapistServiceForm(therapist=therapist, initial={'service': service})
-            else:
-                # Save the form
+                # Create a new TherapistService instance
                 therapist_service = service_form.save(commit=False)
                 therapist_service.therapist = therapist
+                therapist_service.service = service  # Ensure service is assigned
+                therapist_service.base_price = service.base_price  # Copy base_price
+                therapist_service.prices = service.prices  # Copy prices
                 therapist_service.save()
+                # For now, just redirect to the same page
                 return redirect('therapists:profile', section='service_settings')
+        else:
+            print(f"Form errors: {service_form.errors}")  # Debug statement
     else:
+        print('Sending GET request')
         service_form = TherapistServiceForm(therapist=therapist)
-    
-    if 'delete_service_id' in request.GET:
-        service_id = request.GET['delete_service_id']
-        therapist_service = get_object_or_404(TherapistService, id=service_id)
-        therapist_service.delete()
-        return redirect('therapists:profile', section='service_settings')
-    
-    return render(request, 'therapists/profile.html', {
-        'section': 'service_settings',
-        'service_form': service_form,
-        'therapist': therapist,
-    })
-    
-    # Handle deletion of TherapistService
-    if 'delete_service_id' in request.GET:
-        service_id = request.GET['delete_service_id']
-        therapist_service = get_object_or_404(TherapistService, id=service_id)
-        therapist_service.delete()
-        return redirect('therapists:profile', section='service_settings')
     
     return render(request, 'therapists/profile.html', {
         'section': 'service_settings',

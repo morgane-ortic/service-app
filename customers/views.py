@@ -34,7 +34,7 @@ def home(request):
 def bookings(request):
     return render(request, 'customers/bookings.html')
 
-@customer_required
+
 def services(request):
     service_type_name = request.GET.get('service_type', 'all')
     if service_type_name == 'all':
