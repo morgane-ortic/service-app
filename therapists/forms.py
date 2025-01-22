@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Therapist
+from .models import Therapist, TherapistService
+from core.models import Service
 
 
 # Initial registration form
@@ -96,6 +97,45 @@ class ProDetailsForm(forms.ModelForm):
             'required_equipment': 'Required Equipment',
         }
 
+
+class AddServiceForm(forms.ModelForm):
+    service = forms.ModelChoiceField(
+        queryset=Service.objects.all(),
+        widget=forms.Select,
+        required=True,
+        label='Select Service'
+    )
+
+    class Meta:
+        model = TherapistService
+        fields = ['service']
+
+    def __init__(self, *args, **kwargs):
+        therapist = kwargs.pop('therapist', None)
+        super().__init__(*args, **kwargs)
+        if therapist:
+            used_services = TherapistService.objects.filter(therapist=therapist).values_list('service', flat=True)
+            self.fields['service'].queryset = Service.objects.exclude(id__in=used_services)
+
+class TherapistServiceForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        service_instance = kwargs.pop('service_instance', None)
+        super().__init__(*args, **kwargs)
+        if service_instance:
+            self.instance = service_instance
+            self.fields[f'service_{service_instance.id}_name'] = forms.CharField(
+                initial=service_instance.service.name,
+                label='',
+                disabled=True,
+                widget=forms.TextInput(attrs={'readonly': 'readonly', 'style': 'border:none; background:transparent;'})
+            )
+            for duration, price_dict in service_instance.prices:
+                for customer_type, price in price_dict.items():
+                    field_name = f'price_{service_instance.id}_{duration}_{customer_type}'
+                    self.fields[field_name] = forms.DecimalField(
+                        initial=price,
+                        label=f'{duration} minutes - {customer_type.capitalize()}'
+                    )
 
 # Empty placeholder form
 class EmptyForm(forms.Form):
