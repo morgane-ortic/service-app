@@ -274,6 +274,16 @@ form {
   width: 100%; /* Ensure the <p> elements take the full width of the grid item */
 }
 
+.service_list {
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-end; /* Align all items to the bottom */
+  margin-bottom: 30px;
+}
+
 /* Ensure the form group is centered */
 .login-form > div {
   display: flex;
@@ -379,6 +389,12 @@ input {
   border-radius: 15px;
 }
 
+.service_list input {
+  max-width: 75px;
+  padding: 0;
+  border-radius: 0;
+}
+
 p,
 label {
   text-align: justify;
@@ -386,6 +402,11 @@ label {
   font-size: medium;
   line-height: 1.4;
   color: black;
+}
+
+.service_list p {
+  margin: 0;
+  padding: 0;
 }
 
 .helptext,
@@ -428,13 +449,25 @@ button[type="submit"] {
   font-size: 16px;
 }
 
-button[type="submit"]:hover {
+button[type="submit"]:hover, .delete_button:hover {
   background-color: #fd7bf7;
 }
 
 .service button {
   flex: 0 1 auto; /* Prevent elements from taking all available space */
   height: 36px; /* Ensure button height is auto */
+}
+
+.delete_button {
+  max-height: 30px;
+  padding: 10;
+  margin: 10;
+}
+
+.delete_button a {
+  color: black;
+  font-size: small;
+  text-decoration: none;
 }
 
 .page_content h1 {

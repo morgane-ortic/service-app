@@ -122,6 +122,7 @@ class TherapistServiceForm(forms.Form):
         service_instance = kwargs.pop('service_instance', None)
         super().__init__(*args, **kwargs)
         if service_instance:
+            self.instance = service_instance
             self.fields[f'service_{service_instance.id}_name'] = forms.CharField(
                 initial=service_instance.service.name,
                 label='',

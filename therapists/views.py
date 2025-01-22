@@ -85,23 +85,16 @@ def profile(request, section='personal_details'):
     })
 
 
-
-from django.shortcuts import render, get_object_or_404
-from .forms import AddServiceForm, TherapistServiceForm
-from .models import Therapist, TherapistService
-
+@login_required
 def service_settings(request, therapist_id):
     therapist = get_object_or_404(Therapist, id=therapist_id)
     
     if request.method == 'POST':
-        print(f"POST data: {request.POST}")  # Debug statement
         service_form = AddServiceForm(request.POST, therapist=therapist)
         if service_form.is_valid():
-            print('Form is valid')
             if 'select_service' in request.POST:
                 # Service selected, reinitialize form with prices
                 service = service_form.cleaned_data['service']
-                print(f"Selected Service: {service.name}")  # Debug statement
                 service_form = AddServiceForm(therapist=therapist, initial={'service': service})
                 # Create a new TherapistService instance
                 therapist_service = service_form.save(commit=False)
@@ -124,13 +117,16 @@ def service_settings(request, therapist_id):
                     new_price_dict = {}
                     for customer_type in price_dict.keys():
                         field_name = f'price_{service.id}_{duration}_{customer_type}'
-                        new_price_dict[customer_type] = float(form.cleaned_data[field_name])  # Convert to float
+                        price = form.cleaned_data[field_name]
+                        # Convert to int if whole number
+                        if price == int(price):
+                            price = int(price)
+                        new_price_dict[customer_type] = price
                     prices.append([duration, new_price_dict])
                 service.prices = prices
                 service.save()
                 print(f"Updated Service: {service.service.name}")  # Debug statement
     else:
-        print('Sending GET request')
         service_form = AddServiceForm(therapist=therapist)
     
     # Get all services for the therapist
@@ -143,6 +139,13 @@ def service_settings(request, therapist_id):
         'service_forms': service_forms,
         'therapist': therapist,
     })
+
+@login_required
+def delete_service(request, therapist_id, service_id):
+    therapist = get_object_or_404(Therapist, id=therapist_id)
+    service_to_delete = get_object_or_404(TherapistService, id=service_id, therapist=therapist)
+    service_to_delete.delete()
+    return redirect('therapists:profile', section='service_settings')
 
 
 def register(request):
