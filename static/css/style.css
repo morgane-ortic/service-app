@@ -133,8 +133,8 @@ hr {
 }
 
 .main_content {
-  max-width: 1600px;
-  min-width: 900px;
+  
+  width: 1200px;
   margin:30px;
   margin-bottom: auto; /* Push main_content up, leaving space at the bottom */
   
@@ -221,6 +221,7 @@ footer a {
 
 .page_content {
 
+  max-width: 1200px;
   min-width: 600px;
   height: auto;
   align-self: flex-start;
@@ -271,6 +272,16 @@ form {
   width: 100%; /* Ensure the <p> elements take the full width of the grid item */
 }
 
+.service_list {
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-end; /* Align all items to the bottom */
+  margin-bottom: 30px;
+}
+
 /* Ensure the form group is centered */
 .login-form > div {
   display: flex;
@@ -304,7 +315,24 @@ form {
   justify-content: left;
   /* Ensure the elements are aligned to the left */
   max-width: 300px;
+}
 
+.service {
+  display: flex;
+  flex-direction: row;
+  gap: 30px; /* Add space between items */
+  align-items: flex-end; /* Align all items to the bottom */
+}
+
+.offered_services {
+  display: flex;
+  flex-direction: row;
+}
+
+.offered_services > * {
+    flex-shrink: 1; /* Allow elements to shrink */
+    min-width: 0; /* Ensure elements can shrink below their minimum content size */
+    font-size: small;
 }
 
 #password-form {
@@ -359,6 +387,12 @@ input {
   border-radius: 15px;
 }
 
+.service_list input {
+  max-width: 75px;
+  padding: 0;
+  border-radius: 0;
+}
+
 p,
 label {
   text-align: justify;
@@ -366,6 +400,11 @@ label {
   font-size:medium;
   line-height: 1.4;
   color: black;
+}
+
+.service_list p {
+  margin: 0;
+  padding: 0;
 }
 
 .helptext,
@@ -388,8 +427,25 @@ button[type="submit"] {
   font-size: 16px;
 }
 
-button[type="submit"]:hover {
+button[type="submit"]:hover, .delete_button:hover {
   background-color: #fd7bf7;
+}
+
+.service button {
+  flex: 0 1 auto; /* Prevent elements from taking all available space */
+  height: 36px; /* Ensure button height is auto */
+}
+
+.delete_button {
+  max-height: 30px;
+  padding: 10;
+  margin: 10;
+}
+
+.delete_button a {
+  color: black;
+  font-size: small;
+  text-decoration: none;
 }
 
 .page_content h1 {
@@ -403,6 +459,14 @@ button[type="submit"]:hover {
   font-family: sans-serif;
   color: black;
   font-size: 24px;
+  text-align: center;
+}
+
+.page_content h3 {
+  font-family: sans-serif;
+  color: black;
+  font-size: 20px;
+  text-align: left;
 }
 
 label {
@@ -432,4 +496,9 @@ label {
 footer p {
   text-align: center;
   font-size: 12px;
+}
+
+.offered_services input, label {
+  max-width: 100px;
+  font-size: small;
 }

@@ -131,7 +131,7 @@ def get_current_booking(request):
 
 
 
-@customer_required
+
 def services(request):
     service_type_name = request.GET.get('service_type', 'all')
 
