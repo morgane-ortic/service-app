@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import F, Q
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from .forms import LoginForm
@@ -38,15 +39,35 @@ def cancel_booking(request, booking_id):
 @login_required
 def display_notifications(request):
     user = request.user
-    notifications = Notification.objects.filter(recipient=user).order_by('-created_at')
 
-    # fetch notifications sent to all local therapists
     if hasattr(user, 'therapist'):
         therapist = user.therapist
-        city_notifications = Notification.objects.filter(city=therapist.city)
-        notifications = notifications.union(city_notifications).order_by('-created_at')
+        bookings = Booking.objects.filter(therapist=therapist)
         template_name = 'therapists/notifications.html'
+        # Fetch notifications for the therapist's city
+        city_notifications = Notification.objects.filter(
+            Q(booking__city__iexact=therapist.city) | Q(city__iexact=therapist.city)
+        ).annotate(booking_created_at=F('booking__created_at')).order_by('-booking_created_at')
+    
     else:
+        bookings = Booking.objects.filter(customer__user=user)
         template_name = 'customers/notifications.html'
+        city_notifications = Notification.objects.none()
+
+    # Fetch notifications for the user
+    user_notifications = Notification.objects.filter(recipient=user).order_by('-booking__created_at')
+
+    # If the user is a therapist, also fetch notifications for the bookings
+    if hasattr(user, 'therapist'):
+        booking_notifications = Notification.objects.filter(booking__in=bookings).order_by('-booking__created_at')
+        notifications = (user_notifications | booking_notifications | city_notifications).distinct().order_by('-booking__created_at')
+    else:
+        notifications = user_notifications
+
+    # Debugging statements
+    print(f"User: {user}")
+    print(f"User Type: {'Therapist' if hasattr(user, 'therapist') else 'Customer'}")
+    print(f"Bookings: {bookings}")
+    print(f"Notifications: {notifications}")
 
     return render(request, template_name, {'notifications': notifications})

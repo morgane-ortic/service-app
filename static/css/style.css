@@ -377,6 +377,28 @@ form {
 
 }
 
+.notifications {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  width: 100%;
+}
+
+.notifications > li {
+  background-color: white;
+  border: solid black 1px;
+  border-radius: 10px;
+  padding: 15px;
+  width: 50%;
+  margin: auto;
+  margin-bottom: 30px;
+
+  list-style-type: none;
+  font-family: sans-serif;
+  font-size: medium;
+}
+
 textarea {
   padding: 5px;
   border-radius: 8px;
@@ -400,6 +422,13 @@ label {
   font-size:medium;
   line-height: 1.4;
   color: black;
+}
+
+.important_p {
+  text-align: center;
+  color: red;
+  font-size: medium;
+  font-weight: bold;
 }
 
 .service_list p {

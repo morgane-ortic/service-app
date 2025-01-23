@@ -36,9 +36,10 @@ class Booking(models.Model):
 
     customer = models.ForeignKey('customers.Customer', on_delete=models.SET_NULL, null=True, related_name='booking')
     therapist = models.ForeignKey('therapists.Therapist', on_delete=models.SET_NULL, null=True, related_name='booking')
-    service = models.ForeignKey('therapists.TherapistService', on_delete=models.SET_NULL, null=True, related_name='booking')
+    service = models.ForeignKey('Service', on_delete=models.SET_NULL, null=True, related_name='booking')
     number_of_customers = models.PositiveIntegerField(default=1)  # Directly store the number of customers as an integer
     address = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
     booking_date_time = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     base_price = models.DecimalField(max_digits=6, decimal_places=2)
@@ -107,17 +108,16 @@ class Service(models.Model):
 class Notification(models.Model):
     # each notification has EITHER a recipient (individual) or city (all local therapists)
     recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notifications", null=True, blank=True)
-    city = models.CharField(max_length=100, null=True, blank=True)
     message = models.TextField()
-    appointment_datetime = models.DateTimeField()
+    booking = models.ForeignKey(Booking, on_delete=models.CASCADE, related_name='notifications')
     is_read = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
+    taken = models.BooleanField(default=False)
 
     def __str__(self):
         if self.recipient:
             return f"Notification for {self.recipient.username}: {self.message[:20]}"
-        elif self.city:
-            return f"Notification for city {self.city}: {self.message[:20]}"
+        elif self.booking and self.booking.city:
+            return f"Notification for city {self.booking.city}: {self.message[:20]}"
         else:
             return f"Notification: {self.message[:20]}"
 
@@ -132,4 +132,4 @@ class Notification(models.Model):
             # Send notification to all therapists in the specified city
             therapists_in_city = Therapist.objects.filter(city=city)
             for therapist in therapists_in_city:
-                cls.objects.create(recipient=therapist.user, message=message, city=city)
+                cls.objects.create(recipient=therapist.user, message=message, booking__city=city)
