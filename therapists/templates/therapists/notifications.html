@@ -3,6 +3,11 @@
 {% block content %}
     <div class="page_content">
         <h1>Notifications</h1>  
+        <ul>
+            {% for notification in notifications %}
+                <li>{{ notification.message }} - {{ notification.created_at }}</li>
+            {% endfor %}
+        </ul>
     </div>
 
 {% endblock %}

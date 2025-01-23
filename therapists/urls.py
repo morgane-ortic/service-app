@@ -1,11 +1,12 @@
 from django.urls import path
 from . import views
+import core.views
 
 app_name = 'therapists'
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('notifications/', views.notifications, name='notifications'),
+    path('notifications/', core.views.display_notifications, name='notifications'),
     path('schedule/', views.schedule, name='schedule'),
     
     path('profile/<str:section>/', views.profile, name='profile'),
