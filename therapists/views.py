@@ -5,8 +5,9 @@ from django.contrib.auth import login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from .decorators import therapist_required
-from .forms import RegisterForm, PersonalDetailsForm, ProDetailsForm, EmptyForm
-from .models import Therapist
+from .forms import RegisterForm, PersonalDetailsForm, ProDetailsForm, AddServiceForm, TherapistServiceForm
+from .models import Therapist, TherapistService
+from core.models import Service
 
 
 @therapist_required
@@ -44,6 +45,10 @@ def profile(request, section='personal_details'):
     pro_form = None
     password_form = None
 
+    if section == 'service_settings':
+        # Call service_settings() using the therapist.id
+        return service_settings(request, therapist.id)
+
     if request.method == 'POST':
         if section == 'personal_details':
             personal_form = PersonalDetailsForm(request.POST, request.FILES, instance=therapist)
@@ -78,6 +83,69 @@ def profile(request, section='personal_details'):
         'password_form': password_form,
         'therapist': therapist
     })
+
+
+@login_required
+def service_settings(request, therapist_id):
+    therapist = get_object_or_404(Therapist, id=therapist_id)
+    
+    if request.method == 'POST':
+        service_form = AddServiceForm(request.POST, therapist=therapist)
+        if service_form.is_valid():
+            if 'select_service' in request.POST:
+                # Service selected, reinitialize form with prices
+                service = service_form.cleaned_data['service']
+                service_form = AddServiceForm(therapist=therapist, initial={'service': service})
+                # Create a new TherapistService instance
+                therapist_service = service_form.save(commit=False)
+                therapist_service.therapist = therapist
+                therapist_service.service = service  # Ensure service is assigned
+                therapist_service.base_price = service.base_price  # Copy base_price
+                therapist_service.prices = service.prices  # Copy prices
+                therapist_service.save()
+                # For now, just redirect to the same page
+                return redirect('therapists:profile', section='service_settings')
+        else:
+            print(f"Form errors: {service_form.errors}")  # Debug statement
+
+        # Handle saving changes to existing services
+        for service in TherapistService.objects.filter(therapist=therapist):
+            form = TherapistServiceForm(request.POST, service_instance=service)
+            if form.is_valid():
+                prices = []
+                for duration, price_dict in service.prices:
+                    new_price_dict = {}
+                    for customer_type in price_dict.keys():
+                        field_name = f'price_{service.id}_{duration}_{customer_type}'
+                        price = form.cleaned_data[field_name]
+                        # Convert to int if whole number
+                        if price == int(price):
+                            price = int(price)
+                        new_price_dict[customer_type] = price
+                    prices.append([duration, new_price_dict])
+                service.prices = prices
+                service.save()
+                print(f"Updated Service: {service.service.name}")  # Debug statement
+    else:
+        service_form = AddServiceForm(therapist=therapist)
+    
+    # Get all services for the therapist
+    therapist_services = TherapistService.objects.filter(therapist=therapist)
+    service_forms = [TherapistServiceForm(service_instance=service) for service in therapist_services]
+    
+    return render(request, 'therapists/profile.html', {
+        'section': 'service_settings',
+        'service_form': service_form,
+        'service_forms': service_forms,
+        'therapist': therapist,
+    })
+
+@login_required
+def delete_service(request, therapist_id, service_id):
+    therapist = get_object_or_404(Therapist, id=therapist_id)
+    service_to_delete = get_object_or_404(TherapistService, id=service_id, therapist=therapist)
+    service_to_delete.delete()
+    return redirect('therapists:profile', section='service_settings')
 
 
 def register(request):
@@ -116,14 +184,25 @@ def register_details(request):
                 # Combine data from both forms
                 therapist_data = {
                     'user': request.user,
-                    'name': personal_form.cleaned_data['name'],
+                    'first_name': personal_form.cleaned_data['first_name'],
+                    'last_name': personal_form.cleaned_data['last_name'],
                     'gender': personal_form.cleaned_data['gender'],
+                    'age': personal_form.cleaned_data['age'],
                     'description': personal_form.cleaned_data['description'],
-                    'address': personal_form.cleaned_data['address'],
+                    'street': personal_form.cleaned_data['street'],
+                    'number': personal_form.cleaned_data['number'],
+                    'postcode': personal_form.cleaned_data['postcode'],
+                    'city': personal_form.cleaned_data['city'],
+                    'country': personal_form.cleaned_data['country'],
                     'phone_number': personal_form.cleaned_data['phone_number'],
+                    'pronouns': personal_form.cleaned_data['pronouns'],
                     'picture': personal_form.cleaned_data['picture'],
+                    'qualifications': pro_form.cleaned_data['qualifications'],
+                    'specialties': pro_form.cleaned_data['specialties'],
                     'years_xp': pro_form.cleaned_data['years_xp'],
-                    'equipment_pref': pro_form.cleaned_data['equipment_pref'],
+                    'accepted_customer_groups': pro_form.cleaned_data['accepted_customer_groups'],
+                    'provided_equipment': pro_form.cleaned_data['provided_equipment'],
+                    'required_equipment': pro_form.cleaned_data['required_equipment'],
                 }
                 
                 # Create and save the Therapist instance

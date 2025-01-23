@@ -18,20 +18,58 @@
             {% if section == 'personal_details' %}
                 <h2>Personal Details</h2>
 
+
             {% elif section == 'professional_details' %}
                 <h2>Professional Details</h2>
                 
+
             {% elif section == 'service_settings' %}
+
                 <h2>Service Settings</h2>
-                
+
+                <div>
+                    <h3>Your Services</h3>
+                                        
+                    <form method="post">
+                        {% csrf_token %}
+                        {% for form in service_forms %}
+                            <div class="service_list">
+                                {{ form.as_p }}
+                                {% if form.instance.id %}
+                                    <input type="hidden" name="service_id" value="{{ form.instance.id }}">
+                                    <button class="delete_button">
+                                        <a href="{% url 'therapists:delete_service' therapist.id form.instance.id %}">Delete Service</a>
+                                    </button>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                        <button class="submit_button" type="submit" name="save_changes">Save Service Changes</button>
+                    </form>
+
+                    <h3>Add a Service</h3>
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="service">
+                            <div class="form-field">
+                                {{ service_form.service.label_tag }}
+                                {{ service_form.service }}
+                            </div>
+                            <!-- Add Select Service Button -->
+                            <button class="submit_button" type="submit" name="select_service">Add Service</button>                        
+                        </div>
+                    </form>
+                </div>
+
             {% elif section == 'payment_settings' %}
                 <h2>Payment Settings</h2>
                 
+
             {% elif section == 'privacy_security' %}
                 <h2>Privacy and Security</h2>
                 
             {% endif %}
-        
+            
             <form method="post" enctype="multipart/form-data">
                 <div class="form-grid">
                     {% csrf_token %}
