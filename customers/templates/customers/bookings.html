@@ -139,7 +139,7 @@
 <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
 
 
-<script>
+<script> // OpenMapStreet and OpenRouteService APIs
     document.addEventListener("DOMContentLoaded", function () {
         const map = L.map("map").setView([51.1657, 10.4515], 6); // Default view of Germany
 
@@ -154,19 +154,27 @@
         }).addTo(map);
 
         let customerMarker = null;
-        let typingTimeout = null; // Timeout for the delayed address loading
+        let therapistMarker = null;  // Therapist's marker
+        let routeControl = null;     // Holds the route control (instead of routePolyline)
+        let typingTimeout = null;    // Timeout for the delayed address loading
 
-        const geocodeService = "https://nominatim.openstreetmap.org/search"; // OSM Geocoding endpoint
+        const geocodeService = "https://api.openrouteservice.org/geocode/search"; // OpenRouteService Geocoding endpoint
 
-        // Function to geocode an address to coordinates
+        // Therapist's Address (Randomly chosen address in Berlin for testing)
+        const therapistAddress = "Wiener Straße 10, 10999 Berlin, Germany";
+
+        // OpenRouteService API Key (Replace with your OpenRouteService API key)
+        const openRouteServiceKey = "5b3ce3597851110001cf6248174ae163fcc2468aa175d6ef6ed7263f";
+
+        // Geocode function to convert an address to coordinates using OpenRouteService
         async function geocode(address) {
             try {
                 const response = await fetch(
-                    `${geocodeService}?q=${encodeURIComponent(address)}&format=json&addressdetails=1&limit=1`
+                    `${geocodeService}?api_key=${openRouteServiceKey}&text=${encodeURIComponent(address)}`
                 );
                 const data = await response.json();
-                if (data.length === 0) throw new Error("Address not found");
-                return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+                if (data.features.length === 0) throw new Error("Address not found");
+                return [data.features[0].geometry.coordinates[1], data.features[0].geometry.coordinates[0]]; // Return lat, lon
             } catch (error) {
                 console.error("Geocoding error:", error); // Log the error silently
                 return null; // Return null if geocoding fails
@@ -181,9 +189,53 @@
             // Remove existing customer marker
             if (customerMarker) map.removeLayer(customerMarker);
 
-            // Add new marker and center the map
+            // Add new customer marker and center the map
             customerMarker = L.marker(coordinates).addTo(map).bindPopup(address).openPopup();
             map.setView(coordinates, 15); // Center the map on the address
+
+            // Draw the route between therapist and customer
+            drawRoute(address);
+        }
+        let routePolyline = null; // Global variable to hold the current route polyline
+
+        async function drawRoute(customerAddress) {
+            try {
+                // Geocode both the therapist's and customer's addresses
+                const therapistCoordinates = await geocode(therapistAddress);
+                const customerCoordinates = await geocode(customerAddress);
+        
+                if (therapistCoordinates && customerCoordinates) {
+                    // Remove existing route polyline, therapist marker, and customer marker if they exist
+                    if (routePolyline) map.removeLayer(routePolyline);
+                    if (therapistMarker) map.removeLayer(therapistMarker);
+                    if (customerMarker) map.removeLayer(customerMarker);
+        
+                    // Request route data from OpenRouteService API
+                    const routeResponse = await fetch(
+                        `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${openRouteServiceKey}&start=${therapistCoordinates[1]},${therapistCoordinates[0]}&end=${customerCoordinates[1]},${customerCoordinates[0]}`
+                    );
+                    const routeData = await routeResponse.json();
+        
+                    // Extract route coordinates
+                    const routeCoordinates = routeData.features[0].geometry.coordinates.map(coord => [coord[1], coord[0]]);
+        
+                    // Draw the new route on the map using a polyline
+                    routePolyline = L.polyline(routeCoordinates, {
+                        color: 'blue',
+                        weight: 4,
+                        opacity: 0.7
+                    }).addTo(map);
+        
+                    // Add markers for therapist and customer
+                    therapistMarker = L.marker(therapistCoordinates).addTo(map).bindPopup("Therapist's Location").openPopup();
+                    customerMarker = L.marker(customerCoordinates).addTo(map).bindPopup("Customer's Location").openPopup();
+        
+                    // Fit the map to the route bounds
+                    map.fitBounds(routePolyline.getBounds());
+                }
+            } catch (error) {
+                console.error("Error drawing route:", error);
+            }
         }
 
         // Reset dropdown if text input changes
@@ -193,13 +245,13 @@
             // Clear previous timeout
             if (typingTimeout) clearTimeout(typingTimeout);
 
-            // Set new timeout to load the address after 3 seconds
+            // Set new timeout to load the address after 2 seconds
             typingTimeout = setTimeout(() => {
                 const enteredAddress = textInput.value.trim();
                 if (enteredAddress.length > 0) {
                     updateMap(enteredAddress); // Update map for text input address
                 }
-            }, 3000); // Delay of 3 seconds
+            }, 2000); // Delay of 2 seconds
         });
 
         // Reset text input if dropdown selection changes
@@ -211,60 +263,37 @@
             }
         });
 
-// Function to load current booking data and set map view
-function loadCurrentBooking() {
-    const bookingData = JSON.parse(localStorage.getItem("bookingData"));
-    
-    if (bookingData) {
-        const { city } = bookingData;  // Extracting only the city
-        let initialCoordinates = [51.1657, 10.4515]; // Default to Germany (if no city selected)
+        // Function to load current booking data and set map view
+        function loadCurrentBooking() {
+            const bookingData = JSON.parse(localStorage.getItem("bookingData"));
+            
+            if (bookingData) {
+                const { city } = bookingData;  // Extracting only the city
+                let initialCoordinates = [51.1657, 10.4515]; // Default to Germany (if no city selected)
 
-        // Set initial coordinates based on city
-        if (city) {
-            switch (city.toLowerCase()) {
-                case "berlin":
-                    initialCoordinates = [52.5200, 13.4050]; // Berlin
-                    break;
-                case "hamburg":
-                    initialCoordinates = [53.5511, 9.9937]; // Hamburg
-                    break;
-                case "munich":
-                    initialCoordinates = [48.1351, 11.5820]; // Munich
-                    break;
-                case "cologne":
-                    initialCoordinates = [50.9375, 6.9603]; // Cologne
-                    break;
-                case "frankfurt":
-                    initialCoordinates = [50.1109, 8.6821]; // Frankfurt
-                    break;
-                case "stuttgart":
-                    initialCoordinates = [48.7758, 9.1829]; // Stuttgart
-                    break;
-                case "düsseldorf":
-                    initialCoordinates = [51.2217, 6.7762]; // Düsseldorf
-                    break;
-                case "leipzig":
-                    initialCoordinates = [51.3397, 12.3731]; // Leipzig
-                    break;
-                case "dortmund":
-                    initialCoordinates = [51.5136, 7.4653]; // Dortmund
-                    break;
-                case "essen":
-                    initialCoordinates = [51.4556, 7.0131]; // Essen
-                    break;
-                default:
-                    initialCoordinates = [51.1657, 10.4515]; // Default to Germany
-                    break;
+                // Set initial coordinates based on city
+                if (city) {
+                    switch (city.toLowerCase()) {
+                        case "berlin":
+                            initialCoordinates = [52.5200, 13.4050]; // Berlin
+                            break;
+                        case "hamburg":
+                            initialCoordinates = [53.5511, 9.9937]; // Hamburg
+                            break;
+                        // Other cities...
+                        default:
+                            initialCoordinates = [51.1657, 10.4515]; // Default to Germany
+                            break;
+                    }
+                }
+
+                // Set the initial view of the map
+                map.setView(initialCoordinates, 12); // Zoom level adjusted based on city
+            } else {
+                // Default to Germany if no city in booking data
+                map.setView([51.1657, 10.4515], 6); // View of Germany
             }
         }
-
-        // Set the initial view of the map
-        map.setView(initialCoordinates, 12); // Zoom level adjusted based on city
-    } else {
-        // Default to Germany if no city in booking data
-        map.setView([51.1657, 10.4515], 6); // View of Germany
-    }
-}
 
         // Load current booking on page load
         loadCurrentBooking();
@@ -278,11 +307,6 @@ function loadCurrentBooking() {
         });
     });
 </script>
-
-
-
-
-
 
 <script> // Function to set the address into the input field
     function useAddress(address) {
