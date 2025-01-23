@@ -1,4 +1,6 @@
 from django.db import models
+from django.apps import apps
+from django.contrib.auth.models import User
 
 
 class AcceptedCustomerGroups(models.Model):
@@ -99,3 +101,33 @@ class Service(models.Model):
             if str(entry[0]) == duration:  # Match the duration
                 return entry[1].get(customer_type)  # Return the price for the specified customer type
         return None  # Return None if no matching duration or customer type is found
+
+
+class Notification(models.Model):
+    # each notification has EITHER a recipient (individual) or city (all local therapists)
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notifications", null=True, blank=True)
+    city = models.CharField(max_length=100, null=True, blank=True)
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        if self.recipient:
+            return f"Notification for {self.recipient.username}: {self.message[:20]}"
+        elif self.city:
+            return f"Notification for city {self.city}: {self.message[:20]}"
+        else:
+            return f"Notification: {self.message[:20]}"
+
+    @classmethod
+    def send_notification(cls, message, recipient=None, city=None):
+        # Importing Therapist model here to avoid circular import
+        Therapist = apps.get_model('therapists', 'Therapist')
+        if recipient:
+            # Send notification to a specific user
+            cls.objects.create(recipient=recipient, message=message)
+        elif city:
+            # Send notification to all therapists in the specified city
+            therapists_in_city = Therapist.objects.filter(city=city)
+            for therapist in therapists_in_city:
+                cls.objects.create(recipient=therapist.user, message=message, city=city)
