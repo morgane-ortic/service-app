@@ -109,6 +109,7 @@ class Notification(models.Model):
     recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notifications", null=True, blank=True)
     city = models.CharField(max_length=100, null=True, blank=True)
     message = models.TextField()
+    appointment_datetime = models.DateTimeField()
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
