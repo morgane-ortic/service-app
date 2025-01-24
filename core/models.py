@@ -21,10 +21,6 @@ class AcceptedCustomerGroups(models.Model):
 
     
 
-
-
-from django.db import models
-
 class Booking(models.Model):
     # Status choices for the booking
     STATUS_CHOICES = [
@@ -87,6 +83,7 @@ class Service(models.Model):
     base_price = models.DecimalField(max_digits=6, decimal_places=2)
     prices = models.JSONField(default=list)
     picture = models.ImageField(upload_to='service_pictures/')  # For uploading pictures
+    service_types = models.ManyToManyField(ServiceType, related_name="services")  # Don't remove this line, it is needed in services.html for the sidebar with pink options
 
     def __str__(self):
         return self.name

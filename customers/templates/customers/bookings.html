@@ -102,7 +102,6 @@
                         id="therapist-name"
                         placeholder="Enter therapist name"
                         style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;"
-                        disabled
                     />
                     <button id="search-therapist-btn">Search for a Therapist</button>
                     <!-- Dynamic Text Section -->
@@ -111,6 +110,7 @@
             </div>
         </div>
 
+        <!-- Right Column: Map and Address -->
         <div class="map-container" style="flex: 1.5; display: flex; flex-direction: column; height: 100%;">
             <div class="map-header" style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
                 <!-- Text Input Field -->
@@ -131,7 +131,6 @@
         </div>
     </div>
 </div>
-</div>
 
 <!-- Include Leaflet.js -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
@@ -139,7 +138,7 @@
 <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
 
 
-<script> // OpenMapStreet and OpenRouteService APIs
+<script> // OpenStreetMap and OpenRouteService APIs
     document.addEventListener("DOMContentLoaded", function () {
         const map = L.map("map").setView([51.1657, 10.4515], 6); // Default view of Germany
 
@@ -303,7 +302,23 @@
         clearSelectionButton.addEventListener("click", function () {
             localStorage.removeItem("bookingData");
             document.getElementById("current-booking-details").innerHTML = "<p>No current selection.</p>";
-            map.setView([51.1657, 10.4515], 6); // Reset to Germany
+            
+            // Reset the map to default view
+            map.setView([51.1657, 10.4515], 6); // Default view of Germany
+            
+            // Remove the route and markers if they exist
+            if (routePolyline) {
+                map.removeLayer(routePolyline);
+                routePolyline = null;
+            }
+            if (therapistMarker) {
+                map.removeLayer(therapistMarker);
+                therapistMarker = null;
+            }
+            if (customerMarker) {
+                map.removeLayer(customerMarker);
+                customerMarker = null;
+            }
         });
     });
 </script>
@@ -328,6 +343,9 @@
 
             // Update the Current Booking section with a default message
             currentBookingDetails.innerHTML = "<p>No current selection.</p>";
+
+            // Trigger function to disable or enable elements based on current booking details
+            updateElementsBasedOnSelection();
         });
 
         // Optionally, load current booking data on page load
@@ -347,10 +365,32 @@
             } else {
                 currentBookingDetails.innerHTML = "<p>No current selection.</p>";
             }
+
+            // Trigger function to disable or enable elements based on current booking details
+            updateElementsBasedOnSelection();
         }
+
+        // Function to disable or enable elements based on current booking details
+        function updateElementsBasedOnSelection() {
+            const hasNoSelection = currentBookingDetails.textContent.trim() === "No current selection.";
+            const requestPreference = document.getElementById("request-preference");
+            const therapistNameInput = document.getElementById("therapist-name");
+            const searchTherapistButton = document.getElementById("search-therapist-btn");
+            const addressTextInput = document.getElementById("address-text-input");
+            const addressDropdown = document.getElementById("address-dropdown");
+
+
+            requestPreference.disabled = hasNoSelection;
+            therapistNameInput.disabled = hasNoSelection;
+            searchTherapistButton.disabled = hasNoSelection;
+            addressTextInput.disabled = hasNoSelection;
+            addressDropdown.disabled = hasNoSelection;
+        }
+
 
         // Load the current booking on page load
         loadCurrentBooking();
+
     });
 </script>
 
@@ -494,7 +534,7 @@
     });
 </script>
 
-<script> // Logic for the dropdown menu and the input field in the Current Booking window
+<script> // Current Booking - Logic for the dropdown menu and input field in the window
     document.addEventListener("DOMContentLoaded", function () {
         const requestPreference = document.getElementById("request-preference");
         const therapistNameInput = document.getElementById("therapist-name");
@@ -552,23 +592,55 @@
     });
 </script>
 
-<script> // Functions to make the 'Request Therapist' button work
+<script> // Logic for the 'Request Therapist' button
     document.addEventListener("DOMContentLoaded", function () {
         const therapistNameInput = document.getElementById("therapist-name");
         const requestPreference = document.getElementById("request-preference");
+        const requestTherapistBtns = document.querySelectorAll("button[onclick^='requestTherapist']"); // Select all 'Request Therapist' buttons
+        const currentBookingDetails = document.getElementById("current-booking-details");
 
-        // Function to enable the input field and update dropdown and text field
-        window.requestTherapist = function (therapistName) {
-            if (therapistName && therapistName !== "No therapist assigned") {
-                therapistNameInput.value = therapistName; // Fill therapist name
-                therapistNameInput.disabled = false; // Enable input field
-                requestPreference.value = "request-therapist"; // Set dropdown to "Request Therapist"
+        // Function to enable or disable 'Request Therapist' buttons based on Current Booking content
+        function updateRequestTherapistButtons() {
+            const currentBookingHTML = currentBookingDetails.innerHTML.trim();
+            const isNoSelection = currentBookingHTML === "<p>No current selection.</p>";
 
-                // Trigger change event for dynamic text update
-                const event = new Event('change');
-                requestPreference.dispatchEvent(event);
+            requestTherapistBtns.forEach((button) => {
+                button.disabled = isNoSelection; // Disable button if "No current selection."
+            });
+        }
+
+        // Function to load current booking details and update button state
+        function loadCurrentBooking() {
+            const bookingData = JSON.parse(localStorage.getItem("bookingData"));
+
+            if (bookingData) {
+                currentBookingDetails.innerHTML = `
+                    <p><strong>Service:</strong> ${bookingData.serviceName || "N/A"}</p>
+                    <p><strong>Duration:</strong> ${bookingData.duration || "N/A"}</p>
+                    <p><strong>Therapist sex:</strong> ${bookingData.therapist || "No Preference"}</p>
+                    <p><strong>Number of People:</strong> ${bookingData.peopleCount || "N/A"}</p>
+                    <p><strong>Date and Time:</strong> ${bookingData.date || "N/A"}, ${bookingData.time || "N/A"}</p>
+                    <p><strong>Country and City:</strong> ${bookingData.country || "N/A"}, ${bookingData.city || "N/A"}</p>
+                    <p><strong>Payment Method:</strong> ${bookingData.paymentMethod || "N/A"}</p>
+                `;
+            } else {
+                currentBookingDetails.innerHTML = "<p>No current selection.</p>";
             }
-        };
+
+            // Update button state after loading booking data
+            updateRequestTherapistButtons();
+        }
+
+        // Observe changes in Current Booking row and dynamically update button states
+        const observer = new MutationObserver(() => {
+            updateRequestTherapistButtons();
+        });
+
+        // Start observing the current booking details for changes
+        observer.observe(currentBookingDetails, { childList: true, subtree: true });
+
+        // Initial call to load booking data and set button state
+        loadCurrentBooking();
     });
 </script>
 
@@ -601,9 +673,32 @@
     });
 </script>
 
+<script> // Function to update the "Search for a Therapist" button state
+    document.addEventListener("DOMContentLoaded", function () {
+        const textInput = document.getElementById("address-text-input");
+        const dropdown = document.getElementById("address-dropdown");
+        const searchButton = document.getElementById("search-therapist-btn");
+        
+        function updateSearchButtonState() {
+            const isTextInputFilled = textInput.value.trim() !== "";
+            const isDropdownSelected = dropdown.value.trim() !== "";
+
+            // Enable the button if either input field or dropdown has a value
+            searchButton.disabled = !(isTextInputFilled || isDropdownSelected);
+        }
+
+        // Attach event listeners to update the button state
+        textInput.addEventListener("input", updateSearchButtonState);
+        dropdown.addEventListener("change", updateSearchButtonState);
+
+        // Initial state update
+        updateSearchButtonState();
+    });
+</script>
+
 {% endblock %}
 
-<script> // Function to fetch all bookings that are cancelled or complete
+<script> // Function to fetch all bookings that are cancelled, complete or pending
     async function fetchBookingHistory() {
         try {
             const response = await fetch('/api/bookings'); // Adjust the URL to match your endpoint
