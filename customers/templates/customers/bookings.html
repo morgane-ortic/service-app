@@ -592,58 +592,6 @@
     });
 </script>
 
-<script> // Logic for the 'Request Therapist' button
-    document.addEventListener("DOMContentLoaded", function () {
-        const therapistNameInput = document.getElementById("therapist-name");
-        const requestPreference = document.getElementById("request-preference");
-        const requestTherapistBtns = document.querySelectorAll("button[onclick^='requestTherapist']"); // Select all 'Request Therapist' buttons
-        const currentBookingDetails = document.getElementById("current-booking-details");
-
-        // Function to enable or disable 'Request Therapist' buttons based on Current Booking content
-        function updateRequestTherapistButtons() {
-            const currentBookingHTML = currentBookingDetails.innerHTML.trim();
-            const isNoSelection = currentBookingHTML === "<p>No current selection.</p>";
-
-            requestTherapistBtns.forEach((button) => {
-                button.disabled = isNoSelection; // Disable button if "No current selection."
-            });
-        }
-
-        // Function to load current booking details and update button state
-        function loadCurrentBooking() {
-            const bookingData = JSON.parse(localStorage.getItem("bookingData"));
-
-            if (bookingData) {
-                currentBookingDetails.innerHTML = `
-                    <p><strong>Service:</strong> ${bookingData.serviceName || "N/A"}</p>
-                    <p><strong>Duration:</strong> ${bookingData.duration || "N/A"}</p>
-                    <p><strong>Therapist sex:</strong> ${bookingData.therapist || "No Preference"}</p>
-                    <p><strong>Number of People:</strong> ${bookingData.peopleCount || "N/A"}</p>
-                    <p><strong>Date and Time:</strong> ${bookingData.date || "N/A"}, ${bookingData.time || "N/A"}</p>
-                    <p><strong>Country and City:</strong> ${bookingData.country || "N/A"}, ${bookingData.city || "N/A"}</p>
-                    <p><strong>Payment Method:</strong> ${bookingData.paymentMethod || "N/A"}</p>
-                `;
-            } else {
-                currentBookingDetails.innerHTML = "<p>No current selection.</p>";
-            }
-
-            // Update button state after loading booking data
-            updateRequestTherapistButtons();
-        }
-
-        // Observe changes in Current Booking row and dynamically update button states
-        const observer = new MutationObserver(() => {
-            updateRequestTherapistButtons();
-        });
-
-        // Start observing the current booking details for changes
-        observer.observe(currentBookingDetails, { childList: true, subtree: true });
-
-        // Initial call to load booking data and set button state
-        loadCurrentBooking();
-    });
-</script>
-
 <script> // Function that tells the customer what will happen after pressing the 'Search for a Therapist' button
     document.addEventListener("DOMContentLoaded", function () {
         const requestPreference = document.getElementById("request-preference");
@@ -693,6 +641,80 @@
 
         // Initial state update
         updateSearchButtonState();
+    });
+</script>
+
+<script> // functionality of "Request therapist" button
+    document.addEventListener("DOMContentLoaded", function () {
+        const requestPreference = document.getElementById("request-preference");
+        const therapistNameInput = document.getElementById("therapist-name");
+        const dynamicText = document.getElementById("dynamic-text");
+        const currentBookingDetails = document.getElementById("current-booking-details");
+
+        // Existing functionality for dropdown and input
+        function handleDropdownChange() {
+            const selectedOption = requestPreference.value;
+            if (selectedOption === "no-preference") {
+                therapistNameInput.value = ""; // Clear input
+                therapistNameInput.disabled = true; // Disable input
+            } else {
+                therapistNameInput.disabled = false; // Enable input
+            }
+        }
+
+        function updateDynamicText() {
+            const selectedOption = requestPreference.value;
+            if (selectedOption === "no-preference") {
+                dynamicText.textContent = "The system will search for all available therapists in your area with your preference for the next 10 minutes.";
+            } else if (selectedOption === "request-therapist") {
+                dynamicText.textContent = "The system will search for your specified therapist for 5 minutes, if unavailable it will search for all available therapists for another 5 minutes.";
+            } else if (selectedOption === "request-therapist-only") {
+                dynamicText.textContent = "The system will look for your specified therapist for 10 minutes, after which it will stop if the therapist is not found.";
+            }
+        }
+
+        // New: Function to handle "Request Therapist" button click
+        function requestTherapist(therapistName) {
+            // Set dropdown to "Request Therapist" option
+            requestPreference.value = "request-therapist";
+            // Enable input field and populate it with the therapist's name
+            therapistNameInput.disabled = false;
+            therapistNameInput.value = therapistName;
+            // Update dynamic text based on new selection
+            updateDynamicText();
+        }
+
+        // Disable "Request Therapist" buttons when "No current selection."
+        function disableRequestTherapistButtons() {
+            const hasNoSelection = currentBookingDetails.textContent.trim() === "No current selection.";
+            const buttons = document.querySelectorAll("button[onclick^='requestTherapist']");
+
+            buttons.forEach(button => {
+                button.disabled = hasNoSelection; // Disable or enable the button
+            });
+        }
+
+        // Attach event listener to "Request Therapist" buttons dynamically
+        document.querySelectorAll("button[onclick^='requestTherapist']").forEach(button => {
+            button.addEventListener("click", function () {
+                const therapistName = button.getAttribute("onclick").match(/requestTherapist\('(.*?)'\)/)[1];
+                requestTherapist(therapistName); // Call the function with the therapist's name
+            });
+        });
+
+        // Observe changes in the Current Booking section
+        const observer = new MutationObserver(disableRequestTherapistButtons);
+        observer.observe(currentBookingDetails, { childList: true, subtree: true });
+
+        // Initialize dropdown behavior, dynamic text, and button states on page load
+        requestPreference.addEventListener("change", function () {
+            handleDropdownChange();
+            updateDynamicText();
+        });
+
+        handleDropdownChange();
+        updateDynamicText();
+        disableRequestTherapistButtons(); // Ensure buttons are correctly disabled on page load
     });
 </script>
 
