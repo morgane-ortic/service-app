@@ -82,8 +82,17 @@ def get_notifications(request):
     user = request.user
     print(f'Current user: {user.username}')
     print (f'user.id: {user.id}')
-    # RECIPIENT FILTER NEEDS TO BE CHANGED
-    notifications = Notification.objects.filter(recipient=user.id, is_read=False)
+    # Fetch the therapist's city if the user is a therapist
+    therapist_city = None
+    if hasattr(user, 'therapist'):
+        therapist_city = user.therapist.city
+        print(f'Therapist city: {therapist_city}')
+
+    # Get unread notifications with this user as recipient OR if therapist for this city's therapists
+    notifications = Notification.objects.filter(
+        Q(recipient=user) | Q(booking__city=therapist_city),
+        is_read=False
+    )
     notifications_data = []
     for notification in notifications:
         messages.add_message(request, messages.INFO, notification.message)
