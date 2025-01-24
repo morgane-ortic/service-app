@@ -4,6 +4,7 @@ from .views import create_checkout_session
 from django.contrib.auth import views as auth_views
 from .views import payment_success, payment_cancel
 from django.http import HttpResponse
+import core.views
 
 app_name = 'customers'
 
@@ -23,5 +24,8 @@ urlpatterns = [
     path('create-checkout-session/', create_checkout_session, name='create_checkout_session'),
     path('success/', views.payment_success, name='success'),
     path('cancel/', views.payment_cancel, name='cancel'),
+
+    path('get-notifications/', core.views.get_notifications, name='get_notifications'),
+
     path('favicon.ico', lambda x: HttpResponse(status=204)),  # Ignore favicon requests
 ]

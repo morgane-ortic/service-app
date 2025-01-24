@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.db.models import F, Q
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
+from django.template.loader import render_to_string
 from .forms import LoginForm
 from django.http import JsonResponse
 from core.models import Booking, Notification
@@ -71,3 +73,36 @@ def display_notifications(request):
     print(f"Notifications: {notifications}")
 
     return render(request, template_name, {'notifications': notifications})
+
+
+
+@login_required
+def get_notifications(request):
+    print('Getting notifications...')
+    user = request.user
+    print(f'Current user: {user.username}')
+    print (f'user.id: {user.id}')
+    # RECIPIENT FILTER NEEDS TO BE CHANGED
+    notifications = Notification.objects.filter(recipient=user.id, is_read=False)
+    notifications_data = []
+    for notification in notifications:
+        messages.add_message(request, messages.INFO, notification.message)
+        notifications_data.append({
+            'message': notification.message,
+        })
+        notification.save()
+    
+    response_data = {'status': 'success', 'notifications': notifications_data}
+    print('Response data:', response_data)
+    return JsonResponse({'status': 'success'})
+
+
+@login_required
+def mark_notification_as_read(request, notification_id):
+    try:
+        notification = Notification.objects.get(id=notification_id, recipient=request.user)
+        notification.is_read = True
+        notification.save()
+    except Notification.DoesNotExist:
+        pass
+    return redirect('notifications')  # Redirect to the notifications page
