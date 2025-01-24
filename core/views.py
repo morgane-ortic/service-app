@@ -46,7 +46,7 @@ def display_notifications(request):
         template_name = 'therapists/notifications.html'
         # Fetch notifications for the therapist's city
         city_notifications = Notification.objects.filter(
-            Q(booking__city__iexact=therapist.city) | Q(city__iexact=therapist.city)
+            booking__city__iexact=therapist.city
         ).annotate(booking_created_at=F('booking__created_at')).order_by('-booking_created_at')
     
     else:

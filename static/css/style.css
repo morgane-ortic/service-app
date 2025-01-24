@@ -456,7 +456,7 @@ button[type="submit"] {
   font-size: 16px;
 }
 
-button[type="submit"]:hover, .delete_button:hover {
+button:hover, .delete_button:hover {
   background-color: #fd7bf7;
 }
 
