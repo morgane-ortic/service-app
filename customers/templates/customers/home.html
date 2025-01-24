@@ -1,10 +1,138 @@
 {% extends './base.html' %}
 
-{% block content %}
-<div class="page_content">
-    <h1>Welcome {{ customer.name }}!</h1>
-    <p>You're a customer</p>
-</div>
+{% block extra_head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="/static/js/home_page.js" defer></script>
+<link rel="stylesheet" href="/static/css/home_page.css">
+{% endblock %}
 
+{% block content %}
+<div id = "index_main">
+    <section class = "left_section">
+        <div id="map"></div>
+
+        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+        <script>
+            var map = L.map('map').setView([52.509237,13.375972], 10);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            var marker = L.marker([52.509237,13.375972]).addTo(map);
+
+            function updateMarker(lat, lng) {
+                marker.setLatLng([lat, lng]);
+                map.setView([lat, lng], 10);
+            }
+        </script>
+        <div class="text_descriptiption_box">
+            <h2>Relax. Rejuvenate. Renew.</h2>
+            <div>
+                Discover the healing power of touch. Our expert massage therapies not only melt away stress but also improve
+                circulation, relieve muscle tension, and promote overall well-being. Invest in your health — because you deserve it.
+            </div>
+        </div>
+    </section>
+    <section class = "right_section">
+        <div class = "accordion_block">
+            <div class="accordion_section">
+                <select name="сountry" id="сountry_select">
+                    <option value="Germany" selected>Germany</option>
+                </select>
+            </div>
+            <div class="accordion_section">
+                <select name="city" id="city_select" onchange="select_map($(this))">
+                    <option value="Berlin" map_value="52.509237,13.375972" selected>Berlin</option>
+                    <option value="Wiesbaden" map_value="50.083191,8.235632">Wiesbaden</option>
+                    <option value="Frankfurt Am Main" map_value="50.113611,8.679256">Frankfurt Am Main</option>
+                    <option value="Hamburg" map_value="53.550648,9.991437">Hamburg</option>
+                    <option value="Leipzig" map_value="51.340885,12.375078">Leipzig</option>
+                </select>
+            </div>
+            <div class="accordion_section">
+                <div class="accordion_section_title">
+                Choose a service
+                </div>
+                <div class="accordion_section_body">
+                    <div class="offer_block" onclick = "add_select_class($(this))">
+                        <div class="offer_block_img_cover"><img src="/media/service_pictures/body_scrub.png" alt=""><!-- Картинка, нужен физический адрес --></div>
+                        <div class="offer_block_title">Body scrub</div>
+                        <div class="offer_block_description">from 25$</div>
+                    </div>
+                    <div class="offer_block" onclick = "add_select_class($(this))">
+                        <div class="offer_block_img_cover"><img src="/media/service_pictures/deep_tissue_massage.png" alt=""><!-- Картинка, нужен физический адрес --></div>
+                        <div class="offer_block_title">Deep tissue massage</div>
+                        <div class="offer_block_description">from 25$</div>
+                    </div>
+                    <div class="offer_block" onclick = "add_select_class($(this))">
+                        <div class="offer_block_img_cover"><img src="/media/service_pictures/facial_treatment.png" alt=""><!-- Картинка, нужен физический адрес --></div>
+                        <div class="offer_block_title">Facial treatment</div>
+                        <div class="offer_block_description">from 25$</div>
+                    </div>
+                    <div class="offer_block" onclick = "add_select_class($(this))">
+                        <div class="offer_block_img_cover"><img src="/media/service_pictures/foot_massage.png" alt=""><!-- Картинка, нужен физический адрес --></div>
+                        <div class="offer_block_title">Foot massage</div>
+                        <div class="offer_block_description">from 25$</div>
+                    </div>
+                    <div class="offer_block" onclick = "add_select_class($(this))">
+                        <div class="offer_block_img_cover"><img src="/media/service_pictures/foot_scrub.png" alt=""><!-- Картинка, нужен физический адрес --></div>
+                        <div class="offer_block_title">Foot scrub</div>
+                        <div class="offer_block_description">from 25$</div>
+                    </div>
+                    <div class="offer_block" onclick = "add_select_class($(this))">
+                        <div class="offer_block_img_cover"><img src="/media/service_pictures/jet_lag_recovery_massage.png" alt=""><!-- Картинка, нужен физический адрес --></div>
+                        <div class="offer_block_title">Jet lag recovery massage</div>
+                        <div class="offer_block_description">from 25$</div>
+                    </div>
+                    <div class="offer_block" onclick = "add_select_class($(this))">
+                        <div class="offer_block_img_cover"><img src="/media/service_pictures/manicure.png" alt=""><!-- Картинка, нужен физический адрес --></div>
+                        <div class="offer_block_title">Manicure</div>
+                        <div class="offer_block_description">from 25$</div>
+                    </div>
+                    <div class="offer_block" onclick = "add_select_class($(this))">
+                        <div class="offer_block_img_cover"><img src="/media/service_pictures/myofascial_massage.png" alt=""><!-- Картинка, нужен физический адрес --></div>
+                        <div class="offer_block_title">Myofascial massage</div>
+                        <div class="offer_block_description">from 25$</div>
+                    </div>
+                    <div class="offer_block" onclick = "add_select_class($(this))">
+                        <div class="offer_block_img_cover"><img src="/media/service_pictures/pedicure.png" alt=""><!-- Картинка, нужен физический адрес --></div>
+                        <div class="offer_block_title">Pedicure</div>
+                        <div class="offer_block_description">from 25$</div>
+                    </div>
+                    <div class="offer_block" onclick = "add_select_class($(this))">
+                        <div class="offer_block_img_cover"><img src="/media/service_pictures/pregnancy_massage.png" alt=""><!-- Картинка, нужен физический адрес --></div>
+                        <div class="offer_block_title">Pregnancy massage</div>
+                        <div class="offer_block_description">from 25$</div>
+                    </div>
+                    <div class="offer_block" onclick = "add_select_class($(this))">
+                        <div class="offer_block_img_cover"><img src="/media/service_pictures/relaxing_oil_massage.png" alt=""><!-- Картинка, нужен физический адрес --></div>
+                        <div class="offer_block_title">Relaxing oil massage</div>
+                        <div class="offer_block_description">from 25$</div>
+                    </div>
+                    <div class="offer_block" onclick = "add_select_class($(this))">
+                        <div class="offer_block_img_cover"><img src="/media/service_pictures/slimming_massage.png" alt=""><!-- Картинка, нужен физический адрес --></div>
+                        <div class="offer_block_title">Slimming massage</div>
+                        <div class="offer_block_description">from 25$</div>
+                    </div>
+                    <div class="offer_block" onclick = "add_select_class($(this))">
+                        <div class="offer_block_img_cover"><img src="/media/service_pictures/thai_massage.png" alt=""><!-- Картинка, нужен физический адрес --></div>
+                        <div class="offer_block_title">Thai massage</div>
+                        <div class="offer_block_description">from 25$</div>
+                    </div>
+                    <div class="offer_block" onclick = "add_select_class($(this))">
+                        <div class="offer_block_img_cover"><img src="/media/service_pictures/yoga_personal_training.png" alt=""><!-- Картинка, нужен физический адрес --></div>
+                        <div class="offer_block_title">Yoga personal training</div>
+                        <div class="offer_block_description">from 25$</div>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion_section">
+                <div class="form_submit_button" onclick = "submit_ofer_select()">Find</div>
+            </div>
+        </div>
+    </section>
+</div>
 
 {% endblock %}

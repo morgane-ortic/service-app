@@ -1,0 +1,201 @@
+main{
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.main_content {
+    background:unset;
+    width: 90%;
+    display: flex; 
+    margin: 0;
+}
+
+#index_main{
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 100%;
+    display: flex;
+}
+
+
+.left_section{
+    width: 45%;
+    height: 75vh;
+    margin-left: 3%;
+    margin-right: 2%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    flex-direction: column;
+}
+
+.right_section{
+    width: 45%;
+    height: 75vh;
+    margin-left: 3%;
+    margin-right: 2%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+
+.text_descriptiption_box{
+    font-family: arial;
+    padding: 6%;
+    background-color: #fff6;
+    outline: 1px solid #fff;
+}
+
+
+.text_descriptiption_box h2{
+    font-size: 25px;
+    padding-top: 0;
+    margin: 0;
+    margin-bottom: 1vw;
+}
+
+.text_descriptiption_box div{
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.accordion_block{
+    width: 80%;
+    height: auto;
+    font-family: Arial;
+    padding-left: 3%;
+    padding-right: 3%;
+}
+
+.accordion_section{
+    width: 100%;
+    height: auto;
+    margin-top: 1.5vw;  
+}
+
+.accordion_section select{
+    font-size: 20px;
+    width: 100%;
+    padding-top: 1vw;
+    padding-bottom: 1vw;
+    text-align: center;
+    border-radius: 5px;
+    background: linear-gradient(to bottom, rgba(193,175,129, 0.5), rgba(255,255,217, 0.5));
+    cursor: pointer;
+    font-weight: 600;
+}
+
+
+.accordion_section option{
+    font-size: 20px;
+    width: 100%;
+    padding-top: 1vw;
+    padding-bottom: 1vw;
+    text-align: center;
+    border-radius: 5px;
+    background: linear-gradient(to bottom, rgba(193,175,129, 0.5), rgba(255,255,217, 0.5));
+    cursor: pointer;
+    font-weight: 600;    
+}
+
+
+.accordion_section_title{
+    font-size: 20px;
+    width: 100%;
+    padding-top: 1vw;
+    padding-bottom: 1vw;
+    text-align: center;
+    border-radius: 5px;
+    background: linear-gradient(to bottom, rgba(193,175,129, 0.5), rgba(255,255,217, 0.5));
+    outline: 1px solid #000000;
+    outline-offset: -1px;
+    font-weight: 600; 
+    position: relative;
+    z-index: 2;    
+}
+
+.accordion_section_body{
+    font-size: 12px;
+    width: 96%;
+    padding-top: 1vw;
+    padding-bottom: 1vw;
+    padding-left: 2%;
+    padding-right: 2%;
+    border-radius: 0 0 5px 5px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.8), rgba(243, 243, 229, 0.8));
+    font-weight: 600;  
+    min-height: 14.5vw; 
+    position: relative;
+    top:-1px; 
+    z-index: 1;  
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap:0.5vw 0;
+    height: 14.5vh;
+    overflow-y: scroll;
+}
+
+.offer_block{
+    width: 24%;
+    cursor: pointer;
+    text-align: center;
+}
+
+.offer_block_img_cover{
+    width: 100%;
+    overflow: hidden;
+}
+
+.offer_block_img_cover img{
+    object-fit: cover;
+    width: 100%;
+    height: 5vw;
+}
+
+.offer_block_title{
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 0.6vw;
+    padding-left: 0.3vw;
+}
+
+.offer_block_description{
+    padding-left: 0.3vw; 
+}
+
+.form_submit_button{
+    font-size: 20px;
+    width: 100%;
+    padding-top: 1vw;
+    padding-bottom: 1vw;
+    text-align: center;
+    border-radius: 5px;
+    background: linear-gradient(to bottom, rgba(224, 149, 221, 0.5), rgba(250,159,203, 0.7));
+    outline: 1px solid #a00760;
+    color: #fff;
+    outline-offset: -1px;
+    font-weight: 600; 
+    position: relative;
+    z-index: 2; 
+    cursor: pointer;     
+}
+
+.form_submit_button:hover{
+    background: linear-gradient(to bottom, rgba(224, 149, 221, 0.8), rgba(250,159,203, 0.9)); 
+}
+.selected{
+    outline: 1px solid #fd7bf7;
+    background-color: #d8d7d7;
+}
+
+#map{
+  width: 100%;
+  height: 30vh;
+  margin-bottom: 2vw;
+  outline: 2px solid #fff4;
+}
