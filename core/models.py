@@ -108,7 +108,6 @@ class Notification(models.Model):
     message = models.TextField()
     booking = models.ForeignKey(Booking, on_delete=models.CASCADE, related_name='notifications')
     is_read = models.BooleanField(default=False)
-    taken = models.BooleanField(default=False)
 
     def __str__(self):
         if self.recipient:

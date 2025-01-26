@@ -48,9 +48,9 @@ def display_notifications(request):
         template_name = 'therapists/notifications.html'
         # Fetch notifications for the therapist's city
         city_notifications = Notification.objects.filter(
-            booking__city__iexact=therapist.city
+            Q(recipient__isnull=True) & Q(booking__city__iexact=therapist.city) & 
+            (Q(booking__therapist__isnull=True) | Q(booking__therapist=therapist))
         ).annotate(booking_created_at=F('booking__created_at')).order_by('-booking_created_at')
-    
     else:
         bookings = Booking.objects.filter(customer__user=user)
         template_name = 'customers/notifications.html'
@@ -90,9 +90,11 @@ def get_notifications(request):
 
     # Get unread notifications with this user as recipient OR if therapist for this city's therapists
     notifications = Notification.objects.filter(
-        Q(recipient=user) | Q(booking__city=therapist_city),
-        is_read=False
-    )
+    Q(recipient=user) | 
+    (Q(recipient__isnull=True) & Q(booking__city=therapist_city) & 
+    (Q(booking__therapist__isnull=True) | Q(booking__therapist=user.therapist))),
+    is_read=False
+)
     notifications_data = []
     for notification in notifications:
         messages.add_message(request, messages.INFO, notification.message)

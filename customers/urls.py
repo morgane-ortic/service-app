@@ -10,6 +10,7 @@ app_name = 'customers'
 
 urlpatterns = [
     path('', views.home, name='home'),
+    path('notifications/', core.views.display_notifications, name='notifications'),
     path('services/', views.services, name='services'),
     path('service/<int:service_id>/', views.service_detail, name='service_detail'),
     path('bookings/', views.bookings, name='bookings'),

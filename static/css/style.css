@@ -99,16 +99,21 @@ hr {
   transform: translate(-50%, -50%);
   z-index: 1000; /* Ensure it flows over other elements */
 
+}
+
+.alert {
+  margin-bottom: 10px;
   border-radius: 15px;
   text-align: center;
   color: white;
   font-family: sans-serif;
   font-weight: bold;
-  background-color: green;
+
   display: inline-block;
   /* Adjust width to fit content */
+
   padding: 6px 10px 6px;
-  z-index: 1000
+  background-color: green;
 }
 
 .close-btn {
