@@ -43,7 +43,7 @@ class Therapist(models.Model):
     accepted_customer_groups = MultiSelectField(choices=CUSTOMER_CHOICES, blank=True)
     provided_equipment = models.TextField(max_length=1000, blank=True, null=True)
     required_equipment = models.TextField(max_length=1000, blank=True, null=True)
-    pronouns = models.CharField(max_length=50, null=False, blank=False, default="Not Specified")
+    pronouns = models.CharField(max_length=50, null=True, blank=True, default="Not Specified")
 
     def __str__(self):
         return self.user.username

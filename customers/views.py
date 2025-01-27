@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from .decorators import customer_required
 from .models import Customer
-from core.models import Service, ServiceType, Booking
+from core.models import Service, ServiceType, Booking, Notification
 from .forms import RegisterForm, PersonalDetailsForm
 from django.conf import settings
 from django.http import JsonResponse

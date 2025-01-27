@@ -3,6 +3,31 @@
 {% block content %}
     <div class="page_content">
         <h1>Notifications</h1>  
+        <ul class="notifications">
+            {% for notification in notifications %}
+                <li>
+                    <strong>Message:</strong> {{ notification.message }}<br>
+                    <strong>Booking Details:</strong> 
+                    {% if notification.booking %}
+                        <ul>
+                            <li><strong>Customer:</strong> {{ notification.booking.customer }}</li>
+                            <li><strong>Service:</strong> {{ notification.booking.service }}</li>
+                            <li><strong>Booking Date:</strong> {{ notification.booking.booking_date_time }}</li>
+                            <li><strong>Address:</strong> {{ notification.booking.address }}</li>
+                        </ul>
+                    {% else %}
+                        No booking details available.
+                    {% endif %}
+                    
+                    {% if not notification.taken %}
+                        <button onclick="acceptNotification({{ notification.id }})">Accept</button>
+                        <button onclick="refuseNotification({{ notification.id }})">Refuse</button>
+                    {% else %}
+                        <p class="important_p">NOT AVAILABLE ANYMORE</p>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
     </div>
 
 {% endblock %}

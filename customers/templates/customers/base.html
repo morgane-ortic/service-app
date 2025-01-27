@@ -25,6 +25,7 @@
                 {% if user.is_authenticated %}
                     {% if user.customer %}
                         <li><a href="/">Home</a></li>
+                        <li><a href="{% url 'customers:notifications' %}">Notifications</a></li>
                         <li><a href="{% url 'customers:services' %}">Services</a></li>
                         <li><a href="{% url 'customers:bookings' %}">Bookings</a></li>
                         <li><a href="{% url 'customers:about' %}">About</a></li>
@@ -51,7 +52,7 @@
             {% if messages %}
             <div class="messages">
                 {% for message in messages %}
-                    <div class="alert {{ message.tags }}">
+                    <div class="alert">
                         {{ message }}
                         <span class="close-btn" onclick="closeMessage()">×</span>
                     </div>
