@@ -35,12 +35,11 @@ class Booking(models.Model):
     service = models.ForeignKey('Service', on_delete=models.SET_NULL, null=True, related_name='booking')
     number_of_customers = models.PositiveIntegerField(default=1)  # Directly store the number of customers as an integer
     address = models.CharField(max_length=255)
-    city = models.CharField(max_length=255)
+    city = models.CharField(max_length=255, default='Unknown')
     booking_date_time = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     base_price = models.DecimalField(max_digits=6, decimal_places=2)
-    prices = models.JSONField(default=list)
-
+    
     # Status field to track the state of the booking
     status = models.CharField(
         max_length=10,
@@ -106,7 +105,7 @@ class Notification(models.Model):
     # each notification has EITHER a recipient (individual) or city (all local therapists)
     recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notifications", null=True, blank=True)
     message = models.TextField()
-    booking = models.ForeignKey(Booking, on_delete=models.CASCADE, related_name='notifications')
+    booking = models.ForeignKey(Booking, on_delete=models.CASCADE, related_name='notifications', null=True, blank=True)
     is_read = models.BooleanField(default=False)
 
     def __str__(self):
