@@ -37,7 +37,7 @@ function fetchNotifications() {
 }
 
 // Poll for new notifications every 10 seconds
-setInterval(fetchNotifications, 10000);
+// setInterval(fetchNotifications, 10000);
 
 // Fetch notifications on page load
 fetchNotifications();
