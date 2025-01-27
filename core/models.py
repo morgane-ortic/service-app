@@ -39,7 +39,7 @@ class Booking(models.Model):
     booking_date_time = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     base_price = models.DecimalField(max_digits=6, decimal_places=2)
-    
+
     # Status field to track the state of the booking
     status = models.CharField(
         max_length=10,
@@ -105,7 +105,7 @@ class Notification(models.Model):
     # each notification has EITHER a recipient (individual) or city (all local therapists)
     recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notifications", null=True, blank=True)
     message = models.TextField()
-    booking = models.ForeignKey(Booking, on_delete=models.CASCADE, related_name='notifications', null=True, blank=True)
+    booking = models.ForeignKey(Booking, on_delete=models.CASCADE, related_name='notifications',null=True, blank=True)
     is_read = models.BooleanField(default=False)
 
     def __str__(self):

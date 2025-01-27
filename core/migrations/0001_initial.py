@@ -62,7 +62,6 @@ class Migration(migrations.Migration):
                 ('booking_date_time', models.DateTimeField()),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('base_price', models.DecimalField(decimal_places=2, max_digits=6)),
-                ('prices', models.JSONField(default=list)),
                 ('status', models.CharField(choices=[('active', 'Active'), ('pending', 'Pending'), ('cancelled', 'Cancelled'), ('completed', 'Completed')], default='active', max_length=10)),
                 ('customer', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='booking', to='customers.customer')),
             ],
