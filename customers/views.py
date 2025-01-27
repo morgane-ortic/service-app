@@ -35,6 +35,7 @@ from django.db.models import Q
 
 @customer_required
 def bookings(request):
+    print('Displaying bookings...')
     if not request.user.is_authenticated:
         return redirect('login')
 
@@ -52,16 +53,17 @@ def bookings(request):
         past_bookings = Booking.objects.filter(
             customer=customer,
             status__in=['completed', 'cancelled']
-        ).select_related('therapist', 'service__service').order_by('-booking_date_time')
+        ).select_related('therapist', 'service').order_by('-booking_date_time')
 
         # Fetch active bookings (future bookings)
         active_bookings = Booking.objects.filter(
             customer=customer,
             status='active',
             booking_date_time__gte=now()
-        ).select_related('therapist', 'service__service').order_by('booking_date_time')
+        ).select_related('therapist', 'service').order_by('booking_date_time')
 
         # Retrieve the current booking data from the session, if available
+        print('Retrieving current booking...')
         current_booking = request.session.get('current_booking', None)
 
     except Customer.DoesNotExist:
@@ -75,7 +77,7 @@ def bookings(request):
             'current_booking': None,
             'error': error_message,
         })
-
+    print('Rendering bookings template...')
     return render(request, 'customers/bookings.html', {
         'past_bookings': past_bookings,
         'active_bookings': active_bookings,
@@ -108,6 +110,7 @@ def get_addresses(request):
 
 @login_required
 def get_current_booking(request):
+    print('Get current booking...')
     if request.user.is_authenticated:
         response_data = {}
 
