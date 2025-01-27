@@ -66,6 +66,9 @@ def display_notifications(request):
     else:
         notifications = user_notifications
 
+    # Mark notifications as read
+    notifications.update(is_read=True)
+
     # Debugging statements
     print(f"User: {user}")
     print(f"User Type: {'Therapist' if hasattr(user, 'therapist') else 'Customer'}")
