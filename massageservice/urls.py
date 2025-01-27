@@ -15,6 +15,8 @@ urlpatterns = [
     path('therapists/', include('therapists.urls', namespace='therapists')),
     path('success/', customers.views.payment_success, name='success'),  # Add the success endpoint
     path('cancel/', customers.views.payment_cancel, name='cancel'),     # Add the cancel endpoint
+
+    path('get_notifications/', core.views.get_notifications, name='get_notifications'),
 ]
 
 # Serve media files during development
