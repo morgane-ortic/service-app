@@ -62,7 +62,6 @@ header {
 }
 
 main {
-  background-image: url("../img/main_background.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -81,8 +80,7 @@ main {
   align-items: center;
 
   /* define main background color..... whats that btw?  isn't it racism? is the background not white enough for you lmao*/
-  background-color: white;
-  background-color: white;
+  background-color: #EEE0CB;
 }
 
 hr {
