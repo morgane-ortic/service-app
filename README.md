@@ -1,1 +1,2 @@
-
+- Account creation, login and customization are working for both therapists and customers
+- The booking process is NOT finalised: payment + validation are not fully implemented
